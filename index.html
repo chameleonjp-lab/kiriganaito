@@ -169,6 +169,24 @@
         min-height: 76px;
         font-size: 24px;
         border-radius: 24px;
+        transition: transform 0.06s ease, box-shadow 0.06s ease;
+      }
+      .jump:active,
+      .jump.pressed {
+        transform: translateY(3px) scale(0.99);
+        box-shadow: 0 1px 0 #8e6d00;
+      }
+      .hud .hot b {
+        color: #ff7777;
+        text-shadow: 0 0 8px rgba(255, 80, 80, 0.55);
+      }
+      .hud .chasing b {
+        color: #ffdf7a;
+        animation: hudPulse 0.45s ease-in-out infinite alternate;
+      }
+      @keyframes hudPulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.08); }
       }
       .status {
         min-height: 22px;
@@ -187,10 +205,24 @@
         font-size: 20px;
       }
       .resultScore {
-        font-size: 42px;
+        margin: 8px 0 12px;
+        padding: 12px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255, 232, 121, 0.18), rgba(255, 213, 74, 0.06));
+        border: 1px solid rgba(255, 232, 121, 0.42);
+        font-size: clamp(44px, 14vw, 64px);
         font-weight: 900;
         color: #ffe879;
         text-align: center;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      }
+      .resultMeta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .statLine strong {
+        color: #ffb0a0;
       }
       .debug {
         position: fixed;
@@ -288,8 +320,8 @@
             <div>距離<b id="hudScore">0.00km</b></div>
             <div>時間<b id="hudTime">0.0s</b></div>
             <button id="retireBtn" class="danger retire">リタイア</button>
-            <div>逃走<b id="hudChase">0.0s</b></div>
-            <div>警戒<b id="hudDanger">0/3</b></div>
+            <div id="hudChaseBox">逃走<b id="hudChase">0.0s</b></div>
+            <div id="hudDangerBox">警戒<b id="hudDanger">□□□</b></div>
           </div>
           <div class="canvasBox"><canvas id="gameCanvas"></canvas></div>
           <button id="jumpBtn" class="jump">ジャンプ</button>
@@ -354,6 +386,15 @@
       const BASE_SPEED = 4,
         CHASE_MULT = 2,
         CHASE_TIME = 15,
+        JUMP_POWER = 560,
+        GRAVITY = 1450,
+        LANDING_SMOKE_COUNT = 7,
+        JUMP_SMOKE_COUNT = 4,
+        SHADOW_MIN_SCALE = 0.58,
+        SHADOW_MAX_SCALE = 1,
+        SHAKE_ACCIDENT = 5,
+        SHAKE_FINISH = 7,
+        ESCAPED_FLASH_SEC = 1.15,
         DPR_MAX = 2,
         MAX_OBS = 18,
         MAX_ITEMS = 12,
@@ -418,6 +459,8 @@
         hudTime: $("hudTime"),
         hudChase: $("hudChase"),
         hudDanger: $("hudDanger"),
+        hudChaseBox: $("hudChaseBox"),
+        hudDangerBox: $("hudDangerBox"),
         playStatus: $("playStatus"),
         resultReason: $("resultReason"),
         resultScore: $("resultScore"),
@@ -465,6 +508,8 @@
           onGround: true,
           coyote: 0,
           inv: 0,
+          wasOnGround: true,
+          landedFlash: 0,
         };
         run = {
           runMeters: 0,
@@ -482,6 +527,9 @@
           rankingSubmitted: false,
           rankingSubmitting: false,
           rankingError: "",
+          shake: 0,
+          escapedFlash: 0,
+          lastAccidentKm: -1,
         };
         spawn = {
           nextObstacleAt: 0.18,
@@ -491,8 +539,9 @@
           lastHoleAt: -9,
           lastObstacleAt: -9,
           lastOncomingAt: -9,
+          lastPatternName: "none",
         };
-        inputState = { jumpBuffer: 0 };
+        inputState = { jumpBuffer: 0, landedPulse: 0 };
         rankingState = { status: "idle", rows: [], stats: null, error: "" };
         obstacles = [];
         items = [];
@@ -506,6 +555,9 @@
         unlockAudio();
         if (mode !== MODE.PLAYING) return;
         inputState.jumpBuffer = HIT.JUMP_BUFFER_SEC;
+        const btn = $("jumpBtn");
+        btn.classList.add("pressed");
+        window.setTimeout(() => btn.classList.remove("pressed"), 90);
       }
       canvas.addEventListener("pointerdown", pointerJump, { passive: false });
       $("jumpBtn").addEventListener("pointerdown", pointerJump, {
@@ -564,20 +616,30 @@
           ? HIT.COYOTE_SEC
           : Math.max(0, player.coyote - dt);
         if (inputState.jumpBuffer > 0 && player.coyote > 0) {
-          player.vy = -560;
+          player.vy = -JUMP_POWER;
           player.onGround = false;
           player.coyote = 0;
           inputState.jumpBuffer = 0;
+          smoke(player.x + player.w * 0.35, getGroundY(player.x) - 4, JUMP_SMOKE_COUNT, 0.72);
           playTone(620, 0.04, "square");
         }
-        player.vy += 1450 * dt;
+        const wasGround = player.onGround;
+        player.vy += GRAVITY * dt;
         player.y += player.vy * dt;
         let gy = getGroundY(player.x);
         if (player.y + player.h >= gy) {
           player.y = gy - player.h;
           player.vy = 0;
           player.onGround = true;
+          if (!wasGround) {
+            player.landedFlash = 0.12;
+            inputState.landedPulse = 0.12;
+            smoke(player.x + player.w * 0.45, gy - 3, LANDING_SMOKE_COUNT, 1);
+            playTone(220, 0.035, "triangle");
+          }
         } else player.onGround = false;
+        player.landedFlash = Math.max(0, player.landedFlash - dt);
+        inputState.landedPulse = Math.max(0, inputState.landedPulse - dt);
         player.inv = Math.max(0, player.inv - dt);
         let visual = run.chase > 0 ? CHASE_MULT : 1;
         let move = BASE_SPEED * 55 * visual * dt;
@@ -586,7 +648,11 @@
         checkCollisions();
         if (mode !== MODE.PLAYING) return;
         run.runMeters += BASE_SPEED * 9 * dt;
+        const beforeChase = run.chase;
         run.chase = Math.max(0, run.chase - dt);
+        if (beforeChase > 0 && run.chase <= 0) run.escapedFlash = ESCAPED_FLASH_SEC;
+        run.escapedFlash = Math.max(0, run.escapedFlash - dt);
+        run.shake = Math.max(0, run.shake - dt);
         run.elapsed += dt;
         run.scoreMeters = Math.max(
           0,
@@ -684,31 +750,75 @@
       function spawnStuff() {
         const km = run.runMeters / 1000;
         const d = getDifficultyByKm(km);
-        if (km >= spawn.nextHoleAt && holes.length < 8) {
-          if (canSpawnHole(km)) spawnHolePattern(km, d);
-          scheduleNext("hole", km, d);
+        if (
+          km >= Math.min(spawn.nextHoleAt, spawn.nextObstacleAt, spawn.nextItemAt) &&
+          holes.length < 8 &&
+          obstacles.length < MAX_OBS &&
+          items.length < MAX_ITEMS
+        ) {
+          const pattern = selectPatternByDifficulty(km, d);
+          spawnPattern(pattern, km, d);
         }
-        if (km >= spawn.nextObstacleAt && obstacles.length < MAX_OBS) {
-          const dir = Math.random() < d.oncoming ? 1 : -1;
-          if (canSpawnObstacle(km, dir)) spawnObstaclePattern(km, d, dir);
-          scheduleNext("obstacle", km, d);
-        }
-        if (km >= spawn.nextItemAt && items.length < MAX_ITEMS) {
-          if (canSpawnItem(km)) spawnItemPattern(km, d);
-          scheduleNext("item", km, d);
-        }
+        if (km >= spawn.nextHoleAt) scheduleNext("hole", km, d);
+        if (km >= spawn.nextObstacleAt) scheduleNext("obstacle", km, d);
+        if (km >= spawn.nextItemAt) scheduleNext("item", km, d);
       }
-      function spawnHolePattern(km, d) {
-        const w = rand(d.hole[0], d.hole[1]);
+      function selectPatternByDifficulty(km, d) {
+        const safeOncoming = km >= 0.5 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
+        const pool = [];
+        pool.push({ name: "short_hole", weight: 3 });
+        pool.push({ name: "walker", weight: km < 0.5 ? 5 : 2 });
+        pool.push({ name: "walker_coin", weight: 2 });
+        if (km >= 0.45) pool.push({ name: "hole_then_bike", weight: 2 });
+        if (km >= 1.0) pool.push({ name: "high_coin", weight: 2 });
+        if (km >= 1.5) pool.push({ name: "risky_gear", weight: 2 });
+        if (km >= 0.5 && safeOncoming && Math.random() < d.oncoming) pool.push({ name: "oncoming_safe", weight: km >= 3 ? 2 : 1 });
+        if (run.chase > 0) pool.push({ name: "breather", weight: 4 });
+        const total = pool.reduce((a, b) => a + b.weight, 0);
+        let r = Math.random() * total;
+        for (let i = 0; i < pool.length; i++) {
+          r -= pool[i].weight;
+          if (r <= 0) return pool[i].name;
+        }
+        return pool[0].name;
+      }
+      function spawnPattern(pattern, km, d) {
+        spawn.lastPatternName = pattern;
+        if (pattern === "breather") {
+          scheduleNext("obstacle", km + 0.05, d);
+          scheduleNext("hole", km + 0.05, d);
+          return spawnItemPattern(km, d, { x: -38, high: false });
+        }
+        if (pattern === "short_hole" && canSpawnHole(km)) return spawnHolePattern(km, d);
+        if (pattern === "walker" && canSpawnObstacle(km, -1)) return spawnObstaclePattern(km, d, -1, "🚶");
+        if (pattern === "walker_coin" && canSpawnObstacle(km, -1)) {
+          spawnObstaclePattern(km, d, -1, "🚶");
+          if (canSpawnItem(km + 0.12)) spawnItemPattern(km, d, { x: -88, high: true, type: "🪙" });
+          return;
+        }
+        if (pattern === "hole_then_bike" && canSpawnHole(km)) {
+          spawnHolePattern(km, d, { narrow: true });
+          if (canSpawnObstacle(km + 0.28, -1)) spawnObstaclePattern(km + 0.28, d, -1, "🚴", -126);
+          return;
+        }
+        if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "🪙" });
+        if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️" });
+        if (pattern === "oncoming_safe" && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, -54);
+        if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1);
+      }
+      function spawnHolePattern(km, d, opt = {}) {
+        const w = opt.narrow ? rand(d.hole[0], Math.min(d.hole[1], d.hole[0] + 10)) : rand(d.hole[0], d.hole[1]);
         holes.push({ x: -w - 16, y: groundY - 6, w, h: H - groundY + 14 });
         spawn.lastHoleAt = km;
         spawn.lastDangerAt = km;
       }
-      function spawnObstaclePattern(km, d, dir) {
+      function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44) {
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
-        const t = OBS_TYPES[(Math.random() * maxType) | 0];
+        let t = OBS_TYPES[(Math.random() * maxType) | 0];
+        if (forcedEmoji) t = OBS_TYPES.find((v) => v[0] === forcedEmoji) || t;
+        if (km < 0.5) dir = -1;
         obstacles.push({
-          x: -44,
+          x,
           y: groundY - 32,
           emoji: t[0],
           speed: t[1],
@@ -721,12 +831,13 @@
         spawn.lastDangerAt = km;
         if (dir === 1) spawn.lastOncomingAt = km;
       }
-      function spawnItemPattern(km, d) {
-        const t = ITEM_TYPES[(Math.random() * ITEM_TYPES.length) | 0];
-        const risky = km > 1.5 && Math.random() < 0.35;
+      function spawnItemPattern(km, d, opt = {}) {
+        let t = ITEM_TYPES[(Math.random() * ITEM_TYPES.length) | 0];
+        if (opt.type) t = ITEM_TYPES.find((v) => v[0] === opt.type) || t;
+        const risky = opt.high ?? (km > 1.5 && Math.random() < 0.35);
         items.push({
-          x: -36,
-          y: groundY - (risky ? 78 : 104) - Math.random() * 48,
+          x: opt.x ?? -36,
+          y: groundY - (risky ? 112 : 78) - Math.random() * 34,
           emoji: t[0],
           value: t[1],
           w: 28,
@@ -761,6 +872,7 @@
           p.x += p.vx * dt;
           p.y += p.vy * dt;
           p.life -= dt;
+          if (p.kind === "smoke") p.vy += 80 * dt;
           if (p.life <= 0) particles.splice(i, 1);
         }
         if (
@@ -775,6 +887,8 @@
             vx: 120 + Math.random() * 90,
             vy: 0,
             life: 2,
+            maxLife: 2,
+            wiggle: Math.random() * 10,
             kind: "word",
           });
       }
@@ -860,6 +974,9 @@
         run.chase = CHASE_TIME;
         player.inv = HIT.INVINCIBLE_SEC;
         burst(o.x, o.y, "#ff765f", 16);
+        floatText(player.x + 14, player.y - 20, "-0.20km", "#ffebe0");
+        run.shake = 0.18;
+        run.lastAccidentKm = run.runMeters / 1000;
         playTone(140, 0.12, "sawtooth");
         if (run.danger >= 3) playTone(90, 0.2, "square");
       }
@@ -871,15 +988,39 @@
             vx: (Math.random() * 2 - 1) * 160,
             vy: (Math.random() * 2 - 1) * 120,
             life: 0.35 + Math.random() * 0.35,
+            maxLife: 0.7,
             color,
             kind: "spark",
           });
       }
+      function smoke(x, y, n, power) {
+        for (let i = 0; i < n && particles.length < MAX_PARTICLES; i++)
+          particles.push({
+            x: x + rand(-8, 8),
+            y: y + rand(-2, 3),
+            vx: rand(-42, 28) * power,
+            vy: rand(-38, -12) * power,
+            life: rand(0.28, 0.48),
+            maxLife: 0.48,
+            size: rand(4, 8) * power,
+            color: "rgba(225,218,202,",
+            kind: "smoke",
+          });
+      }
+      function floatText(x, y, text, color) {
+        if (particles.length >= MAX_PARTICLES) return;
+        particles.push({ x, y, vx: 0, vy: -34, life: 0.85, maxLife: 0.85, text, color, kind: "float" });
+      }
       // 10. 描画
       function draw() {
         ctx.clearRect(0, 0, W, H);
+        ctx.save();
+        if (run && run.shake > 0) {
+          const mag = (mode === MODE.PLAYING ? SHAKE_ACCIDENT : SHAKE_FINISH) * (run.shake / 0.18);
+          ctx.translate(rand(-mag, mag), rand(-mag, mag));
+        }
         let chase = run && run.chase > 0;
-        ctx.fillStyle = chase ? "#ffd0aa" : "#8adaff";
+        ctx.fillStyle = chase ? "#ffc4ae" : "#8adaff";
         ctx.fillRect(0, 0, W, H);
         if (chase) {
           ctx.fillStyle = "rgba(255,0,0,.12)";
@@ -891,13 +1032,21 @@
           let p = particles[i];
           if (p.kind === "word") {
             ctx.globalAlpha = Math.max(0, p.life / 2);
-            ctx.fillStyle = "#d71920";
-            ctx.fillText(p.text, p.x, p.y);
+            ctx.fillStyle = run.chase <= 3 ? "#ff1e1e" : "#d71920";
+            ctx.fillText(p.text, p.x, p.y + Math.sin(run.elapsed * 12 + p.wiggle) * 5);
           }
         }
         ctx.globalAlpha = 1;
         ctx.fillStyle = "#4d4337";
         ctx.fillRect(0, groundY, W, H - groundY);
+        ctx.strokeStyle = "rgba(255,255,255,0.25)";
+        ctx.lineWidth = 2;
+        for (let x = ((run.runMeters * (chase ? 1.6 : 0.8)) % 56) - 56; x < W; x += 56) {
+          ctx.beginPath();
+          ctx.moveTo(x, groundY + 28);
+          ctx.lineTo(x + 24, groundY + 28);
+          ctx.stroke();
+        }
         ctx.strokeStyle = "#ffdc75";
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -907,10 +1056,19 @@
         ctx.fillStyle = "#0b0d14";
         for (let i = 0; i < holes.length; i++) {
           let h = holes[i];
+          const g = ctx.createLinearGradient(h.x, h.y, h.x, h.y + 42);
+          g.addColorStop(0, "#17100e");
+          g.addColorStop(1, "#02030a");
+          ctx.fillStyle = g;
           ctx.fillRect(h.x, h.y, h.w, h.h);
-          ctx.strokeStyle = "#2c3147";
-          ctx.lineWidth = 3;
-          ctx.strokeRect(h.x, h.y, h.w, 10);
+          ctx.strokeStyle = "#7b5d3e";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(h.x + 1, h.y + 1, h.w - 2, 12);
+          ctx.strokeStyle = "rgba(255,221,150,0.35)";
+          ctx.beginPath();
+          ctx.moveTo(h.x + 4, h.y + 3);
+          ctx.lineTo(h.x + h.w - 4, h.y + 3);
+          ctx.stroke();
         }
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -928,18 +1086,31 @@
           } else ctx.fillText(o.emoji, o.x + 16, o.y + 16);
           ctx.restore();
         }
+        const height = Math.max(0, getGroundY(player.x) - (player.y + player.h));
+        const t = Math.min(1, height / 120);
+        const shadowScale = SHADOW_MAX_SCALE - (SHADOW_MAX_SCALE - SHADOW_MIN_SCALE) * t;
+        ctx.save();
+        ctx.globalAlpha = 0.38 - t * 0.22;
+        ctx.fillStyle = "#101010";
+        ctx.beginPath();
+        ctx.ellipse(player.x + 22, getGroundY(player.x) + 7 + t * 7, 22 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
         if (chase) {
           ctx.font = "34px serif";
-          ctx.fillText("🚓", player.x + 74, groundY - 27);
+          const policeOffset = 92 - Math.min(28, run.accidents * 9);
+          ctx.fillText("🚓", player.x + policeOffset, groundY - 27);
         }
         ctx.font = "42px serif";
         ctx.globalAlpha =
           player.inv > 0 ? 0.55 + Math.sin(run.elapsed * 40) * 0.25 : 1;
-        ctx.fillText("🚚", player.x + 21, player.y + 18);
+        ctx.fillText("🚚", player.x + 21, player.y + 18 + (player.landedFlash > 0 ? 2 : 0));
         ctx.globalAlpha = 1;
         if (chase) {
-          ctx.font = "28px serif";
+          ctx.font = run.chase <= 3 ? "34px serif" : "28px serif";
+          ctx.globalAlpha = run.chase <= 3 ? 0.55 + Math.sin(run.elapsed * 24) * 0.45 : 1;
           ctx.fillText("🚨", player.x + 18, player.y - 12);
+          ctx.globalAlpha = 1;
         }
         for (let i = 0; i < particles.length; i++) {
           let p = particles[i];
@@ -947,10 +1118,27 @@
             ctx.globalAlpha = Math.max(0, p.life / 0.7);
             ctx.fillStyle = p.color;
             ctx.fillRect(p.x, p.y, 4, 4);
+          } else if (p.kind === "smoke") {
+            ctx.globalAlpha = Math.max(0, p.life / p.maxLife) * 0.55;
+            ctx.fillStyle = p.color + ctx.globalAlpha + ")";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (p.kind === "float") {
+            ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+            ctx.fillStyle = p.color;
+            ctx.font = "800 18px system-ui";
+            ctx.fillText(p.text, p.x, p.y);
           }
         }
         ctx.globalAlpha = 1;
+        if (run && run.escapedFlash > 0) {
+          ctx.font = "900 30px system-ui";
+          ctx.fillStyle = "rgba(255,255,255," + Math.min(1, run.escapedFlash) + ")";
+          ctx.fillText("逃げ切り", W / 2, H * 0.25);
+        }
         if (DEBUG) drawHitboxes();
+        ctx.restore();
       }
       // 17. デバッグ
       function drawHitboxes() {
@@ -981,11 +1169,17 @@
         el.hudScore.textContent = km(run.scoreMeters);
         el.hudTime.textContent = run.elapsed.toFixed(1) + "s";
         el.hudChase.textContent = run.chase.toFixed(1) + "s";
-        el.hudDanger.textContent = run.danger + "/3";
+        el.hudDanger.textContent = "🚨".repeat(run.danger) + "□".repeat(Math.max(0, 3 - run.danger));
+        el.hudChaseBox.classList.toggle("chasing", run.chase > 0);
+        el.hudDangerBox.classList.toggle("hot", run.danger >= 2);
         el.playStatus.textContent =
           run.chase > 0
-            ? "🚨 逃走中！見た目速度2倍（距離加算は通常）"
-            : "タップでジャンプ";
+            ? run.chase <= 3
+              ? "🚨 あと少し！逃走残り " + run.chase.toFixed(1) + "秒"
+              : "🚨 逃走中！見た目速度2倍（距離加算は通常）"
+            : run.escapedFlash > 0
+              ? "逃げ切り"
+              : "タップでジャンプ";
       }
       function renderRanking(target, ranking) {
         target.textContent = "";
@@ -1069,7 +1263,7 @@
         };
         show("result");
         mode = MODE.RESULT;
-        el.resultReason.textContent = reason;
+        el.resultReason.textContent = getReasonText(reason);
         el.resultComment.textContent = getResultComment(resultSnapshot.score);
         el.resultScore.textContent = km(resultSnapshot.score);
         el.resultBreakdown.textContent = "";
@@ -1080,15 +1274,22 @@
           ["事故回数", resultSnapshot.accidents + "回"],
         ].forEach((r) => {
           let d = document.createElement("div");
-          d.className = "statLine";
+          d.className = "statLine" + (r[0] === "事故回数" && resultSnapshot.accidents >= 2 ? " accidentHeavy" : "");
           let a = document.createElement("span"),
             b = document.createElement("b");
           a.textContent = r[0];
           b.textContent = r[1];
+          if (r[0] === "事故回数" && resultSnapshot.accidents >= 2) b.innerHTML = "<strong>" + r[1] + "</strong>";
           d.append(a, b);
           el.resultBreakdown.appendChild(d);
         });
         submitScoreOnce().then(() => fetchAndRenderResultRanking());
+      }
+      function getReasonText(reason) {
+        if (reason.includes("穴")) return "終了理由：穴に落ちました。足元確認、大事です。";
+        if (reason.includes("捕まり")) return "終了理由：警戒度3で🚓に捕まりました。";
+        if (reason.includes("リタイア")) return "終了理由：リタイアしました。次はもう少し先へ。";
+        return "終了理由：" + reason;
       }
       function getResultComment(score) {
         if (score < 500) return "出発した瞬間に何かありました";
