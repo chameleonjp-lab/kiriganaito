@@ -1592,7 +1592,7 @@
           fpst = 0;
         }
         el.debug.classList.add("show");
-        el.debug.textContent = `fps:${fps}\nmode:${mode}\nrunMeters:${run.runMeters.toFixed(1)}\nscoreMeters:${run.scoreMeters}
+        el.debug.textContent = `fps:${fps}\nmode:${mode}\npattern:${spawn.lastPatternName}\nrunMeters:${run.runMeters.toFixed(1)}\nscoreMeters:${run.scoreMeters}
 missPenalty:${run.missPenaltyMeters}
 dancerInv:${run.dancerInvincible.toFixed(1)}\ndanger:${run.danger}\nchase:${run.chase.toFixed(1)}\nobs:${obstacles.length} items:${items.length} holes:${holes.length}\npt:${particles.length}\nnextObs:${spawn.nextObstacleAt.toFixed(2)}\nnextHole:${spawn.nextHoleAt.toFixed(2)}\nnextItem:${spawn.nextItemAt.toFixed(2)}\nplayer:${Math.round(player.x)},${Math.round(player.y)}\ncanvas:${W}x${H}\nrank:${run.rankingSubmitting ? "sending" : run.rankingSubmitted ? "done" : run.rankingError || rankingState.status}`;
       }
