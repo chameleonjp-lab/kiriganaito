@@ -333,11 +333,12 @@
       // 1. 定数
       const DEBUG = false,
         AUDIO_ENABLED = true;
-      const SUPABASE_URL = "";
+      const SUPABASE_URL = "https://mlpnjgezrnhdxsxolyzj.supabase.co";
       const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
+        CLIENT_VERSION = "kiriganaito-2026-06-25-v1",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -986,13 +987,19 @@
             ? "🚨 逃走中！見た目速度2倍（距離加算は通常）"
             : "タップでジャンプ";
       }
-      function renderRanking(target, rows) {
+      function renderRanking(target, ranking) {
         target.textContent = "";
         if (!supabaseReady()) {
           target.textContent = "ランキング未設定";
           return;
         }
-        if (!rows || !rows.length) {
+        if (!ranking || !ranking.ok) {
+          target.textContent =
+            (ranking && ranking.error) || "ランキングを取得できませんでした";
+          return;
+        }
+        let rows = ranking.rows || [];
+        if (!rows.length) {
           target.textContent = "ランキングなし";
           return;
         }
@@ -1010,16 +1017,14 @@
               rows[i].normalized_name ||
               "名無し");
           s.textContent = km(
-            Number(
-              rows[i].best_score ?? rows[i].score ?? rows[i].first_score ?? 0,
-            ),
+            rows[i].best_score ?? rows[i].score ?? rows[i].first_score ?? 0,
           );
           d.append(n, s);
           target.appendChild(d);
         }
       }
       function km(m) {
-        return (Math.max(0, m) / 1000).toFixed(2) + "km";
+        return (Math.max(0, Number(m) || 0) / 1000).toFixed(2) + "km";
       }
       // 12. 音
       function unlockAudio() {
@@ -1121,19 +1126,10 @@
             .slice(0, 10);
           if (!name) throw new Error("名前未入力");
           await submitScoreToSupabase({
-            game_slug: GAME_SLUG,
-            display_name: name,
-            score: resultSnapshot.score,
-            metadata: {
-              runMeters: resultSnapshot.runMeters,
-              bonusMeters: resultSnapshot.bonusMeters,
-              penaltyMeters: resultSnapshot.penaltyMeters,
-              accidents: resultSnapshot.accidents,
-              items: resultSnapshot.items,
-              elapsedMs: resultSnapshot.elapsedMs,
-              finishReason: resultSnapshot.reason,
-              maxDanger: resultSnapshot.maxDanger,
-            },
+            p_game_slug: GAME_SLUG,
+            p_display_name: name,
+            p_score: resultSnapshot.score,
+            p_client_version: CLIENT_VERSION,
           });
           run.rankingSubmitted = true;
           el.rankingStatus.textContent = "ランキング送信成功";
@@ -1149,46 +1145,59 @@
       }
       // 15. ランキング取得
       async function fetchBestRanking() {
-        if (!supabaseReady()) return [];
+        if (!supabaseReady()) {
+          return { ok: false, rows: [], error: "ランキング未設定" };
+        }
         try {
-          return await supabaseFetch("/rest/v1/rpc/get_best_score_ranking", {
-            game_slug: GAME_SLUG,
+          let rows = await supabaseFetch("/rest/v1/rpc/get_best_score_ranking", {
             p_game_slug: GAME_SLUG,
-            limit_count: 10,
             p_limit: 10,
           });
+          return { ok: true, rows: rows || [], error: "" };
         } catch (e) {
-          return [];
+          return {
+            ok: false,
+            rows: [],
+            error: "ランキングを取得できませんでした",
+          };
         }
       }
       async function fetchPlayStats() {
-        if (!supabaseReady()) return null;
+        if (!supabaseReady()) {
+          return { ok: false, stats: null, error: "" };
+        }
         try {
-          return await supabaseFetch("/rest/v1/rpc/get_game_play_stats", {
-            game_slug: GAME_SLUG,
+          let stats = await supabaseFetch("/rest/v1/rpc/get_game_play_stats", {
             p_game_slug: GAME_SLUG,
           });
+          return { ok: true, stats, error: "" };
         } catch (e) {
-          return null;
+          return {
+            ok: false,
+            stats: null,
+            error: "集計を取得できませんでした",
+          };
         }
+      }
+      function statsText(result) {
+        if (!supabaseReady()) return "";
+        if (!result || !result.ok) return (result && result.error) || "";
+        let st = Array.isArray(result.stats) ? result.stats[0] : result.stats;
+        return st
+          ? `プレイ数 ${st.play_count || 0} / 参加 ${st.player_count || 0}`
+          : "";
       }
       async function loadHomeRankingOnce() {
         if (rankingHomeLoaded) return;
         rankingHomeLoaded = true;
-        let rows = await fetchBestRanking();
-        renderRanking(el.homeRanking, rows);
-        let st = await fetchPlayStats();
-        el.homeStats.textContent = st
-          ? `プレイ数 ${st.play_count || 0} / 参加 ${st.player_count || 0}`
-          : "";
+        let ranking = await fetchBestRanking();
+        renderRanking(el.homeRanking, ranking);
+        el.homeStats.textContent = statsText(await fetchPlayStats());
       }
       async function fetchAndRenderResultRanking() {
-        let rows = await fetchBestRanking();
-        renderRanking(el.resultRanking, rows);
-        let st = await fetchPlayStats();
-        el.resultStats.textContent = st
-          ? `プレイ数 ${st.play_count || 0} / 参加 ${st.player_count || 0}`
-          : "";
+        let ranking = await fetchBestRanking();
+        renderRanking(el.resultRanking, ranking);
+        el.resultStats.textContent = statsText(await fetchPlayStats());
       }
       // 16. シェア
       async function shareText(text, target) {

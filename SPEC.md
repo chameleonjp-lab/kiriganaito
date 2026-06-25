@@ -183,9 +183,9 @@
 - 同じ名前のプレイヤーが複数回遊んだ場合、ランキング表示では一番高い記録を使う想定です。
 - 上位 10 件を表示します。
 - 送信は結果確定後に 1 回だけです。
-- 通信失敗時も結果画面、シェア、再挑戦ボタンは壊しません。ランキング欄または送信状態だけに「ランキング送信に失敗しました」「ランキングを取得できませんでした」「ランキングなし」を表示します。
+- 通信失敗時も結果画面、シェア、再挑戦ボタンは壊しません。ランキング表示は「ランキング未設定」「ランキング送信に失敗しました」「ランキングを取得できませんでした」「ランキングなし」を混同しないよう分けます。
 - 表示名は `display_name`、`player_name`、`name`、`normalized_name` の順で安全に参照します。
-- スコアは `best_score`、`score`、`first_score` の順で参照します。
+- スコアは `best_score`、`score`、`first_score` の順で参照し、最後は `0` として扱います。表示は必ず `0.00km` 形式で、`NaNkm` を出しません。
 
 ## 11. Supabase仕様
 
@@ -195,22 +195,29 @@
 - `SUPABASE_PUBLISHABLE_KEY`
 - `GAME_SLUG`
 - `GAME_NAME`
+- `CLIENT_VERSION`
 - `PUBLIC_URL`
 
-今回のリポジトリ内には既存の共通ランキング処理や Supabase URL を確認できなかったため、URL は空文字、Publishable key はユーザー指定値を入れています。URL が空の間は通信せず「ランキング未設定」と表示します。
+Supabase URL は正式な公開用 URL `https://mlpnjgezrnhdxsxolyzj.supabase.co` を設定しています。Publishable key はユーザー指定の Publishable key のみを使い、secret key、service_role key、管理者用キーは書きません。`SUPABASE_URL` と `SUPABASE_PUBLISHABLE_KEY` の両方がある場合だけ Supabase 接続可能として扱います。
 
-送信メタ情報:
+結果詳細の `runMeters`、`bonusMeters`、`penaltyMeters`、`accidents`、`items`、`elapsedMs`、`finishReason`、`maxDanger` は `resultSnapshot` 内に保持します。ただし、現在確認できている共通 `submit_score` RPC には metadata 引数を送らず、存在しない引数による RPC 失敗を避けます。
 
-- `runMeters`
-- `bonusMeters`
-- `penaltyMeters`
-- `accidents`
-- `items`
-- `elapsedMs`
-- `finishReason`
-- `maxDanger`
+RPC は後から直しやすいよう、`submitScoreOnce()`、`submitScoreToSupabase(payload)`、`fetchBestRanking()`、`fetchPlayStats()`、`renderRanking()` に分離しています。送信は `game_scores` への直接 insert ではなく、共通仕様の `/rest/v1/rpc/submit_score` を呼びます。取得は `/rest/v1/rpc/get_best_score_ranking` と `/rest/v1/rpc/get_game_play_stats` です。Supabase URL または Publishable key が未設定の場合は通信せず「ランキング未設定」と表示します。
 
-RPC は後から直しやすいよう、`submitScoreOnce()`、`submitScoreToSupabase(payload)`、`fetchBestRanking()`、`fetchPlayStats()`、`renderRanking()` に分離しています。送信は `game_scores` への直接 insert ではなく、共通仕様に寄せた `/rest/v1/rpc/submit_score` を呼ぶ形にしています。取得は `/rest/v1/rpc/get_best_score_ranking` と `/rest/v1/rpc/get_game_play_stats` です。Supabase URL が未設定の場合は通信せず「ランキング未設定」と表示します。
+RPC 引数は共通仕様に合わせて次の形に統一します。
+
+- `/rest/v1/rpc/submit_score`
+  - `p_game_slug`: `kiriganaito`
+  - `p_display_name`: プレイヤー名
+  - `p_score`: 結果確定時の整数メートルスコア
+  - `p_client_version`: `kiriganaito-2026-06-25-v1`
+- `/rest/v1/rpc/get_best_score_ranking`
+  - `p_game_slug`: `kiriganaito`
+  - `p_limit`: `10`
+- `/rest/v1/rpc/get_game_play_stats`
+  - `p_game_slug`: `kiriganaito`
+
+`game_slug`、`display_name`、`score`、`metadata` のような直接 insert 風 payload は `submit_score` に送りません。ランキング取得も `game_slug`、`limit_count` などの別名引数を同時送信せず、`p_` 付き引数だけを送ります。
 
 
 ## 11.1 ゲーム終了処理
@@ -227,7 +234,11 @@ RPC は後から直しやすいよう、`submitScoreOnce()`、`submitScoreToSupa
 
 結果画面後はプレイヤー更新、障害物更新、アイテム更新、パーティクル更新、穴更新、距離加算、逃走時間更新、当たり判定、タイマー更新を再開しません。`requestAnimationFrame` は 1 本だけにし、`RESULT` では再予約しません。リトライ時は `resetState()` で前回状態を初期化します。
 
-## 11.2 デバッグ表示
+## 11.2 今回変更しない仕様
+
+今回の更新は Supabase 実接続、RPC 引数の統一、ランキング表示分岐、仕様書更新に限定します。ゲームルール、スコア計算、出現ロジック、当たり判定、ジャンプ数値、画面演出は変更しません。
+
+## 11.3 デバッグ表示
 
 `DEBUG = false` ではデバッグ表示も Canvas 上の判定枠も表示しません。`DEBUG = true` のときだけ次を表示します。
 
@@ -354,9 +365,9 @@ Web Share API が使える場合は使い、使えない場合はクリップボ
 
 - 既存の他ゲーム、Supabase URL、共通ランキング処理、RPC 引数名はリポジトリ内で確認できませんでした。
 - `PUBLIC_URL` は指定の `https://chameleonjp.codeberg.page/kiriganaito/` を採用しています。
-- Supabase URL は空文字にしています。
-- Publishable key はユーザー指定の `sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM` を入れています。
-- Supabase URL が空の間、ランキング送信と取得は行わず「ランキング未設定」と表示します。
+- Supabase URL は正式な公開用 URL `https://mlpnjgezrnhdxsxolyzj.supabase.co` を入れています。
+- Publishable key はユーザー指定の `sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM` のみを入れています。
+- Supabase URL または Publishable key がない場合、ランキング送信と取得は行わず「ランキング未設定」と表示します。
 - 「他のゲームで遊ぶ」は `https://chameleonjp.codeberg.page/` へのリンクにしています。
 
 ## 19. 実装方針
@@ -380,7 +391,8 @@ Web Share API が使える場合は使い、使えない場合はクリップボ
 - 事故 3 回で終了すること。
 - 🪙、🔩、⚙️ の加算が指定通りであること。
 - 結果画面でスコアが固定されること。
-- ランキング送信が終了時に自動 1 回だけであること。
+- ランキング送信が終了時に自動 1 回だけであり、結果画面に登録ボタンがないこと。
+- Supabase URL と Publishable key が設定され、共通 RPC 引数だけを送ること。
 - Supabase 未設定でもゲームが遊べること。
 - `public.scores`、secret key、service_role key がないこと。
 - ホームと結果のシェア文末尾に公開 URL があること。
