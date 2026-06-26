@@ -1,44 +1,44 @@
 {
-  "generatedAt": "2026-06-26T14:42:48.456Z",
+  "generatedAt": "2026-06-26T15:32:09.098Z",
   "targetMeters": 150000,
-  "seed": 150001,
+  "seed": 150002,
   "result": {
     "autopilot": {
       "mode": "RESULT",
-      "runMeters": 3508,
-      "scoreMeters": 3528,
+      "runMeters": 3978,
+      "scoreMeters": 4158,
       "reason": "穴に落ちました",
       "accidents": 0,
       "maxDanger": 0,
       "maxObs": 1,
-      "maxItems": 1,
+      "maxItems": 2,
       "maxHoles": 2,
-      "maxParticles": 15,
+      "maxParticles": 20,
       "sawDancer": true,
-      "dancerInv": false,
+      "dancerInv": true,
       "sawBike": true,
       "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 3508,
-    "scoreMeters": 3528,
+    "runMeters": 3978,
+    "scoreMeters": 4158,
     "reason": "穴に落ちました",
     "accidents": 0,
     "maxDanger": 0,
-    "elapsedMs": 97450,
-    "hudRun": "3.51km",
-    "hudScore": "3.53km",
-    "resultScore": "3.53km",
+    "elapsedMs": 101583,
+    "hudRun": "3.97km",
+    "hudScore": "4.15km",
+    "resultScore": "4.16km",
     "resultReason": "終了理由：穴に落ちました。足元確認、大事です。",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "実走行距離",
-        "3.51km"
+        "3.98km"
       ],
       [
         "アイテム加算",
-        "+0.07km"
+        "+0.43km"
       ],
       [
         "事故ペナルティ",
@@ -46,7 +46,7 @@
       ],
       [
         "取り逃がしペナルティ",
-        "-0.05km"
+        "-0.25km"
       ],
       [
         "事故回数",
@@ -54,17 +54,17 @@
       ]
     ],
     "maxObs": 1,
-    "maxItems": 1,
+    "maxItems": 2,
     "maxHoles": 2,
-    "maxParticles": 15,
+    "maxParticles": 20,
     "sawDancer": true,
-    "dancerInv": false,
+    "dancerInv": true,
     "sawBike": true,
     "bikeCleared": true,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 3528,
+      "p_score": 4158,
       "p_client_version": "kiriganaito-2026-06-25-v1"
     },
     "debug": ""

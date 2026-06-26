@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T14:42:27.212Z",
+  "generatedAt": "2026-06-26T15:32:08.883Z",
   "finalVerdict": "WARN",
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
@@ -48,9 +48,9 @@
     "consoleWarnings": []
   },
   "naturalAutoplayCheck": {
-    "maxRunMeters": 1795,
-    "maxScoreMeters": 1595,
-    "bestSeed": 1001,
+    "maxRunMeters": 2057,
+    "maxScoreMeters": 1657,
+    "bestSeed": 1005,
     "highestTargetReached": 1000,
     "natural150kmReached": false,
     "targets": [
@@ -78,10 +78,9 @@
       3005
     ],
     "mostCommonFailure": {
-      "bike_not_cleared": 1,
-      "hole_timing_early": 24,
-      "hole_timing_late": 4,
-      "none": 1
+      "hole_timing_early": 16,
+      "hole_after_obstacle_unavoidable": 11,
+      "none": 3
     }
   },
   "longDistanceDisplayCheck": {
@@ -128,6 +127,95 @@
     "noInfinity": true,
     "payloadIntegerMeters": true
   },
+  "resultScoreCheck": {
+    "retireNonZero": true,
+    "holeNonZero": true,
+    "clampOnlyWhenNegative": true,
+    "resultScoreMatchesPScore": true,
+    "breakdownRunNonZero": true,
+    "retire": {
+      "score": 111,
+      "runMeters": 111,
+      "resultScore": "0.11km",
+      "pScore": 111,
+      "breakdown": [
+        [
+          "実走行距離",
+          "0.11km"
+        ],
+        [
+          "アイテム加算",
+          "+0.00km"
+        ],
+        [
+          "事故ペナルティ",
+          "-0.00km"
+        ],
+        [
+          "取り逃がしペナルティ",
+          "-0.00km"
+        ],
+        [
+          "事故回数",
+          "0回"
+        ]
+      ]
+    },
+    "hole": {
+      "score": 111,
+      "runMeters": 111,
+      "resultScore": "0.11km",
+      "pScore": 111,
+      "breakdown": [
+        [
+          "実走行距離",
+          "0.11km"
+        ],
+        [
+          "アイテム加算",
+          "+0.00km"
+        ],
+        [
+          "事故ペナルティ",
+          "-0.00km"
+        ],
+        [
+          "取り逃がしペナルティ",
+          "-0.00km"
+        ],
+        [
+          "事故回数",
+          "0回"
+        ]
+      ]
+    },
+    "clamp": {
+      "score": 0,
+      "resultScore": "0.00km",
+      "pScore": 0
+    },
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "holeSpacingCheck": {
+    "noTouch": true,
+    "smallLandingGround": true,
+    "noMediumLargeBackToBack": true,
+    "noLargeThenOncoming": true,
+    "natural30to60sec": true,
+    "holeTimingEarlyAbnormal": false,
+    "details": {
+      "minGap": null,
+      "touch": false,
+      "smallOk": true,
+      "mediumLargeCombo": false,
+      "largeThenOncoming": false,
+      "lastPatternName": "short_hole",
+      "holeTimingEarly": false
+    },
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
   "rankingMockCheck": {
     "payload": {
       "p_game_slug": "kiriganaito",
@@ -171,7 +259,7 @@
     "items": true,
     "accidentPenalty": true,
     "missPenalty": true,
-    "dancerEffect": false,
+    "dancerEffect": true,
     "holeWarning": true,
     "obstacleStatic": true,
     "chase15": true,

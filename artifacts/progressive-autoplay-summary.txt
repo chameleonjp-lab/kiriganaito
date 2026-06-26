@@ -6,8 +6,8 @@ Supabase遮断: fetch とランキング/送信関数をテスト内でモック
 10km到達: 不可
 30km到達: 不可
 150km自然到達: 不可
-最大到達距離: 1795m
-最大補正込みスコア: 1595m
+最大到達距離: 2057m
+最大補正込みスコア: 1657m
 最多終了理由: 穴に落ちました
 最多失敗分類: hole_timing_early
 🚴: 認識=true / ジャンプ越え=false
@@ -15,4 +15,4 @@ Supabase遮断: fetch とランキング/送信関数をテスト内でモック
 穴の⚠️表示: 描画対象に含まれる穴あり=true。ロジック上の穴矩形と警告表示の差は要目視確認。
 穴手前の🚚黒化疑い: false
 console error/warning: errors=0, warnings=0
-修正候補: recommendedFixes を参照。今回はゲーム本体を修正していない。
+修正候補: recommendedFixes を参照。今回のゲーム本体変更後の自然走行結果。
