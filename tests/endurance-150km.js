@@ -63,12 +63,9 @@ for (let step=0; step<${MAX_STEPS} && mode===MODE.PLAYING && (run.runMeters<${TA
   maxObs=Math.max(maxObs,obstacles.length); maxItems=Math.max(maxItems,items.length); maxHoles=Math.max(maxHoles,holes.length); maxParticles=Math.max(maxParticles,particles.length);
 }
 const autopilot = { mode, runMeters: Math.round(run.runMeters), scoreMeters: run.scoreMeters, reason: run.finishReason || '', accidents: run.accidents, maxDanger: run.maxDanger, maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared };
-if (mode!==MODE.PLAYING || run.runMeters<${TARGET} || run.scoreMeters<${TARGET}) {
-  startGame();
-  run.runMeters = ${TARGET}; run.bonusMeters = 1000; run.penaltyMeters = 0; run.missPenaltyMeters = 0; run.scoreMeters = Math.round(run.runMeters + run.bonusMeters);
-  updateHud();
+if (mode===MODE.PLAYING && run.runMeters>=${TARGET} && run.scoreMeters>=${TARGET}) {
+  finishGame('150km自然走行検証完了');
 }
-if (mode===MODE.PLAYING) finishGame('150km耐久検証完了');
 global.__result={autopilot, mode, runMeters:resultSnapshot.runMeters, scoreMeters:resultSnapshot.score, reason:resultSnapshot.reason, accidents:resultSnapshot.accidents, maxDanger:resultSnapshot.maxDanger, elapsedMs:resultSnapshot.elapsedMs, hudRun:el.hudRun.textContent, hudScore:el.hudScore.textContent, resultScore:el.resultScore.textContent, resultReason:el.resultReason.textContent, rankingStatus:el.rankingStatus.textContent, resultBreakdown:el.resultBreakdown.children.map(c=>c.children?.map?.(x=>x.textContent)||[]), maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared, mockSubmitPayload: global.__mockSubmitPayload, debug:el.debug.textContent};
 })();`;
   try { Function(script + appended)(); } catch(e) { ctx.consoleErrors.push(e.stack); }
