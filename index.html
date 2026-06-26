@@ -301,7 +301,7 @@
             👆 タップでジャンプ / 2段ジャンプなし<br />🕳️
             穴は無敵中でも即終了<br />💥 障害物にぶつかると -0.20km、警戒度
             +1<br />🚓 事故3回で捕まって終了<br />💰 +0.10km / 🔩 +0.03km（取り逃がし -0.05km） / ⚙️
-            +0.07km（取り逃がし -0.05km）<br />👯‍♀️ 取得で7秒間、障害物事故だけ無敵<br />🚨
+            +0.07km（取り逃がし -0.05km）<br />👯‍♀️ 取得で4秒間、障害物事故だけ無敵<br />🚨
             事故後15秒は逃走モード。見た目速度2倍、距離加算は通常です。
           </p>
           <button id="rulesBackBtn">戻る</button>
@@ -441,18 +441,23 @@
         JUMP_BUFFER_SEC: 0.12,
       };
       const SPAWN = {
-        HOLE_AFTER_OBSTACLE: 0.16,
-        OBSTACLE_AFTER_HOLE: 0.24,
-        OBSTACLE_GAP: 0.18,
-        ONCOMING_GAP: 0.36,
-        ITEM_OBSTACLE_GAP: 0.1,
-        ITEM_HOLE_GAP: 0.08,
+        HOLE_AFTER_OBSTACLE: 0.12,
+        OBSTACLE_AFTER_HOLE: 0.18,
+        OBSTACLE_GAP: 0.14,
+        ONCOMING_GAP: 0.26,
+        ITEM_OBSTACLE_GAP: 0.07,
+        ITEM_HOLE_GAP: 0.06,
+      };
+      const HOLE_TYPES = {
+        SMALL: { min: 30, max: 44, safeAfter: 0.07 },
+        MEDIUM: { min: 48, max: 66, safeAfter: 0.11 },
+        LARGE: { min: 70, max: 86, safeAfter: 0.16 },
       };
       const ITEM_TYPES = [
           { emoji: "💰", kind: "score", value: 100, missPenalty: 0 },
           { emoji: "🔩", kind: "score", value: 30, missPenalty: 50 },
           { emoji: "⚙️", kind: "score", value: 70, missPenalty: 50 },
-          { emoji: "👯‍♀️", kind: "invincible", value: 0, missPenalty: 0, duration: 7, placed: true },
+          { emoji: "👯‍♀️", kind: "invincible", value: 0, missPenalty: 0, duration: 4, placed: true },
         ],
         OBS_TYPES = [
           ["🚶", 1],
@@ -578,6 +583,7 @@
           nextObstacleAt: 0.07,
           nextHoleAt: 0.13,
           nextItemAt: 0.10,
+          nextOncomingAt: 3.0 + rand(0.22, 0.35),
           lastDangerAt: -9,
           lastHoleAt: -9,
           lastObstacleAt: -9,
@@ -747,61 +753,34 @@
         return groundY + Math.sin((x + scroll * 0.35) / 42) * 3;
       }
       function getDifficultyByKm(km) {
+        const chase = run && run.chase > 0;
         if (km < 0.5)
-          return {
-            hole: [42, 56],
-            obs: 0.12,
-            holeGap: 0.22,
-            item: 0.28,
-            types: 1,
-            oncoming: 0,
-          };
+          return { obs: chase ? 0.09 : 0.11, holeGap: chase ? 0.15 : 0.19, item: 0.26, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return {
-            hole: [48, 64],
-            obs: 0.105,
-            holeGap: 0.20,
-            item: 0.25,
-            types: 3,
-            oncoming: 0.08,
-          };
+          return { obs: chase ? 0.08 : 0.095, holeGap: chase ? 0.13 : 0.17, item: 0.24, types: 3, oncoming: 0.08, holeKinds: ["SMALL", "MEDIUM"] };
         if (km < 3)
-          return {
-            hole: [52, 72],
-            obs: 0.095,
-            holeGap: 0.18,
-            item: 0.23,
-            types: 5,
-            oncoming: 0.16,
-          };
+          return { obs: chase ? 0.07 : 0.085, holeGap: chase ? 0.12 : 0.155, item: 0.22, types: 5, oncoming: 0.16, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
-          return {
-            hole: [56, 78],
-            obs: 0.09,
-            holeGap: 0.17,
-            item: 0.22,
-            types: 5,
-            oncoming: 0.32,
-          };
-        return {
-          hole: [58, 82],
-          obs: 0.085,
-          holeGap: 0.16,
-          item: 0.21,
-          types: 5,
-          oncoming: 0.38,
-        };
+          return { obs: chase ? 0.058 : 0.073, holeGap: chase ? 0.095 : 0.13, item: chase ? 0.24 : 0.205, types: 5, oncoming: chase ? 0.55 : 0.34, holeKinds: ["SMALL", "SMALL", "SMALL", "MEDIUM"] };
+        return { obs: chase ? 0.052 : 0.066, holeGap: chase ? 0.088 : 0.118, item: chase ? 0.25 : 0.20, types: 5, oncoming: chase ? 0.62 : 0.42, holeKinds: ["SMALL", "SMALL", "MEDIUM", "LARGE"] };
       }
       function rand(a, b) {
         return a + Math.random() * (b - a);
       }
+      function nextOncomingInterval(km) {
+        if (run.chase > 0) return rand(0.10, 0.20);
+        if (km >= 5) return rand(0.16, 0.28);
+        if (km >= 3) return rand(0.22, 0.35);
+        return rand(0.55, 0.85);
+      }
       function scheduleNext(kind, km, d) {
-        const chasePad = run.chase > 0 ? 0.08 : 0;
+        const chasePad = run.chase > 0 ? 0.015 : 0;
         if (kind === "obstacle")
-          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.02, 0.07);
+          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.015, 0.045);
         if (kind === "hole")
-          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.03, 0.09);
+          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.02, 0.055);
         if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.03, 0.10);
+        if (kind === "oncoming") spawn.nextOncomingAt = km + nextOncomingInterval(km);
       }
       function canSpawnHole(km) {
         return km - spawn.lastObstacleAt > SPAWN.HOLE_AFTER_OBSTACLE;
@@ -823,31 +802,41 @@
       function spawnStuff() {
         const km = run.runMeters / 1000;
         const d = getDifficultyByKm(km);
+        const oncomingDue = km >= spawn.nextOncomingAt && km >= 0.5;
         if (
-          km >= Math.min(spawn.nextHoleAt, spawn.nextObstacleAt, spawn.nextItemAt) &&
+          (oncomingDue || km >= Math.min(spawn.nextHoleAt, spawn.nextObstacleAt, spawn.nextItemAt)) &&
           holes.length < 8 &&
           obstacles.length < MAX_OBS &&
           items.length < MAX_ITEMS
         ) {
-          const pattern = selectPatternByDifficulty(km, d);
+          const pattern = oncomingDue && canSpawnObstacle(km, 1) ? (run.chase > 0 ? "chase_oncoming" : "oncoming_safe") : selectPatternByDifficulty(km, d);
           spawnPattern(pattern, km, d);
         }
         if (km >= spawn.nextHoleAt) scheduleNext("hole", km, d);
         if (km >= spawn.nextObstacleAt) scheduleNext("obstacle", km, d);
         if (km >= spawn.nextItemAt) scheduleNext("item", km, d);
+        if (km >= spawn.nextOncomingAt) scheduleNext("oncoming", km, d);
       }
       function selectPatternByDifficulty(km, d) {
         const safeOncoming = km >= 0.5 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
+        const chase = run.chase > 0;
         const pool = [];
-        pool.push({ name: "short_hole", weight: 3 });
-        pool.push({ name: "walker", weight: km < 0.5 ? 5 : 2 });
-        pool.push({ name: "walker_coin", weight: 2 });
-        if (km >= 0.45) pool.push({ name: "hole_then_bike", weight: 2 });
-        if (km >= 1.0) pool.push({ name: "high_coin", weight: 2 });
-        if (run.chase <= 0 && km >= 1.5) pool.push({ name: "risky_gear", weight: 2 });
-        if (km >= 0.5 && safeOncoming && Math.random() < d.oncoming) pool.push({ name: "oncoming_safe", weight: km >= 3 ? 2 : 1 });
-        if (km >= 0.5) pool.push({ name: "dancer", weight: run.chase > 0 ? 1 : 0.7 });
-        if (run.chase > 0) pool.push({ name: "breather", weight: 6 });
+        pool.push({ name: km >= 0.5 ? "small_hole" : "short_hole", weight: chase ? 5 : km >= 3 ? 5 : 3 });
+        if (km >= 0.5) pool.push({ name: "medium_hole", weight: chase ? 2 : 2 });
+        if (km >= 5 && !chase) pool.push({ name: "large_hole", weight: 0.6 });
+        pool.push({ name: "walker", weight: km < 0.5 ? 5 : chase ? 3 : 2 });
+        if (km >= 0.45) pool.push({ name: "hole_then_bike", weight: chase ? 1 : 2 });
+        if (!chase && km >= 1.0) pool.push({ name: "high_coin", weight: km >= 3 ? 0.7 : 1.2 });
+        if (!chase && km >= 1.5) pool.push({ name: "risky_gear", weight: 0.7 });
+        if (km >= 1.0 && !chase) pool.push({ name: "small_hole_cash", weight: km >= 3 ? 1.5 : 0.8 });
+        if (km >= 1.5 && !chase) pool.push({ name: "bolt_before_small_hole", weight: 0.7 });
+        if (km >= 2.0 && !chase) pool.push({ name: "medium_hole_gear", weight: 0.5 });
+        if (km >= 3 && !chase && safeOncoming) pool.push({ name: "cash_before_oncoming", weight: 1.0 });
+        if (km >= 3 && !chase && safeOncoming) pool.push({ name: "cash_after_oncoming", weight: 1.0 });
+        if (km >= 0.5 && safeOncoming && Math.random() < d.oncoming) pool.push({ name: chase ? "chase_oncoming" : "oncoming_safe", weight: km >= 3 ? 3 : 1 });
+        if (km >= 0.5) pool.push({ name: "dancer", weight: chase ? 0.55 : 0.55 });
+        if (chase) pool.push({ name: "chase_small_hole", weight: 5 });
+        if (chase) pool.push({ name: "breather", weight: 1.2 });
         const total = pool.reduce((a, b) => a + b.weight, 0);
         let r = Math.random() * total;
         for (let i = 0; i < pool.length; i++) {
@@ -859,33 +848,60 @@
       function spawnPattern(pattern, km, d) {
         spawn.lastPatternName = pattern;
         if (pattern === "breather") {
-          scheduleNext("obstacle", km + 0.05, d);
-          scheduleNext("hole", km + 0.05, d);
-          return spawnItemPattern(km, d, { x: -38, high: false });
+          scheduleNext("obstacle", km + 0.02, d);
+          scheduleNext("hole", km + 0.02, d);
+          return spawnItemPattern(km, d, { x: -38, high: false, type: Math.random() < 0.7 ? "💰" : "👯‍♀️" });
         }
-        if (pattern === "short_hole" && canSpawnHole(km)) return spawnHolePattern(km, d);
+        if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "SMALL" });
+        if (pattern === "medium_hole" && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "MEDIUM" });
+        if (pattern === "large_hole" && km >= 5 && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "LARGE" });
         if (pattern === "walker" && canSpawnObstacle(km, -1)) return spawnObstaclePattern(km, d, -1, "🚶");
-        if (pattern === "walker_coin" && canSpawnObstacle(km, -1)) {
-          spawnObstaclePattern(km, d, -1, "🚶");
-          if (canSpawnItem(km + 0.12)) spawnItemPattern(km, d, { x: -88, high: true, type: "💰" });
+        if (pattern === "hole_then_bike" && canSpawnHole(km)) {
+          spawnHolePattern(km, d, { kind: "SMALL" });
+          if (canSpawnObstacle(km + 0.24, -1)) spawnObstaclePattern(km + 0.24, d, -1, "🚴", -126);
           return;
         }
-        if (pattern === "hole_then_bike" && canSpawnHole(km)) {
-          spawnHolePattern(km, d, { narrow: true });
-          if (canSpawnObstacle(km + 0.28, -1)) spawnObstaclePattern(km + 0.28, d, -1, "🚴", -126);
+        if (pattern === "small_hole_cash" && canSpawnHole(km)) {
+          spawnHolePattern(km, d, { kind: "SMALL" });
+          if (canSpawnItem(km + 0.10)) spawnItemPattern(km, d, { x: -92, high: true, type: "💰" });
+          return;
+        }
+        if (pattern === "bolt_before_small_hole" && canSpawnItem(km)) {
+          spawnItemPattern(km, d, { x: -40, high: false, type: "🔩" });
+          if (canSpawnHole(km + 0.16)) spawnHolePattern(km + 0.16, d, { kind: "SMALL", x: -132 });
+          return;
+        }
+        if (pattern === "medium_hole_gear" && canSpawnHole(km)) {
+          spawnHolePattern(km, d, { kind: "MEDIUM" });
+          if (canSpawnItem(km + 0.14)) spawnItemPattern(km, d, { x: -112, high: false, type: "⚙️" });
+          return;
+        }
+        if (pattern === "cash_before_oncoming" && canSpawnItem(km)) {
+          spawnItemPattern(km, d, { x: -44, high: false, type: "💰" });
+          if (canSpawnObstacle(km + 0.18, 1)) spawnObstaclePattern(km + 0.18, d, 1, null, -92);
+          return;
+        }
+        if (pattern === "cash_after_oncoming" && canSpawnObstacle(km, 1)) {
+          spawnObstaclePattern(km, d, 1, null, -54);
+          if (canSpawnItem(km + 0.16)) spawnItemPattern(km, d, { x: -118, high: true, type: "💰" });
           return;
         }
         if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "💰" });
         if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️" });
         if (pattern === "dancer" && km >= 0.5 && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
-        if (pattern === "oncoming_safe" && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, -54);
+        if ((pattern === "oncoming_safe" || pattern === "chase_oncoming") && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, -54);
         if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1);
       }
       function spawnHolePattern(km, d, opt = {}) {
-        const w = opt.narrow ? rand(d.hole[0], Math.min(d.hole[1], d.hole[0] + 10)) : rand(d.hole[0], d.hole[1]);
-        holes.push({ x: -w - 16, y: groundY - 6, w, h: H - groundY + 14 });
+        let kind = opt.kind || d.holeKinds[(Math.random() * d.holeKinds.length) | 0];
+        if (kind === "LARGE" && km < 5) kind = "MEDIUM";
+        const type = HOLE_TYPES[kind] || HOLE_TYPES.MEDIUM;
+        const w = rand(type.min, type.max);
+        holes.push({ x: opt.x ?? -w - 16, y: groundY - 6, w, h: H - groundY + 14, kind });
         spawn.lastHoleAt = km;
         spawn.lastDangerAt = km;
+        spawn.nextObstacleAt = Math.max(spawn.nextObstacleAt, km + type.safeAfter);
+        if (kind === "LARGE") spawn.nextOncomingAt = Math.max(spawn.nextOncomingAt, km + 0.24);
       }
       function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44) {
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
@@ -1061,10 +1077,10 @@
           let it = items[i];
           if (rects(pr, itemRect(it))) {
             if (it.kind === "invincible") {
-              run.dancerInvincible = it.duration || 7;
+              run.dancerInvincible = it.duration || 4;
               run.dancerItems++;
               burst(it.x, it.y, "#d7c7ff", 12);
-              floatText(it.x + 14, it.y - 4, "👯‍♀️無敵 7.0s", "#f4eaff");
+              floatText(it.x + 14, it.y - 4, "👯‍♀️無敵 4.0s", "#f4eaff");
               playTone(1040, 0.08, "sine");
             } else {
               run.bonusMeters += it.value;

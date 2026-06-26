@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T13:37:50.511Z",
+  "generatedAt": "2026-06-26T14:42:27.212Z",
   "finalVerdict": "WARN",
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
@@ -48,9 +48,9 @@
     "consoleWarnings": []
   },
   "naturalAutoplayCheck": {
-    "maxRunMeters": 2939,
-    "maxScoreMeters": 2447,
-    "bestSeed": 2003,
+    "maxRunMeters": 1795,
+    "maxScoreMeters": 1595,
+    "bestSeed": 1001,
     "highestTargetReached": 1000,
     "natural150kmReached": false,
     "targets": [
@@ -78,10 +78,10 @@
       3005
     ],
     "mostCommonFailure": {
-      "none": 8,
-      "hole_timing_early": 14,
-      "hole_timing_late": 5,
-      "oncoming_unavoidable": 3
+      "bike_not_cleared": 1,
+      "hole_timing_early": 24,
+      "hole_timing_late": 4,
+      "none": 1
     }
   },
   "longDistanceDisplayCheck": {
@@ -171,7 +171,7 @@
     "items": true,
     "accidentPenalty": true,
     "missPenalty": true,
-    "dancerEffect": true,
+    "dancerEffect": false,
     "holeWarning": true,
     "obstacleStatic": true,
     "chase15": true,
