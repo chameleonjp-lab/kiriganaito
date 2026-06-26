@@ -297,7 +297,7 @@ RPC 引数は共通仕様に合わせて次の形に統一します。
 - `GAME_SLUG`、`PUBLIC_URL`。リポジトリ名、slug、公開予定 URL は `kiriganaito` / `https://chameleonjp.codeberg.page/kiriganaito/` のまま維持します。ゲーム名の「ナイト」には Night の意味も含めますが、slug と URL は変更しません。
 - 既存アイテムの取得加算値、事故ペナルティ、警戒度 3 終了、穴即終了、逃走 15 秒、逃走中の距離加算通常
 - 2 段ジャンプ、ニアミスボーナス、事故なしボーナス、コンボ、新障害物、外部画像、外部音声、外部ライブラリ、PWA 化、複数ファイル化は追加していません。
-- ランキング処理、Supabase 設定、RPC パス、RPC 引数、ランキング送信 payload、ランキング取得 payload、ランキング表示のデータ構造は変更しません。`resultSnapshot.score` には新しいスコア計算式で確定した整数メートル値を入れます。
+- Supabase URL、Publishable key、RPC パス、RPC 引数、ランキング送信値、ランキング取得 payload、ランキング表示の基本データ構造は変更しません。`resultSnapshot.score` には新しいスコア計算式で確定した整数メートル値を入れ、通信失敗時の記録消失を防ぐため、localStorage の pending queue とランキング再送処理を追加しています。
 
 ## 11.3 背景表示
 
@@ -492,4 +492,4 @@ Web Share API が使える場合は使い、使えない場合はクリップボ
 
 - 基本ルール、穴即終了、警戒度 3 で終了、2 段ジャンプなしは変更していません。
 - スコア計算式、事故ペナルティ、各アイテムの加算・取り逃がしペナルティ、👯‍♀️ の 7 秒無敵は変更していません。
-- Supabase 設定、RPC 引数、ランキング送信 payload、ランキング取得 payload、ランキング関数、ゲーム slug、公開 URL は変更していません。
+- Supabase URL、Publishable key、RPC 引数、ランキング送信値、ランキング取得 payload、ランキング表示の基本データ構造、ゲーム slug、公開 URL は変更していません。ただし、通信失敗時の記録消失を防ぐため、localStorage の pending queue とランキング再送処理を追加しています。
