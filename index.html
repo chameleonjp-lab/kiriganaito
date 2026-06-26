@@ -301,7 +301,7 @@
             👆 タップでジャンプ / 2段ジャンプなし<br />🕳️
             穴は無敵中でも即終了<br />💥 障害物にぶつかると -0.20km、警戒度
             +1<br />🚓 事故3回で捕まって終了<br />💰 +0.10km / 🔩 +0.03km（取り逃がし -0.05km） / ⚙️
-            +0.07km（取り逃がし -0.05km）<br />👯‍♀️ 取得で7秒間、障害物事故だけ無敵<br />🚨
+            +0.07km（取り逃がし -0.05km）<br />👯 取得で7秒間、障害物事故だけ無敵<br />🚨
             事故後15秒は逃走モード。見た目速度2倍、距離加算は通常です。
           </p>
           <button id="rulesBackBtn">戻る</button>
@@ -423,7 +423,9 @@
         MISS_TRIGGER_OFFSET = 12,
         VISUAL_SCROLL_SPEED = 180,
         CHASE_VISUAL_SCROLL_MULT = 2,
-        SAME_DIRECTION_MIN_REL_PX = 96,
+        STATIC_OBSTACLE_SCROLL_PX = BASE_SPEED * 55,
+        DANCER_PLACE_SCROLL_MULT = 0.55,
+        DANCER_SIZE = 36,
         BIKE_SHRINK_TOP_EXTRA = 4,
         JUMP_APEX_HEIGHT = JUMP_POWER * JUMP_POWER / (2 * GRAVITY);
       const HIT = {
@@ -450,7 +452,7 @@
           { emoji: "💰", kind: "score", value: 100, missPenalty: 0 },
           { emoji: "🔩", kind: "score", value: 30, missPenalty: 50 },
           { emoji: "⚙️", kind: "score", value: 70, missPenalty: 50 },
-          { emoji: "👯‍♀️", kind: "invincible", value: 0, missPenalty: 0, duration: 7 },
+          { emoji: "👯", kind: "invincible", value: 0, missPenalty: 0, duration: 7, placed: true },
         ],
         OBS_TYPES = [
           ["🚶", 1],
@@ -573,9 +575,9 @@
           lastAccidentKm: -1,
         };
         spawn = {
-          nextObstacleAt: 0.18,
-          nextHoleAt: 0.28,
-          nextItemAt: 0.22,
+          nextObstacleAt: 0.07,
+          nextHoleAt: 0.13,
+          nextItemAt: 0.10,
           lastDangerAt: -9,
           lastHoleAt: -9,
           lastObstacleAt: -9,
@@ -748,46 +750,46 @@
         if (km < 0.5)
           return {
             hole: [42, 56],
-            obs: 0.22,
-            holeGap: 0.3,
-            item: 0.34,
+            obs: 0.12,
+            holeGap: 0.22,
+            item: 0.28,
             types: 1,
             oncoming: 0,
           };
         if (km < 1.5)
           return {
             hole: [48, 64],
-            obs: 0.2,
-            holeGap: 0.28,
-            item: 0.3,
+            obs: 0.105,
+            holeGap: 0.20,
+            item: 0.25,
             types: 3,
             oncoming: 0.08,
           };
         if (km < 3)
           return {
             hole: [52, 72],
-            obs: 0.18,
-            holeGap: 0.26,
-            item: 0.28,
+            obs: 0.095,
+            holeGap: 0.18,
+            item: 0.23,
             types: 5,
             oncoming: 0.16,
           };
         if (km < 5)
           return {
             hole: [56, 78],
-            obs: 0.17,
-            holeGap: 0.24,
-            item: 0.27,
+            obs: 0.09,
+            holeGap: 0.17,
+            item: 0.22,
             types: 5,
-            oncoming: 0.36,
+            oncoming: 0.32,
           };
         return {
           hole: [58, 82],
-          obs: 0.16,
-          holeGap: 0.23,
-          item: 0.26,
+          obs: 0.085,
+          holeGap: 0.16,
+          item: 0.21,
           types: 5,
-          oncoming: 0.42,
+          oncoming: 0.38,
         };
       }
       function rand(a, b) {
@@ -796,10 +798,10 @@
       function scheduleNext(kind, km, d) {
         const chasePad = run.chase > 0 ? 0.08 : 0;
         if (kind === "obstacle")
-          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.04, 0.16);
+          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.02, 0.07);
         if (kind === "hole")
-          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.06, 0.18);
-        if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.04, 0.18);
+          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.03, 0.09);
+        if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.03, 0.10);
       }
       function canSpawnHole(km) {
         return km - spawn.lastObstacleAt > SPAWN.HOLE_AFTER_OBSTACLE;
@@ -875,7 +877,7 @@
         }
         if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "💰" });
         if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️" });
-        if (pattern === "dancer" && km >= 0.5 && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
+        if (pattern === "dancer" && km >= 0.5 && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯" });
         if (pattern === "oncoming_safe" && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, -54);
         if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1);
       }
@@ -914,18 +916,24 @@
         if (run.chase > 0 && t.missPenalty && !opt.type && Math.random() < 0.82) {
           t = ITEM_TYPES[Math.random() < 0.75 ? 0 : 3];
         }
-        const risky = opt.high ?? (km > 1.5 && Math.random() < (run.chase > 0 ? 0.18 : 0.35));
+        const isDancer = t.kind === "invincible";
+        const risky = !isDancer && (opt.high ?? (km > 1.5 && Math.random() < (run.chase > 0 ? 0.18 : 0.35)));
+        const itemY = isDancer
+          ? groundY - 34
+          : groundY - (risky ? ITEM_HEIGHT_HIGH : ITEM_HEIGHT_SAFE) - Math.random() * ITEM_HEIGHT_RANDOM;
         items.push({
           x: opt.x ?? -36,
-          y: groundY - (risky ? ITEM_HEIGHT_HIGH : ITEM_HEIGHT_SAFE) - Math.random() * ITEM_HEIGHT_RANDOM,
+          y: itemY,
           emoji: t.emoji,
           kind: t.kind,
           value: t.value,
           missPenalty: t.missPenalty,
           duration: t.duration || 0,
+          placed: Boolean(t.placed || isDancer),
+          speedMult: isDancer ? DANCER_PLACE_SCROLL_MULT : 1,
           missed: false,
-          w: 28,
-          h: 28,
+          w: isDancer ? 32 : 28,
+          h: isDancer ? 32 : 28,
           active: true,
         });
       }
@@ -939,13 +947,16 @@
           let relPx =
             o.direction === 1
               ? (BASE_SPEED + o.speed) * 42
-              : Math.max(SAME_DIRECTION_MIN_REL_PX, (BASE_SPEED - o.speed) * 42);
+              : STATIC_OBSTACLE_SCROLL_PX;
           o.x += relPx * (run.chase > 0 ? CHASE_MULT : 1) * dt;
           if (o.x > W + 70 || !o.active) obstacles.splice(i, 1);
         }
         for (let i = items.length - 1; i >= 0; i--) {
           let it = items[i];
-          it.x += move;
+          const itemMove = it.placed
+            ? BASE_SPEED * 55 * (it.speedMult || DANCER_PLACE_SCROLL_MULT) * dt
+            : move;
+          it.x += itemMove;
           if (shouldApplyMissPenalty(it)) applyMissPenalty(it);
           if (it.x > W + 50) {
             items.splice(i, 1);
@@ -1053,7 +1064,7 @@
               run.dancerInvincible = it.duration || 7;
               run.dancerItems++;
               burst(it.x, it.y, "#d7c7ff", 12);
-              floatText(it.x + 14, it.y - 4, "👯‍♀️無敵 7.0s", "#f4eaff");
+              floatText(it.x + 14, it.y - 4, "👯無敵 7.0s", "#f4eaff");
               playTone(1040, 0.08, "sine");
             } else {
               run.bonusMeters += it.value;
@@ -1173,9 +1184,9 @@
         ctx.moveTo(0, getGroundY(0));
         for (let x = 0; x <= W; x += 16) ctx.lineTo(x, getGroundY(x));
         ctx.stroke();
-        ctx.fillStyle = "#0b0d14";
         for (let i = 0; i < holes.length; i++) {
           let h = holes[i];
+          ctx.save();
           const g = ctx.createLinearGradient(h.x, h.y, h.x, h.y + 42);
           g.addColorStop(0, "#17100e");
           g.addColorStop(1, "#02030a");
@@ -1189,15 +1200,45 @@
           ctx.moveTo(h.x + 4, h.y + 3);
           ctx.lineTo(h.x + h.w - 4, h.y + 3);
           ctx.stroke();
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = h.w < 50 ? "17px serif" : "20px serif";
+          ctx.globalAlpha = 0.92;
+          ctx.fillStyle = "#ffe77a";
+          ctx.fillText("⚠️", h.x + h.w / 2, h.y + 18);
+          ctx.restore();
         }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+        ctx.filter = "none";
+        ctx.globalCompositeOperation = "source-over";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "30px serif";
         for (let i = 0; i < items.length; i++) {
+          const it = items[i];
           ctx.save();
-          ctx.shadowColor = "rgba(255,255,210,0.75)";
-          ctx.shadowBlur = 8;
-          ctx.fillText(items[i].emoji, items[i].x + 14, items[i].y + 14);
+          if (it.kind === "invincible") {
+            ctx.globalAlpha = 0.82;
+            ctx.strokeStyle = "rgba(234,219,255,0.78)";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.ellipse(it.x + 16, it.y + 17, 23, 20, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.font = "700 10px system-ui";
+            ctx.fillStyle = "rgba(244,234,255,0.95)";
+            ctx.fillText("無敵", it.x + 16, it.y - 8);
+            ctx.globalAlpha = 1;
+            ctx.font = DANCER_SIZE + "px serif";
+            ctx.shadowColor = "rgba(215,199,255,0.82)";
+            ctx.shadowBlur = 10;
+            ctx.fillText(it.emoji, it.x + 16, it.y + 16);
+          } else {
+            ctx.font = "30px serif";
+            ctx.shadowColor = "rgba(255,255,210,0.75)";
+            ctx.shadowBlur = 8;
+            ctx.fillText(it.emoji, it.x + 14, it.y + 14);
+          }
           ctx.restore();
         }
         ctx.font = "32px serif";
@@ -1236,6 +1277,11 @@
           ctx.stroke();
           ctx.restore();
         }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+        ctx.filter = "none";
+        ctx.globalCompositeOperation = "source-over";
         ctx.font = "42px serif";
         ctx.globalAlpha =
           player.inv > 0 ? 0.55 + Math.sin(run.elapsed * 40) * 0.25 : 1;
@@ -1340,10 +1386,10 @@
         el.playStatus.textContent =
           run.chase > 0
             ? run.dancerInvincible > 0
-              ? "🚨" + run.chase.toFixed(1) + "s  👯‍♀️" + run.dancerInvincible.toFixed(1) + "s"
+              ? "🚨" + run.chase.toFixed(1) + "s  👯" + run.dancerInvincible.toFixed(1) + "s"
               : "🚨" + run.chase.toFixed(1) + "s"
             : run.dancerInvincible > 0
-              ? "👯‍♀️" + run.dancerInvincible.toFixed(1) + "s"
+              ? "👯" + run.dancerInvincible.toFixed(1) + "s"
               : run.escapedFlash > 0
               ? "逃げ切り"
               : "タップでジャンプ";
