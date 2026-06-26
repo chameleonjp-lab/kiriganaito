@@ -1,0 +1,193 @@
+{
+  "generatedAt": "2026-06-26T13:37:50.511Z",
+  "finalVerdict": "WARN",
+  "supabaseMocked": true,
+  "realSupabaseSubmission": false,
+  "staticCheck": {
+    "indexExists": true,
+    "specExists": true,
+    "noPublicScores": true,
+    "noServiceRole": true,
+    "noSecretKey": true,
+    "supabaseUrlPublic": true,
+    "publishableKeyOnly": true,
+    "pendingKey": true,
+    "legacyKeyPresent": true,
+    "dancerConsistent": true,
+    "warningDrawn": true,
+    "dancerPatternInSpec": true,
+    "scoreFormulaImpl": true,
+    "scoreFormulaSpec": true,
+    "noDoubleJump": true,
+    "noProd150DirectAssign": true
+  },
+  "screenFlowCheck": {
+    "homeDisplayed": true,
+    "rulesDisplayed": true,
+    "nameRequiredBlocked": true,
+    "nameLengthBlocked": true,
+    "started": true,
+    "jumpWorked": true,
+    "noDoubleJump": true,
+    "retireToResult": true,
+    "resultStops": true,
+    "againInitializes": true,
+    "horizontalScroll320": true,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "gameLogicCheck": {
+    "jumpBufferSettable": true,
+    "jumpVyUp": true,
+    "noDoubleJump": true,
+    "coyoteWorks": true,
+    "jumpBufferWorks": true,
+    "holeEndsEvenInvincible": true,
+    "scoreFormulaExample": "0.85km",
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "naturalAutoplayCheck": {
+    "maxRunMeters": 2939,
+    "maxScoreMeters": 2447,
+    "bestSeed": 2003,
+    "highestTargetReached": 1000,
+    "natural150kmReached": false,
+    "targets": [
+      1000,
+      5000,
+      10000,
+      30000,
+      150000
+    ],
+    "seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      3001,
+      3002,
+      3003,
+      3004,
+      3005
+    ],
+    "mostCommonFailure": {
+      "none": 8,
+      "hole_timing_early": 14,
+      "hole_timing_late": 5,
+      "oncoming_unavoidable": 3
+    }
+  },
+  "longDistanceDisplayCheck": {
+    "displayOnlyDirectAssignment": true,
+    "values": [
+      {
+        "v": 150000,
+        "hudRun": "150.00km",
+        "hudScore": "150.00km",
+        "resultScore": "150.00km",
+        "payload": {
+          "p_game_slug": "kiriganaito",
+          "p_display_name": "LONG",
+          "p_score": 150000,
+          "p_client_version": "kiriganaito-2026-06-25-v1"
+        }
+      },
+      {
+        "v": 999990,
+        "hudRun": "999.99km",
+        "hudScore": "999.99km",
+        "resultScore": "999.99km",
+        "payload": {
+          "p_game_slug": "kiriganaito",
+          "p_display_name": "LONG",
+          "p_score": 999990,
+          "p_client_version": "kiriganaito-2026-06-25-v1"
+        }
+      },
+      {
+        "v": 1000000,
+        "hudRun": "1000.00km",
+        "hudScore": "1000.00km",
+        "resultScore": "1000.00km",
+        "payload": {
+          "p_game_slug": "kiriganaito",
+          "p_display_name": "LONG",
+          "p_score": 1000000,
+          "p_client_version": "kiriganaito-2026-06-25-v1"
+        }
+      }
+    ],
+    "noNaN": true,
+    "noInfinity": true,
+    "payloadIntegerMeters": true
+  },
+  "rankingMockCheck": {
+    "payload": {
+      "p_game_slug": "kiriganaito",
+      "p_display_name": "RANK",
+      "p_score": 1234,
+      "p_client_version": "kiriganaito-2026-06-25-v1"
+    },
+    "pScoreInteger": true,
+    "usesSubmitRpc": true,
+    "noDirectInsert": true,
+    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-06-25-v1\"}]",
+    "pendingKey": "kiriganaito_pending_scores_v1",
+    "retryButtonVisible": true,
+    "realSupabaseSubmission": false,
+    "requests": [
+      {
+        "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+      },
+      {
+        "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/submit_score",
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-06-25-v1\"}"
+      }
+    ]
+  },
+  "mobileUiCheck": {
+    "playwrightUsed": false,
+    "reason": "Playwright は package 未導入で npx playwright が npm E403 のため利用不可。NodeハーネスとCSS静的検査で代替。",
+    "viewports": [
+      "320x568",
+      "375x812",
+      "430x932"
+    ],
+    "noOverflowCss": true,
+    "maxAppWidth": true,
+    "canvasResponsive": true,
+    "buttonMinHeight": true,
+    "screenshotsCreated": false
+  },
+  "specConsistencyCheck": {
+    "items": true,
+    "accidentPenalty": true,
+    "missPenalty": true,
+    "dancerEffect": true,
+    "holeWarning": true,
+    "obstacleStatic": true,
+    "chase15": true,
+    "pendingQueue": true,
+    "legacyMigration": true,
+    "noOldCoin": true,
+    "noOldDancer": true
+  },
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "criticalIssues": [],
+  "warnings": [
+    "Playwright は package 未導入で npx playwright が npm E403 のため利用不可。NodeハーネスとCSS静的検査で代替。"
+  ],
+  "recommendedFixes": [
+    "Playwright利用可能環境で実機相当スクリーンショットを再取得する。",
+    "自然走行オートプレイの失敗分類が偏る場合は、穴・障害物複合配置の余白を人間プレイで再確認する。"
+  ]
+}
