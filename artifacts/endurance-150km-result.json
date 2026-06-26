@@ -1,64 +1,44 @@
 {
-  "generatedAt": "2026-06-26T10:17:44.519Z",
+  "generatedAt": "2026-06-26T12:38:19.614Z",
   "targetMeters": 150000,
-  "seed": 150001,
+  "seed": 150003,
   "result": {
     "autopilot": {
       "mode": "RESULT",
-      "runMeters": 785,
-      "scoreMeters": 885,
+      "runMeters": 2140,
+      "scoreMeters": 2340,
       "reason": "穴に落ちました",
       "accidents": 0,
       "maxDanger": 0,
       "maxObs": 1,
       "maxItems": 1,
-      "maxHoles": 1,
+      "maxHoles": 2,
       "maxParticles": 15,
-      "sawDancer": true,
-      "dancerInv": true,
+      "sawDancer": false,
+      "dancerInv": false,
       "sawBike": true,
-      "bikeCleared": false
+      "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 150000,
-    "scoreMeters": 151000,
-    "reason": "150km耐久検証完了",
+    "runMeters": 2140,
+    "scoreMeters": 2340,
+    "reason": "穴に落ちました",
     "accidents": 0,
     "maxDanger": 0,
-    "elapsedMs": 0,
-    "hudRun": "150.00km",
-    "hudScore": "151.00km",
-    "resultScore": "151.00km",
-    "resultReason": "終了理由：150km耐久検証完了",
+    "elapsedMs": 59433,
+    "hudRun": "2.14km",
+    "hudScore": "2.34km",
+    "resultScore": "2.34km",
+    "resultReason": "終了理由：穴に落ちました。足元確認、大事です。",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "実走行距離",
-        "0.79km"
+        "2.14km"
       ],
       [
         "アイテム加算",
-        "+0.10km"
-      ],
-      [
-        "事故ペナルティ",
-        "-0.00km"
-      ],
-      [
-        "取り逃がしペナルティ",
-        "-0.00km"
-      ],
-      [
-        "事故回数",
-        "0回"
-      ],
-      [
-        "実走行距離",
-        "150.00km"
-      ],
-      [
-        "アイテム加算",
-        "+1.00km"
+        "+0.20km"
       ],
       [
         "事故ペナルティ",
@@ -75,16 +55,16 @@
     ],
     "maxObs": 1,
     "maxItems": 1,
-    "maxHoles": 1,
+    "maxHoles": 2,
     "maxParticles": 15,
-    "sawDancer": true,
-    "dancerInv": true,
+    "sawDancer": false,
+    "dancerInv": false,
     "sawBike": true,
-    "bikeCleared": false,
+    "bikeCleared": true,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 151000,
+      "p_score": 2340,
       "p_client_version": "kiriganaito-2026-06-25-v1"
     },
     "debug": ""
