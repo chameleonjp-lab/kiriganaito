@@ -1,71 +1,71 @@
 {
-  "generatedAt": "2026-06-26T15:32:09.098Z",
+  "generatedAt": "2026-06-26T21:02:23.133Z",
   "targetMeters": 150000,
-  "seed": 150002,
+  "seed": 150005,
   "result": {
     "autopilot": {
       "mode": "RESULT",
-      "runMeters": 3978,
-      "scoreMeters": 4158,
+      "runMeters": 8710,
+      "scoreMeters": 9010,
       "reason": "穴に落ちました",
-      "accidents": 0,
-      "maxDanger": 0,
+      "accidents": 2,
+      "maxDanger": 2,
       "maxObs": 1,
       "maxItems": 2,
       "maxHoles": 2,
-      "maxParticles": 20,
-      "sawDancer": true,
-      "dancerInv": true,
+      "maxParticles": 31,
+      "sawDancer": false,
+      "dancerInv": false,
       "sawBike": true,
       "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 3978,
-    "scoreMeters": 4158,
+    "runMeters": 8710,
+    "scoreMeters": 9010,
     "reason": "穴に落ちました",
-    "accidents": 0,
-    "maxDanger": 0,
-    "elapsedMs": 101583,
-    "hudRun": "3.97km",
-    "hudScore": "4.15km",
-    "resultScore": "4.16km",
+    "accidents": 2,
+    "maxDanger": 2,
+    "elapsedMs": 222450,
+    "hudRun": "8.71km",
+    "hudScore": "9.01km",
+    "resultScore": "9.01km",
     "resultReason": "終了理由：穴に落ちました。足元確認、大事です。",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "実走行距離",
-        "3.98km"
+        "8.71km"
       ],
       [
         "アイテム加算",
-        "+0.43km"
+        "+0.90km"
       ],
       [
         "事故ペナルティ",
-        "-0.00km"
+        "-0.40km"
       ],
       [
         "取り逃がしペナルティ",
-        "-0.25km"
+        "-0.20km"
       ],
       [
         "事故回数",
-        "0回"
+        "<strong>2回</strong>"
       ]
     ],
     "maxObs": 1,
     "maxItems": 2,
     "maxHoles": 2,
-    "maxParticles": 20,
-    "sawDancer": true,
-    "dancerInv": true,
+    "maxParticles": 31,
+    "sawDancer": false,
+    "dancerInv": false,
     "sawBike": true,
     "bikeCleared": true,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 4158,
-      "p_client_version": "kiriganaito-2026-06-25-v1"
+      "p_score": 9010,
+      "p_client_version": "kiriganaito-2026-06-26-v2-result-density"
     },
     "debug": ""
   },

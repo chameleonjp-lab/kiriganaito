@@ -78,7 +78,7 @@
 - 表示形式: `0.00km`
 - 内部送信値: 整数メートル
 - 高い方がよいベストスコア型
-- 結果画面の最終スコアとランキング送信値は、従来通り補正込みスコアを使います。
+- 結果画面の最終スコアとランキング送信値は、従来通り補正込みスコアを使います。結果画面の大きなスコア、`resultSnapshot.score`、ランキング RPC の `p_score` は必ず一致させます。
 
 計算式:
 
@@ -95,6 +95,7 @@
 - 逃走中も距離加算は通常のままです。見た目や接近速度だけ 2 倍になります。
 - 見た目専用スクロールを速くしても、実走行距離や補正込みスコアの加算速度は変えません。
 - 結果確定後にスコアは変えません。
+- プレイ中は `run.maxRunMeters` / `run.lastNonZeroRunMeters` 相当の最大実走行距離を保持し、穴落ちやリタイアの直前に `run.runMeters` が古い値や 0 に戻っても、実際に走った最大距離を最終実走行距離として結果へ固定します。`run.elapsed > 1` 秒なのに結果スコアが 0 のままになる状態は異常としてテストで検出します。
 
 ## 6. 障害物仕様
 
@@ -114,22 +115,22 @@
 - 🚴 は 1 回ジャンプで越えられるよう、静止物としてスクロールさせることに加えて上側の当たり判定を見た目と大きくズレない範囲で数 px だけ低くします。🚴 を無害化したり、すり抜けにしたりはしません。
 - 対向障害物のみ正面から向かってくる高い接近速度を使います。
 - 同じ障害物で連続減点しないよう、衝突した障害物は非アクティブ化します。
-- 距離に応じて、🚶、🏃🏻、🚴、🛵、🚗、対向障害物の順で増やします。
+- 距離に応じて、🚶、🏃🏻、🚴、🛵、🚗、対向障害物の順で増やします。今回の緊急調整では障害物予定間隔を従来比おおむね 0.33〜0.45 倍へ短縮し、60 秒相当の自然走行で障害物出現数が約 3 倍になることを狙います。
 
 
 ## 6.1 出現ロジックと難易度上昇
 
-出現は毎フレーム乱数だけに頼らず、距離ベースの予定値で管理します。通常走行の `BASE_SPEED` は `4` から `4.35`、背景の `VISUAL_SCROLL_SPEED` は `180` から `200` へ上げ、ランキング上は同じ式のまま距離加算ペースが約 8.75% 上がることを許容します。
+出現は毎フレーム乱数だけに頼らず、距離ベースの予定値で管理します。通常走行の `BASE_SPEED` は `4.35` を維持し、🚚の体感速度は前回調整より少し速い状態を維持します。背景の `VISUAL_SCROLL_SPEED` は `200` で、ランキング上は同じスコア式のままです。
 
 - `nextObstacleAt`、`nextHoleAt`、`nextItemAt` で次の出現距離を管理します。初期予定は `0.07km`、`0.13km`、`0.10km` として開始直後の待ち時間を短くします。
 - `lastDangerAt`、`lastHoleAt`、`lastHoleKind`、`lastObstacleAt`、`lastOncomingAt` で直近の危険配置を記録します。
 - 逃走中は見た目速度が 2 倍になるため、何もない時間を減らしつつ、穴直後・対向障害物直後の最低限の逃げ場は維持します。
-- `nextOncomingAt` で対向障害物候補の距離も管理します。0.50〜1.50km は約 `0.38〜0.62km`、1.50〜3.00km は約 `0.28〜0.48km`、3.00〜5.00km は約 `0.18〜0.30km`、5.00km 以降は約 `0.14〜0.24km`、逃走中は約 `0.09〜0.16km` ごとに候補を作り、安全距離が足りなければ延期します。
+- `nextOncomingAt` で対向障害物候補の距離も管理します。0.50〜1.50km は約 `0.38〜0.62km`、1.50〜3.00km は約 `0.28〜0.48km`、3.00〜5.00km は約 `0.18〜0.30km`、5.00km 以降は約 `0.14〜0.24km`、逃走中は約 `0.09〜0.16km` ごとに候補を作り、安全距離が足りなければ延期します。対向障害物の選択重みも上げますが、視認不能な速度や大穴直後の対向は避けます。
 - `spawnStuff()` は直接巨大化させず、`selectPatternByDifficulty(km, d)` と `spawnPattern(pattern, km, d)` で短い配置パターンを選んでから生成します。
-- パターン名は DEBUG 時に表示できます。現在の主なパターンは `short_hole`、`small_hole`、`medium_hole`、`large_hole`、`walker`、`hole_then_bike`、`high_coin`、`risky_gear`、`oncoming_safe`、`breather`、`dancer`、`small_hole_cash`、`cash_before_oncoming`、`cash_after_oncoming`、`bolt_before_small_hole`、`medium_hole_gear`、`chase_small_hole`、`chase_oncoming` です。🚶→💰 の固定報酬セットは削除済みのままです。
+- パターン名は DEBUG 時に表示できます。現在の主なパターンは `short_hole`、`small_hole`、`medium_hole`、`large_hole`、`walker`、`hole_then_bike`、`high_coin`、`risky_gear`、`oncoming_safe`、`breather`、`dancer`、`small_hole_cash`、`cash_before_oncoming`、`cash_after_oncoming`、`bolt_before_small_hole`、`medium_hole_gear`、`chase_small_hole`、`chase_oncoming` です。歩行者から固定の報酬へつなぐ旧セットは削除済みのままです。
 - 序盤 `0.50km` 未満では対向障害物を出しません。
-- 0.50km 以降から障害物・穴・アイテム・対向候補の出現間隔を短くして空白時間を減らします。3.00km 以降はさらに密度を上げ、常に次の判断が見えやすいテンポにします。ただし、穴同士、穴と障害物、対向障害物同士、アイテムと危険物の最低距離は維持し、避けられない配置は禁止します。
-- 逃走中は `breather` パターンの比率を下げ、`chase_small_hole` と `chase_oncoming` を増やします。`risky_gear` は自然選択しません。ランダムアイテムも 🔩・⚙️ のような取り逃がしペナルティ付きアイテムを抑え、逃走中の主目的を「生き残る」ことにします。
+- 0.50km 以降から障害物・穴・アイテム・対向候補の出現間隔を短くして空白時間を減らします。今回の緊急調整では穴予定間隔を従来比おおむね 0.5〜0.65 倍へ短縮し、小穴系パターンの重みを増やして穴出現数を約 2 倍にします。3.00km 以降はさらに密度を上げ、常に次の判断が見えやすいテンポにします。ただし、穴同士、穴と障害物、対向障害物同士、アイテムと危険物の最低距離は維持し、避けられない配置は禁止します。
+- 逃走中は `breather` パターンの比率を下げ、`chase_small_hole` と `chase_oncoming` を増やします。`risky_gear` は自然選択しません。ランダムアイテムも 🔩・⚙️ のような取り逃がしペナルティ付きアイテムを抑え、逃走中の主目的を「生き残る」ことにします。👯‍♀️ は出しすぎないよう、`dancer` 重みと `breather` 内の抽選確率を前回比で約半分にします。
 
 | 距離 | 内容 |
 | --- | --- |
@@ -224,7 +225,7 @@
 - 🔩 と ⚙️ は、🚚を通り過ぎた直後（`player.x + player.w + 12` を超えた時点）で active かつ未取得なら、1個につき 1 回だけ取り逃がしペナルティ -50m を加えます。画面右端まで待たずに、プレイヤーの近くへ `-0.05km` を表示します。事故回数、警戒度、逃走モード、🚓 表示は増やしません。
 - 💰 と 👯‍♀️ は取り逃がしても減点しません。
 - 👯‍♀️ を取得すると 4 秒間だけ障害物事故に対して無敵になり、障害物に当たっても事故ペナルティ、警戒度上昇、逃走モード移行は発生しません。
-- 👯‍♀️ はスコア加算なし、スコア減点なしです。序盤 0.50km 未満では出さず、0.50km 以降に低確率で出します。描画時は少し大きくし、薄い輪と「無敵」ラベルで認識しやすくします。
+- 👯‍♀️ はスコア加算なし、スコア減点なしです。序盤 0.50km 未満では出さず、0.50km 以降に低確率で出します。今回の緊急調整では出現頻度を前回比で約半分にしましたが、取得効果は 4 秒間のまま維持します。描画時は少し大きくし、薄い輪と「無敵」ラベルで認識しやすくします。
 - 👯‍♀️ 無敵中でも穴に落ちた場合は即終了します。穴即終了仕様は変更しません。
 
 
@@ -273,7 +274,7 @@
 
 Supabase URL は正式な公開用 URL `https://mlpnjgezrnhdxsxolyzj.supabase.co` を設定しています。Publishable key はユーザー指定の Publishable key のみを使い、secret key、service_role key、管理者用キーは書きません。`SUPABASE_URL` と `SUPABASE_PUBLISHABLE_KEY` の両方がある場合だけ Supabase 接続可能として扱います。
 
-結果詳細の `score`、`runMeters`、`bonusMeters`、`penaltyMeters`、`missPenaltyMeters`、`accidents`、`items`、`elapsedMs`、`finishReason`、`maxDanger` は `resultSnapshot` 内に保持します。結果画面の大きなスコアは `resultSnapshot.score` の補正込みスコアを表示し、ランキング送信値 `p_score` も同じ値に一致させます。補正込みスコアは `calculateFinalScoreMeters()` で 0 未満にクランプし、`NaNkm`、`Infinitykm`、実走行距離があるのに常時 `0.00km` になる表示を禁止します。結果画面には実走行距離、アイテム加算、事故ペナルティ、取り逃がしペナルティ、事故回数を毎回作り直して表示します。ただし、現在確認できている共通 `submit_score` RPC には metadata 引数を送らず、存在しない引数による RPC 失敗を避けます。
+結果詳細の `score`、`runMeters`、`bonusMeters`、`penaltyMeters`、`missPenaltyMeters`、`accidents`、`items`、`elapsedMs`、`finishReason`、`maxDanger` は `resultSnapshot` 内に保持します。`resultSnapshot` を結果表示・ランキング送信の唯一のソースとします。結果画面の大きなスコアは必ず `resultSnapshot.score` の補正込みスコアを表示し、ランキング送信値 `p_score` も同じ値に一致させます。補正込みスコアは `calculateFinalScoreMeters()` で 0 未満にクランプし、`NaNkm`、`Infinitykm`、実走行距離があるのに常時 `0.00km` になる表示を禁止します。結果画面には実走行距離、アイテム加算、事故ペナルティ、取り逃がしペナルティ、事故回数を毎回作り直して表示します。ただし、現在確認できている共通 `submit_score` RPC には metadata 引数を送らず、存在しない引数による RPC 失敗を避けます。
 
 RPC は後から直しやすいよう、`sendScoreAfterResult(result)`、`submitScoreToSupabase(payload)`、`fetchBestRanking()`、`fetchPlayStats()`、`renderRanking()` に分離しています。送信は `game_scores` への直接 insert ではなく、共通仕様の `/rest/v1/rpc/submit_score` を呼びます。取得は `/rest/v1/rpc/get_best_score_ranking` と `/rest/v1/rpc/get_game_play_stats` です。Supabase URL または Publishable key が未設定の場合は通信せず「ランキング連携：設定後に有効になります」と表示します。
 
@@ -289,7 +290,7 @@ RPC 引数は共通仕様に合わせて次の形に統一します。
   - `p_game_slug`: `kiriganaito`
   - `p_display_name`: プレイヤー名
   - `p_score`: 結果確定時の整数メートルスコア
-  - `p_client_version`: `kiriganaito-2026-06-25-v1`
+  - `p_client_version`: `kiriganaito-2026-06-26-v2-result-density`
 - `/rest/v1/rpc/get_best_score_ranking`
   - `p_game_slug`: `kiriganaito`
   - `p_limit`: `10`
@@ -305,11 +306,12 @@ RPC 引数は共通仕様に合わせて次の形に統一します。
 
 1. すでに `PLAYING` でなければ何もしません。
 2. `mode` を `RESULT` にします。
-3. `calculateFinalScoreMeters()` で補正込みの `finalScore` と終了理由を固定します。
-4. 結果画面用の `resultSnapshot` を唯一の結果ソースとして作成します。
-5. 結果画面を表示します。
-6. ランキング送信を 1 回だけ開始します。
-7. ランキング取得を行います。
+3. `getFinalRunMeters()` 相当で `run.runMeters`、`run.maxRunMeters`、`run.lastNonZeroRunMeters` の最大値を丸め、穴落ちや表示切替直前の 0 戻りを防いだ最終実走行距離を固定します。
+4. `calculateFinalScoreMeters()` で補正込みの `finalScore` と終了理由を固定します。
+5. 結果画面用の `resultSnapshot` を唯一の結果ソースとして作成します。
+6. 結果画面を表示します。
+7. ランキング送信を 1 回だけ開始します。
+8. ランキング取得を行います。
 
 結果画面後はプレイヤー更新、障害物更新、アイテム更新、パーティクル更新、穴更新、距離加算、逃走時間更新、当たり判定、タイマー更新を再開しません。`requestAnimationFrame` は 1 本だけにし、`RESULT` では再予約しません。リトライ時は `resetState()` で前回状態を初期化します。
 

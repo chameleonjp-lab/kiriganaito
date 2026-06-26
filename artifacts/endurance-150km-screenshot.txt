@@ -1,5 +1,5 @@
 kiriganaito 150km endurance verification
-HUD run: 3.97km
-HUD score: 4.15km
-Result score: 4.16km
+HUD run: 8.71km
+HUD score: 9.01km
+Result score: 9.01km
 Reason: 終了理由：穴に落ちました。足元確認、大事です。
