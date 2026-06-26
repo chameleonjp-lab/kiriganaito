@@ -328,9 +328,10 @@
       <section id="game" class="screen">
         <div class="gameWrap">
           <div class="card hud">
+            <div>走行<b id="hudRun">0.00km</b></div>
             <div>スコア<b id="hudScore">0.00km</b></div>
-            <div>時間<b id="hudTime">0.0s</b></div>
             <button id="retireBtn" class="danger retire">リタイア</button>
+            <div>時間<b id="hudTime">0.0s</b></div>
             <div id="hudChaseBox">逃走<b id="hudChase">0.0s</b></div>
             <div id="hudDangerBox">警戒<b id="hudDanger">□□□</b></div>
           </div>
@@ -420,6 +421,10 @@
         ITEM_HEIGHT_HIGH = 96,
         ITEM_HEIGHT_RANDOM = 18,
         MISS_TRIGGER_OFFSET = 12,
+        VISUAL_SCROLL_SPEED = 180,
+        CHASE_VISUAL_SCROLL_MULT = 2,
+        SAME_DIRECTION_MIN_REL_PX = 96,
+        BIKE_SHRINK_TOP_EXTRA = 4,
         JUMP_APEX_HEIGHT = JUMP_POWER * JUMP_POWER / (2 * GRAVITY);
       const HIT = {
         PLAYER_SHRINK_X: 8,
@@ -477,6 +482,7 @@
         homeToast: $("homeToast"),
         playerName: $("playerName"),
         nameError: $("nameError"),
+        hudRun: $("hudRun"),
         hudScore: $("hudScore"),
         hudTime: $("hudTime"),
         hudChase: $("hudChase"),
@@ -546,6 +552,7 @@
           penaltyMeters: 0,
           missPenaltyMeters: 0,
           scoreMeters: 0,
+          visualScroll: 0,
           accidents: 0,
           items: 0,
           dancerItems: 0,
@@ -702,6 +709,7 @@
         player.inv = Math.max(0, player.inv - dt);
         run.dancerInvincible = Math.max(0, run.dancerInvincible - dt);
         let visual = run.chase > 0 ? CHASE_MULT : 1;
+        run.visualScroll += VISUAL_SCROLL_SPEED * (run.chase > 0 ? CHASE_VISUAL_SCROLL_MULT : 1) * dt;
         let move = BASE_SPEED * 55 * visual * dt;
         spawnStuff();
         updateThings(move, dt);
@@ -731,7 +739,8 @@
       }
       // 7. 難易度と出現管理
       function getGroundY(x) {
-        return groundY + Math.sin((x + run.runMeters * 0.8) / 42) * 3;
+        const scroll = run ? run.visualScroll : 0;
+        return groundY + Math.sin((x + scroll * 0.35) / 42) * 3;
       }
       function getDifficultyByKm(km) {
         if (km < 0.5)
@@ -925,14 +934,11 @@
         }
         for (let i = obstacles.length - 1; i >= 0; i--) {
           let o = obstacles[i];
-          let rel =
-            (o.direction === 1
-              ? BASE_SPEED + o.speed
-              : Math.max(0.4, BASE_SPEED - o.speed)) *
-            42 *
-            (run.chase > 0 ? CHASE_MULT : 1) *
-            dt;
-          o.x += rel;
+          let relPx =
+            o.direction === 1
+              ? (BASE_SPEED + o.speed) * 42
+              : Math.max(SAME_DIRECTION_MIN_REL_PX, (BASE_SPEED - o.speed) * 42);
+          o.x += relPx * (run.chase > 0 ? CHASE_MULT : 1) * dt;
           if (o.x > W + 70 || !o.active) obstacles.splice(i, 1);
         }
         for (let i = items.length - 1; i >= 0; i--) {
@@ -1001,11 +1007,12 @@
         };
       }
       function obstacleRect(o) {
+        const topShrink = HIT.OBSTACLE_SHRINK + (o.emoji === "🚴" ? BIKE_SHRINK_TOP_EXTRA : 0);
         return {
           x: o.x + HIT.OBSTACLE_SHRINK,
-          y: o.y + HIT.OBSTACLE_SHRINK,
+          y: o.y + topShrink,
           w: o.w - HIT.OBSTACLE_SHRINK * 2,
-          h: o.h - HIT.OBSTACLE_SHRINK * 2,
+          h: o.h - topShrink - HIT.OBSTACLE_SHRINK,
         };
       }
       function itemRect(it) {
@@ -1152,7 +1159,7 @@
         ctx.fillRect(0, groundY, W, H - groundY);
         ctx.strokeStyle = "rgba(255,246,185,0.42)";
         ctx.lineWidth = 2;
-        for (let x = ((run.runMeters * (chase ? 1.6 : 0.8)) % 56) - 56; x < W; x += 56) {
+        for (let x = (run.visualScroll % 56) - 56; x < W; x += 56) {
           ctx.beginPath();
           ctx.moveTo(x, groundY + 28);
           ctx.lineTo(x + 24, groundY + 28);
@@ -1277,14 +1284,14 @@
           const s = backgroundStars[i];
           ctx.globalAlpha = 0.45 + Math.sin((run ? run.elapsed : 0) * 1.5 + s.tw) * 0.18;
           ctx.beginPath();
-          ctx.arc(s.x * W, s.y * groundY, s.r, 0, Math.PI * 2);
+          ctx.arc((s.x * W + run.visualScroll * 0.08) % (W + 20) - 10, s.y * groundY, s.r, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.globalAlpha = 1;
         const baseY = groundY - 34;
         for (let i = 0; i < cityLights.length; i++) {
           const b = cityLights[i];
-          const x = b.x * W;
+          const x = (b.x * W + run.visualScroll * 0.22) % (W + 42) - 21;
           ctx.fillStyle = "rgba(34,43,70,0.72)";
           ctx.fillRect(x, baseY - b.h, 14, b.h + 34);
           if (b.lit) {
@@ -1321,6 +1328,7 @@
       }
       // 11. UI更新
       function updateHud() {
+        el.hudRun.textContent = km(run.runMeters);
         el.hudScore.textContent = km(run.scoreMeters);
         el.hudTime.textContent = run.elapsed.toFixed(1) + "s";
         el.hudChase.textContent = run.chase.toFixed(1) + "s";
