@@ -2,6 +2,6 @@ finalVerdict=WARN
 supabaseMocked=true
 realSupabaseSubmission=false
 playwrightUsed=false
-maxNaturalRunMeters=2057
+maxNaturalRunMeters=1715
 consoleErrors=0
 consoleWarnings=0

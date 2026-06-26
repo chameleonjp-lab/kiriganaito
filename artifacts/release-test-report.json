@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T15:32:08.883Z",
+  "generatedAt": "2026-06-26T21:01:32.759Z",
   "finalVerdict": "WARN",
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
@@ -48,9 +48,9 @@
     "consoleWarnings": []
   },
   "naturalAutoplayCheck": {
-    "maxRunMeters": 2057,
-    "maxScoreMeters": 1657,
-    "bestSeed": 1005,
+    "maxRunMeters": 1715,
+    "maxScoreMeters": 1315,
+    "bestSeed": 2003,
     "highestTargetReached": 1000,
     "natural150kmReached": false,
     "targets": [
@@ -78,9 +78,10 @@
       3005
     ],
     "mostCommonFailure": {
-      "hole_timing_early": 16,
-      "hole_after_obstacle_unavoidable": 11,
-      "none": 3
+      "none": 7,
+      "hole_timing_early": 18,
+      "bike_not_cleared": 1,
+      "hole_after_obstacle_unavoidable": 4
     }
   },
   "longDistanceDisplayCheck": {
@@ -95,7 +96,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 150000,
-          "p_client_version": "kiriganaito-2026-06-25-v1"
+          "p_client_version": "kiriganaito-2026-06-26-v2-result-density"
         }
       },
       {
@@ -107,7 +108,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 999990,
-          "p_client_version": "kiriganaito-2026-06-25-v1"
+          "p_client_version": "kiriganaito-2026-06-26-v2-result-density"
         }
       },
       {
@@ -119,7 +120,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 1000000,
-          "p_client_version": "kiriganaito-2026-06-25-v1"
+          "p_client_version": "kiriganaito-2026-06-26-v2-result-density"
         }
       }
     ],
@@ -128,20 +129,25 @@
     "payloadIntegerMeters": true
   },
   "resultScoreCheck": {
+    "retire5NonZero": true,
     "retireNonZero": true,
+    "hole5NonZero": true,
     "holeNonZero": true,
+    "elapsedScoreGuard": true,
+    "resultScorePersists": true,
     "clampOnlyWhenNegative": true,
     "resultScoreMatchesPScore": true,
     "breakdownRunNonZero": true,
-    "retire": {
-      "score": 111,
-      "runMeters": 111,
-      "resultScore": "0.11km",
-      "pScore": 111,
+    "retire5": {
+      "score": 196,
+      "runMeters": 196,
+      "resultScore": "0.20km",
+      "firstResultScore": "0.20km",
+      "pScore": 196,
       "breakdown": [
         [
           "実走行距離",
-          "0.11km"
+          "0.20km"
         ],
         [
           "アイテム加算",
@@ -159,17 +165,79 @@
           "事故回数",
           "0回"
         ]
-      ]
+      ],
+      "elapsedMs": 5000
+    },
+    "retire": {
+      "score": 391,
+      "runMeters": 391,
+      "resultScore": "0.39km",
+      "firstResultScore": "0.39km",
+      "pScore": 391,
+      "breakdown": [
+        [
+          "実走行距離",
+          "0.39km"
+        ],
+        [
+          "アイテム加算",
+          "+0.00km"
+        ],
+        [
+          "事故ペナルティ",
+          "-0.00km"
+        ],
+        [
+          "取り逃がしペナルティ",
+          "-0.00km"
+        ],
+        [
+          "事故回数",
+          "0回"
+        ]
+      ],
+      "elapsedMs": 10000
+    },
+    "hole5": {
+      "score": 196,
+      "runMeters": 196,
+      "resultScore": "0.20km",
+      "firstResultScore": "0.20km",
+      "pScore": 196,
+      "breakdown": [
+        [
+          "実走行距離",
+          "0.20km"
+        ],
+        [
+          "アイテム加算",
+          "+0.00km"
+        ],
+        [
+          "事故ペナルティ",
+          "-0.00km"
+        ],
+        [
+          "取り逃がしペナルティ",
+          "-0.00km"
+        ],
+        [
+          "事故回数",
+          "0回"
+        ]
+      ],
+      "elapsedMs": 5000
     },
     "hole": {
-      "score": 111,
-      "runMeters": 111,
-      "resultScore": "0.11km",
-      "pScore": 111,
+      "score": 392,
+      "runMeters": 392,
+      "resultScore": "0.39km",
+      "firstResultScore": "0.39km",
+      "pScore": 392,
       "breakdown": [
         [
           "実走行距離",
-          "0.11km"
+          "0.39km"
         ],
         [
           "アイテム加算",
@@ -187,7 +255,8 @@
           "事故回数",
           "0回"
         ]
-      ]
+      ],
+      "elapsedMs": 10000
     },
     "clamp": {
       "score": 0,
@@ -216,17 +285,25 @@
     "consoleErrors": [],
     "consoleWarnings": []
   },
+  "densityTuningCheck": {
+    "clientVersionUpdated": true,
+    "finalRunGuard": true,
+    "holeApproxDouble": true,
+    "obstacleApproxTriple": true,
+    "dancerHalf": true,
+    "noWalkerCoin": true
+  },
   "rankingMockCheck": {
     "payload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "RANK",
       "p_score": 1234,
-      "p_client_version": "kiriganaito-2026-06-25-v1"
+      "p_client_version": "kiriganaito-2026-06-26-v2-result-density"
     },
     "pScoreInteger": true,
     "usesSubmitRpc": true,
     "noDirectInsert": true,
-    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-06-25-v1\"}]",
+    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-06-26-v2-result-density\"}]",
     "pendingKey": "kiriganaito_pending_scores_v1",
     "retryButtonVisible": true,
     "realSupabaseSubmission": false,
@@ -237,7 +314,7 @@
       },
       {
         "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/submit_score",
-        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-06-25-v1\"}"
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-06-26-v2-result-density\"}"
       }
     ]
   },

@@ -384,7 +384,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-25-v1",
+        CLIENT_VERSION = "kiriganaito-2026-06-26-v2-result-density",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -562,6 +562,8 @@
         };
         run = {
           runMeters: 0,
+          maxRunMeters: 0,
+          lastNonZeroRunMeters: 0,
           bonusMeters: 0,
           penaltyMeters: 0,
           missPenaltyMeters: 0,
@@ -727,9 +729,14 @@
         let visual = run.chase > 0 ? CHASE_MULT : 1;
         run.visualScroll += VISUAL_SCROLL_SPEED * (run.chase > 0 ? CHASE_VISUAL_SCROLL_MULT : 1) * dt;
         let move = BASE_SPEED * 55 * visual * dt;
+        run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
+        run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
+        if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         spawnStuff();
         updateThings(move, dt);
         run.runMeters += BASE_SPEED * 9 * dt;
+        run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
+        if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         checkCollisions();
         if (mode !== MODE.PLAYING) return;
         const beforeChase = run.chase;
@@ -739,6 +746,8 @@
         run.shake = Math.max(0, run.shake - dt);
         run.elapsed += dt;
         run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
+        run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
+        if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         run.scoreMeters = calculateFinalScoreMeters(run);
         if (run.danger >= 3) {
           finishGame("🚓に捕まりました");
@@ -759,14 +768,14 @@
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
-          return { obs: chase ? 0.085 : 0.105, holeGap: chase ? 0.15 : 0.19, item: 0.25, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
+          return { obs: chase ? 0.038 : 0.047, holeGap: chase ? 0.080 : 0.105, item: 0.25, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return { obs: chase ? 0.064 : 0.078, holeGap: chase ? 0.12 : 0.145, item: 0.18, types: 3, oncoming: 0.14, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.028 : 0.034, holeGap: chase ? 0.070 : 0.086, item: 0.18, types: 3, oncoming: 0.22, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 3)
-          return { obs: chase ? 0.056 : 0.068, holeGap: chase ? 0.11 : 0.135, item: 0.17, types: 5, oncoming: 0.24, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.025 : 0.030, holeGap: chase ? 0.066 : 0.080, item: 0.17, types: 5, oncoming: 0.34, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
-          return { obs: chase ? 0.050 : 0.060, holeGap: chase ? 0.10 : 0.125, item: chase ? 0.20 : 0.16, types: 5, oncoming: chase ? 0.62 : 0.42, holeKinds: ["SMALL", "SMALL", "SMALL", "MEDIUM"] };
-        return { obs: chase ? 0.046 : 0.056, holeGap: chase ? 0.095 : 0.115, item: chase ? 0.20 : 0.155, types: 5, oncoming: chase ? 0.68 : 0.50, holeKinds: ["SMALL", "SMALL", "MEDIUM", "LARGE"] };
+          return { obs: chase ? 0.023 : 0.027, holeGap: chase ? 0.060 : 0.074, item: chase ? 0.20 : 0.16, types: 5, oncoming: chase ? 0.72 : 0.55, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+        return { obs: chase ? 0.021 : 0.025, holeGap: chase ? 0.058 : 0.070, item: chase ? 0.20 : 0.155, types: 5, oncoming: chase ? 0.76 : 0.62, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
       }
       function rand(a, b) {
         return a + Math.random() * (b - a);
@@ -782,9 +791,9 @@
       function scheduleNext(kind, km, d) {
         const chasePad = run.chase > 0 ? 0.015 : 0;
         if (kind === "obstacle")
-          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.015, 0.045);
+          spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.006, 0.018);
         if (kind === "hole")
-          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.02, 0.055);
+          spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.010, 0.026);
         if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.03, 0.10);
         if (kind === "oncoming") spawn.nextOncomingAt = km + nextOncomingInterval(km);
       }
@@ -840,10 +849,10 @@
         const safeOncoming = km >= 0.5 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
         const chase = run.chase > 0;
         const pool = [];
-        pool.push({ name: km >= 0.5 ? "small_hole" : "short_hole", weight: chase ? 5 : km >= 3 ? 5 : 3 });
-        if (km >= 0.5) pool.push({ name: "medium_hole", weight: chase ? 2 : 2 });
+        pool.push({ name: km >= 0.5 ? "small_hole" : "short_hole", weight: chase ? 9 : km >= 3 ? 9 : 6 });
+        if (km >= 0.5) pool.push({ name: "medium_hole", weight: chase ? 1.6 : 1.5 });
         if (km >= 5 && !chase) pool.push({ name: "large_hole", weight: 0.6 });
-        pool.push({ name: "walker", weight: km < 0.5 ? 5 : chase ? 3 : 2 });
+        pool.push({ name: "walker", weight: km < 0.5 ? 7 : chase ? 7 : km >= 3 ? 6 : 5 });
         if (km >= 0.45) pool.push({ name: "hole_then_bike", weight: chase ? 1 : 2 });
         if (!chase && km >= 1.0) pool.push({ name: "high_coin", weight: km >= 3 ? 0.7 : 1.2 });
         if (!chase && km >= 1.5) pool.push({ name: "risky_gear", weight: 0.7 });
@@ -853,8 +862,8 @@
         if (km >= 3 && !chase && safeOncoming) pool.push({ name: "cash_before_oncoming", weight: 1.0 });
         if (km >= 3 && !chase && safeOncoming) pool.push({ name: "cash_after_oncoming", weight: 1.0 });
         if (km >= 0.5 && safeOncoming && Math.random() < d.oncoming) pool.push({ name: chase ? "chase_oncoming" : "oncoming_safe", weight: km >= 3 ? 3 : 1 });
-        if (km >= 0.5) pool.push({ name: "dancer", weight: chase ? 0.55 : 0.55 });
-        if (chase) pool.push({ name: "chase_small_hole", weight: 5 });
+        if (km >= 0.5) pool.push({ name: "dancer", weight: chase ? 0.25 : 0.25 });
+        if (chase) pool.push({ name: "chase_small_hole", weight: 9 });
         if (chase) pool.push({ name: "breather", weight: 1.2 });
         const total = pool.reduce((a, b) => a + b.weight, 0);
         let r = Math.random() * total;
@@ -869,7 +878,7 @@
         if (pattern === "breather") {
           scheduleNext("obstacle", km + 0.02, d);
           scheduleNext("hole", km + 0.02, d);
-          return spawnItemPattern(km, d, { x: -38, high: false, type: Math.random() < 0.7 ? "💰" : "👯‍♀️" });
+          return spawnItemPattern(km, d, { x: -38, high: false, type: Math.random() < 0.85 ? "💰" : "👯‍♀️" });
         }
         if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km, "SMALL")) return spawnHolePattern(km, d, { kind: "SMALL" });
         if (pattern === "medium_hole" && canSpawnHole(km, "MEDIUM")) return spawnHolePattern(km, d, { kind: "MEDIUM" });
@@ -960,7 +969,7 @@
         let t = availableItems[(Math.random() * availableItems.length) | 0];
         if (opt.type) t = ITEM_TYPES.find((v) => v.emoji === opt.type) || t;
         if (run.chase > 0 && t.missPenalty && !opt.type && Math.random() < 0.82) {
-          t = ITEM_TYPES[Math.random() < 0.75 ? 0 : 3];
+          t = ITEM_TYPES[Math.random() < 0.875 ? 0 : 3];
         }
         const isDancer = t.kind === "invincible";
         const risky = !isDancer && (opt.high ?? (km > 1.5 && Math.random() < (run.chase > 0 ? 0.18 : 0.35)));
@@ -1511,17 +1520,25 @@
         const missPenaltyMeters = Number.isFinite(source.missPenaltyMeters) ? source.missPenaltyMeters : 0;
         return Math.max(0, Math.round(runMeters + bonusMeters - penaltyMeters - missPenaltyMeters));
       }
+
+      function getFinalRunMeters() {
+        const live = Number.isFinite(run.runMeters) ? run.runMeters : 0;
+        const max = Number.isFinite(run.maxRunMeters) ? run.maxRunMeters : 0;
+        const last = Number.isFinite(run.lastNonZeroRunMeters) ? run.lastNonZeroRunMeters : 0;
+        return Math.max(0, Math.round(Math.max(live, max, last)));
+      }
       function finishGame(reason) {
         if (mode !== MODE.PLAYING) return;
         mode = MODE.RESULT;
         run.finishReason = reason;
-        run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
+        run.runMeters = getFinalRunMeters();
+        run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
         run.scoreMeters = calculateFinalScoreMeters(run);
         run.finalScore = run.scoreMeters;
         resultSnapshot = {
           score: run.finalScore,
           reason,
-          runMeters: Math.round(run.runMeters),
+          runMeters: getFinalRunMeters(),
           bonusMeters: run.bonusMeters,
           penaltyMeters: run.penaltyMeters,
           missPenaltyMeters: run.missPenaltyMeters || 0,
