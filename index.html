@@ -524,7 +524,9 @@
         cityLights = [],
         resultSnapshot = null,
         audioCtx = null;
-      const PENDING_SCORE_KEY = "songen_wo_kakeyouka2_pending_scores_v1";
+      const PENDING_SCORE_KEY = "kiriganaito_pending_scores_v1";
+      // 旧キーは誤った別ゲーム名で保存された kiriganaito の未送信スコア移行専用です。
+      const LEGACY_PENDING_SCORE_KEY = "songen_wo_kakeyouka2_pending_scores_v1";
       let isFlushingScores = false;
       function show(id) {
         for (let i = 0; i < screens.length; i++)
@@ -1497,6 +1499,36 @@
           return false;
         }
       }
+      function migrateLegacyPendingScores() {
+        let legacyRaw;
+        try {
+          legacyRaw = localStorage.getItem(LEGACY_PENDING_SCORE_KEY);
+        } catch (e) {
+          console.warn("legacy pending score load failed", e);
+          return;
+        }
+        if (!legacyRaw) return;
+
+        let legacyList;
+        try {
+          legacyList = JSON.parse(legacyRaw);
+        } catch (e) {
+          console.warn("legacy pending score parse failed", e);
+          return;
+        }
+        if (!Array.isArray(legacyList)) return;
+
+        let kiriganaitoItems = legacyList.filter((item) => item && item.gameSlug === GAME_SLUG);
+        let otherItems = legacyList.filter((item) => !item || item.gameSlug !== GAME_SLUG);
+        if (kiriganaitoItems.length && !savePendingScores(loadPendingScores().concat(kiriganaitoItems))) return;
+
+        try {
+          if (otherItems.length) localStorage.setItem(LEGACY_PENDING_SCORE_KEY, JSON.stringify(otherItems));
+          else localStorage.removeItem(LEGACY_PENDING_SCORE_KEY);
+        } catch (e) {
+          console.warn("legacy pending score cleanup failed", e);
+        }
+      }
       function enqueuePendingScore(payload) {
         let list = loadPendingScores();
         list.push(payload);
@@ -1757,6 +1789,7 @@ dancerInv:${run.dancerInvincible.toFixed(1)}\ndanger:${run.danger}\nchase:${run.
       resizeCanvas();
       resetState();
       draw();
+      migrateLegacyPendingScores();
       updateRetryButton();
       flushPendingScores();
       loadHomeRankingOnce();

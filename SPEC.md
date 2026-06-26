@@ -252,7 +252,9 @@ Supabase URL は正式な公開用 URL `https://mlpnjgezrnhdxsxolyzj.supabase.co
 
 RPC は後から直しやすいよう、`sendScoreAfterResult(result)`、`submitScoreToSupabase(payload)`、`fetchBestRanking()`、`fetchPlayStats()`、`renderRanking()` に分離しています。送信は `game_scores` への直接 insert ではなく、共通仕様の `/rest/v1/rpc/submit_score` を呼びます。取得は `/rest/v1/rpc/get_best_score_ranking` と `/rest/v1/rpc/get_game_play_stats` です。Supabase URL または Publishable key が未設定の場合は通信せず「ランキング連携：設定後に有効になります」と表示します。
 
-ランキング送信は、結果確定時にスコアが有限数値であることを確認し、`songen_wo_kakeyouka2_pending_scores_v1` の pending queue へ保存してから送信します。pending score は `id`、`displayName`、`gameSlug`、`score`、`clientVersion`、`createdAt`、`attempts`、`lastError` を持ち、localStorage 保存に失敗してもゲーム進行は止めません。送信失敗時は localStorage に残し、次回表示、ページ初期化、オンライン復帰、フォーカス復帰、表示復帰時に `flushPendingScores()` で再送します。iPhone Safari で共有、戻る、閉じる、別アプリ移動、通信不安定などが起きても、可能な範囲で結果記録を失わない設計にします。
+ランキング送信は、結果確定時にスコアが有限数値であることを確認し、`kiriganaito_pending_scores_v1` の pending queue へ保存してから送信します。pending score は `id`、`displayName`、`gameSlug`、`score`、`clientVersion`、`createdAt`、`attempts`、`lastError` を持ち、localStorage 保存に失敗してもゲーム進行は止めません。送信失敗時は localStorage に未送信スコアを残し、次回表示、ページ初期化、オンライン復帰、フォーカス復帰、表示復帰時に `flushPendingScores()` で再送できるようにします。iPhone Safari で共有、戻る、閉じる、別アプリ移動、通信不安定などが起きても、可能な範囲で結果記録を失わない設計にします。
+
+旧キー `songen_wo_kakeyouka2_pending_scores_v1` は移行専用です。旧キーが存在する場合は `gameSlug === "kiriganaito"` の未送信スコアだけを `kiriganaito_pending_scores_v1` へ安全に移行し、別ゲームの未送信データは移動または削除しません。旧キーに kiriganaito 以外のデータが混在している場合は、その別ゲームのデータだけを旧キーに残します。この移行は保存キー修正のための処理であり、ランキング RPC 仕様、スコア計算、ゲームルールは変更しません。
 
 結果画面にはランキング保存状態を表示し、pending score がある場合は手動再送ボタン「ランキング再送」を表示します。スコア登録の成功・保存待ちとランキング取得失敗は別扱いにし、ランキング取得失敗時は「ランキングを読み込めませんでした」と表示しても、登録成功状態を消しません。結果画面には小さく `CLIENT_VERSION` を表示し、古い HTML キャッシュの問い合わせ確認に使います。
 
