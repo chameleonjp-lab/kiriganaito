@@ -347,6 +347,8 @@
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
+          <button id="rankingRetryBtn" class="secondary small" hidden>ランキング再送</button>
+          <p id="clientVersionNote" class="small"></p>
           <div class="row">
             <button id="resultShareBtn">結果シェア</button
             ><button id="retryBtn" class="secondary">もう一度</button>
@@ -486,6 +488,8 @@
         resultScore: $("resultScore"),
         resultBreakdown: $("resultBreakdown"),
         rankingStatus: $("rankingStatus"),
+        rankingRetryBtn: $("rankingRetryBtn"),
+        clientVersionNote: $("clientVersionNote"),
         debug: $("debug"),
         errorText: $("errorText"),
       };
@@ -514,6 +518,8 @@
         cityLights = [],
         resultSnapshot = null,
         audioCtx = null;
+      const PENDING_SCORE_KEY = "songen_wo_kakeyouka2_pending_scores_v1";
+      let isFlushingScores = false;
       function show(id) {
         for (let i = 0; i < screens.length; i++)
           screens[i].classList.remove("active");
@@ -1340,7 +1346,7 @@
         }
         if (!ranking || !ranking.ok) {
           target.textContent =
-            (ranking && ranking.error) || "ランキングを取得できませんでした";
+            (ranking && ranking.error) || "ランキングを読み込めませんでした";
           return;
         }
         let rows = ranking.rows || [];
@@ -1440,7 +1446,9 @@
           d.append(a, b);
           el.resultBreakdown.appendChild(d);
         });
-        submitScoreOnce().then(() => fetchAndRenderResultRanking());
+        el.clientVersionNote.textContent = "version: " + CLIENT_VERSION;
+        sendScoreAfterResult(resultSnapshot);
+        flushPendingScores();
       }
       function getReasonText(reason) {
         if (reason.includes("穴")) return "終了理由：穴に落ちました。足元確認、大事です。";
@@ -1455,6 +1463,41 @@
         return "これはもう配送ではなく逃走です";
       }
       // 14. ランキング送信
+      function updateRetryButton() {
+        if (el.rankingRetryBtn) el.rankingRetryBtn.hidden = loadPendingScores().length === 0;
+      }
+      function setRankingStatus(text) {
+        if (el.rankingStatus) el.rankingStatus.textContent = text;
+        updateRetryButton();
+      }
+      function loadPendingScores() {
+        try {
+          let parsed = JSON.parse(localStorage.getItem(PENDING_SCORE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          console.warn("pending score load failed", e);
+          return [];
+        }
+      }
+      function savePendingScores(list) {
+        try {
+          localStorage.setItem(PENDING_SCORE_KEY, JSON.stringify(list));
+          updateRetryButton();
+          return true;
+        } catch (e) {
+          console.warn("pending score save failed", e);
+          return false;
+        }
+      }
+      function enqueuePendingScore(payload) {
+        let list = loadPendingScores();
+        list.push(payload);
+        savePendingScores(list);
+        return payload;
+      }
+      function removePendingScore(id) {
+        savePendingScores(loadPendingScores().filter((item) => item.id !== id));
+      }
       async function supabaseFetch(path, body) {
         let res = await fetch(SUPABASE_URL + path, {
           method: "POST",
@@ -1464,42 +1507,96 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),
+          keepalive: true,
         });
         if (!res.ok) throw new Error("通信失敗");
         return res.json();
       }
-      async function submitScoreOnce() {
-        if (!resultSnapshot || run.rankingSubmitted || run.rankingSubmitting)
+      function pendingToRpcPayload(payload) {
+        return {
+          p_game_slug: payload.gameSlug,
+          p_display_name: payload.displayName,
+          p_score: payload.score,
+          p_client_version: payload.clientVersion,
+        };
+      }
+      async function sendScoreAfterResult(result) {
+        let score = Math.trunc(Number(result && (result.totalScore ?? result.score)));
+        if (!Number.isFinite(score)) {
+          setRankingStatus("スコア値が不正のため送信できません");
+          console.warn("invalid score", result);
+          fetchAndRenderResultRanking();
           return;
-        run.rankingSubmitting = true;
+        }
         if (!supabaseReady()) {
-          el.rankingStatus.textContent = "ランキング未設定";
-          run.rankingSubmitting = false;
+          setRankingStatus("ランキング連携：設定後に有効になります");
+          fetchAndRenderResultRanking();
           return;
         }
-        try {
-          el.rankingStatus.textContent = "ランキング送信中...";
-          let name = (localStorage.getItem("kiriganaitoName") || "")
-            .trim()
-            .slice(0, 10);
-          if (!name) throw new Error("名前未入力");
-          await submitScoreToSupabase({
-            p_game_slug: GAME_SLUG,
-            p_display_name: name,
-            p_score: resultSnapshot.score,
-            p_client_version: CLIENT_VERSION,
-          });
-          run.rankingSubmitted = true;
-          el.rankingStatus.textContent = "ランキング送信成功";
-        } catch (e) {
-          run.rankingError = e.message;
-          el.rankingStatus.textContent = "ランキング送信に失敗しました";
-        } finally {
-          run.rankingSubmitting = false;
+        let name = (localStorage.getItem("kiriganaitoName") || "").trim().slice(0, 10);
+        if (!name) {
+          setRankingStatus("名前未入力のため送信できません");
+          fetchAndRenderResultRanking();
+          return;
         }
+        enqueuePendingScore({
+          id: `${GAME_SLUG}:${Date.now()}:${Math.random().toString(36).slice(2)}`,
+          displayName: name,
+          gameSlug: GAME_SLUG,
+          score,
+          clientVersion: CLIENT_VERSION,
+          createdAt: Date.now(),
+          attempts: 0,
+          lastError: null,
+        });
+        setRankingStatus("ランキング保存中…");
+        let resultFlush = await flushPendingScores();
+        if (resultFlush && resultFlush.ok) setRankingStatus("ランキング登録しました");
+        else if (loadPendingScores().length > 0) setRankingStatus("ランキング保存待ちです。通信が戻ると再送します");
+        fetchAndRenderResultRanking();
+      }
+      async function flushPendingScores() {
+        if (isFlushingScores || !supabaseReady()) {
+          updateRetryButton();
+          return { ok: loadPendingScores().length === 0 };
+        }
+        let list = loadPendingScores();
+        if (list.length === 0) {
+          updateRetryButton();
+          return { ok: true };
+        }
+        isFlushingScores = true;
+        let failed = false;
+        try {
+          while (list.length > 0) {
+            let payload = list[0];
+            try {
+              await submitScoreToSupabase(payload);
+              removePendingScore(payload.id);
+              list = loadPendingScores();
+            } catch (e) {
+              failed = true;
+              payload.attempts = (payload.attempts || 0) + 1;
+              payload.lastError = (e && e.message) || String(e);
+              list[0] = payload;
+              savePendingScores(list);
+              console.warn("pending score flush failed", e);
+              break;
+            }
+          }
+        } finally {
+          isFlushingScores = false;
+          updateRetryButton();
+        }
+        let ok = !failed && loadPendingScores().length === 0;
+        if (mode === MODE.RESULT) {
+          if (ok) setRankingStatus("ランキング登録しました");
+          else if (loadPendingScores().length > 0) setRankingStatus("ランキング保存待ちです。通信が戻ると再送します");
+        }
+        return { ok };
       }
       async function submitScoreToSupabase(payload) {
-        return supabaseFetch("/rest/v1/rpc/submit_score", payload);
+        return supabaseFetch("/rest/v1/rpc/submit_score", pendingToRpcPayload(payload));
       }
       // 15. ランキング取得
       async function fetchBestRanking() {
@@ -1516,7 +1613,7 @@
           return {
             ok: false,
             rows: [],
-            error: "ランキングを取得できませんでした",
+            error: "ランキングを読み込めませんでした",
           };
         }
       }
@@ -1619,6 +1716,13 @@ dancerInv:${run.dancerInvincible.toFixed(1)}\ndanger:${run.danger}\nchase:${run.
       $("changeNameBtn").onclick = () => show("name");
       $("homeShareBtn").onclick = homeShare;
       $("resultShareBtn").onclick = resultShare;
+      $("rankingRetryBtn").onclick = async () => {
+        setRankingStatus("ランキング保存中…");
+        let resultFlush = await flushPendingScores();
+        if (resultFlush && resultFlush.ok) setRankingStatus("ランキング登録しました");
+        else if (loadPendingScores().length > 0) setRankingStatus("ランキング保存待ちです。通信が戻ると再送します");
+        fetchAndRenderResultRanking();
+      };
       $("retryBtn").onclick = () => {
         unlockAudio();
         startGame();
@@ -1626,20 +1730,27 @@ dancerInv:${run.dancerInvincible.toFixed(1)}\ndanger:${run.danger}\nchase:${run.
       $("homeBtn").onclick = () => show("home");
       $("errorHomeBtn").onclick = () => show("home");
       el.playerName.value = localStorage.getItem("kiriganaitoName") || "";
+      window.addEventListener("online", flushPendingScores);
+      window.addEventListener("focus", flushPendingScores);
       document.addEventListener("visibilitychange", () => {
         if (document.hidden && mode === MODE.PLAYING) {
           lastMode = MODE.PLAYING;
           mode = MODE.PAUSED;
-        } else if (!document.hidden && mode === MODE.PAUSED) {
-          mode = lastMode;
-          lastTs = performance.now();
-          accumulator = 0;
-          ensureLoop();
+        } else if (!document.hidden) {
+          flushPendingScores();
+          if (mode === MODE.PAUSED) {
+            mode = lastMode;
+            lastTs = performance.now();
+            accumulator = 0;
+            ensureLoop();
+          }
         }
       });
       resizeCanvas();
       resetState();
       draw();
+      updateRetryButton();
+      flushPendingScores();
       loadHomeRankingOnce();
     </script>
   </body>
