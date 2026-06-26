@@ -397,7 +397,7 @@
         RESULT: "RESULT",
         ERROR: "ERROR",
       };
-      const BASE_SPEED = 4,
+      const BASE_SPEED = 4.35,
         CHASE_MULT = 2,
         CHASE_TIME = 15,
         JUMP_POWER = 560,
@@ -421,7 +421,7 @@
         ITEM_HEIGHT_HIGH = 96,
         ITEM_HEIGHT_RANDOM = 18,
         MISS_TRIGGER_OFFSET = 12,
-        VISUAL_SCROLL_SPEED = 180,
+        VISUAL_SCROLL_SPEED = 200,
         CHASE_VISUAL_SCROLL_MULT = 2,
         STATIC_OBSTACLE_SCROLL_PX = BASE_SPEED * 55,
         DANCER_PLACE_SCROLL_MULT = 0.55,
@@ -447,6 +447,11 @@
         ONCOMING_GAP: 0.26,
         ITEM_OBSTACLE_GAP: 0.07,
         ITEM_HOLE_GAP: 0.06,
+        HOLE_GAP: 0.14,
+        SMALL_HOLE_GAP: 0.10,
+        MEDIUM_HOLE_GAP: 0.14,
+        LARGE_HOLE_GAP: 0.20,
+        HOLE_SCREEN_GAP_PX: 54,
       };
       const HOLE_TYPES = {
         SMALL: { min: 30, max: 44, safeAfter: 0.07 },
@@ -583,9 +588,10 @@
           nextObstacleAt: 0.07,
           nextHoleAt: 0.13,
           nextItemAt: 0.10,
-          nextOncomingAt: 3.0 + rand(0.22, 0.35),
+          nextOncomingAt: 0.62 + rand(0.08, 0.18),
           lastDangerAt: -9,
           lastHoleAt: -9,
+          lastHoleKind: "NONE",
           lastObstacleAt: -9,
           lastOncomingAt: -9,
           lastPatternName: "none",
@@ -723,19 +729,17 @@
         let move = BASE_SPEED * 55 * visual * dt;
         spawnStuff();
         updateThings(move, dt);
+        run.runMeters += BASE_SPEED * 9 * dt;
         checkCollisions();
         if (mode !== MODE.PLAYING) return;
-        run.runMeters += BASE_SPEED * 9 * dt;
         const beforeChase = run.chase;
         run.chase = Math.max(0, run.chase - dt);
         if (beforeChase > 0 && run.chase <= 0) run.escapedFlash = ESCAPED_FLASH_SEC;
         run.escapedFlash = Math.max(0, run.escapedFlash - dt);
         run.shake = Math.max(0, run.shake - dt);
         run.elapsed += dt;
-        run.scoreMeters = Math.max(
-          0,
-          Math.round(run.runMeters + run.bonusMeters - run.penaltyMeters - run.missPenaltyMeters),
-        );
+        run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
+        run.scoreMeters = calculateFinalScoreMeters(run);
         if (run.danger >= 3) {
           finishGame("🚓に捕まりました");
           return;
@@ -755,22 +759,24 @@
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
-          return { obs: chase ? 0.09 : 0.11, holeGap: chase ? 0.15 : 0.19, item: 0.26, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
+          return { obs: chase ? 0.085 : 0.105, holeGap: chase ? 0.15 : 0.19, item: 0.25, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return { obs: chase ? 0.08 : 0.095, holeGap: chase ? 0.13 : 0.17, item: 0.24, types: 3, oncoming: 0.08, holeKinds: ["SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.064 : 0.078, holeGap: chase ? 0.12 : 0.145, item: 0.18, types: 3, oncoming: 0.14, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
         if (km < 3)
-          return { obs: chase ? 0.07 : 0.085, holeGap: chase ? 0.12 : 0.155, item: 0.22, types: 5, oncoming: 0.16, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.056 : 0.068, holeGap: chase ? 0.11 : 0.135, item: 0.17, types: 5, oncoming: 0.24, holeKinds: ["SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
-          return { obs: chase ? 0.058 : 0.073, holeGap: chase ? 0.095 : 0.13, item: chase ? 0.24 : 0.205, types: 5, oncoming: chase ? 0.55 : 0.34, holeKinds: ["SMALL", "SMALL", "SMALL", "MEDIUM"] };
-        return { obs: chase ? 0.052 : 0.066, holeGap: chase ? 0.088 : 0.118, item: chase ? 0.25 : 0.20, types: 5, oncoming: chase ? 0.62 : 0.42, holeKinds: ["SMALL", "SMALL", "MEDIUM", "LARGE"] };
+          return { obs: chase ? 0.050 : 0.060, holeGap: chase ? 0.10 : 0.125, item: chase ? 0.20 : 0.16, types: 5, oncoming: chase ? 0.62 : 0.42, holeKinds: ["SMALL", "SMALL", "SMALL", "MEDIUM"] };
+        return { obs: chase ? 0.046 : 0.056, holeGap: chase ? 0.095 : 0.115, item: chase ? 0.20 : 0.155, types: 5, oncoming: chase ? 0.68 : 0.50, holeKinds: ["SMALL", "SMALL", "MEDIUM", "LARGE"] };
       }
       function rand(a, b) {
         return a + Math.random() * (b - a);
       }
       function nextOncomingInterval(km) {
-        if (run.chase > 0) return rand(0.10, 0.20);
-        if (km >= 5) return rand(0.16, 0.28);
-        if (km >= 3) return rand(0.22, 0.35);
+        if (run.chase > 0) return rand(0.09, 0.16);
+        if (km >= 5) return rand(0.14, 0.24);
+        if (km >= 3) return rand(0.18, 0.30);
+        if (km >= 1.5) return rand(0.28, 0.48);
+        if (km >= 0.5) return rand(0.38, 0.62);
         return rand(0.55, 0.85);
       }
       function scheduleNext(kind, km, d) {
@@ -782,8 +788,21 @@
         if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.03, 0.10);
         if (kind === "oncoming") spawn.nextOncomingAt = km + nextOncomingInterval(km);
       }
-      function canSpawnHole(km) {
-        return km - spawn.lastObstacleAt > SPAWN.HOLE_AFTER_OBSTACLE;
+      function holeGapForKind(kind) {
+        const base = kind === "LARGE" ? SPAWN.LARGE_HOLE_GAP : kind === "MEDIUM" ? SPAWN.MEDIUM_HOLE_GAP : SPAWN.SMALL_HOLE_GAP;
+        const previous = spawn.lastHoleKind === "LARGE" ? SPAWN.LARGE_HOLE_GAP : spawn.lastHoleKind === "MEDIUM" ? SPAWN.MEDIUM_HOLE_GAP : SPAWN.HOLE_GAP;
+        return Math.max(base, previous);
+      }
+      function hasScreenHoleGap(x, w, kind) {
+        const required = (kind === "LARGE" ? 72 : kind === "MEDIUM" ? 62 : SPAWN.HOLE_SCREEN_GAP_PX);
+        return holes.every((h) => x + w + required < h.x || h.x + h.w + required < x);
+      }
+      function canSpawnHole(km, kind = "SMALL", x = null, w = 0) {
+        return (
+          km - spawn.lastObstacleAt > SPAWN.HOLE_AFTER_OBSTACLE &&
+          km - spawn.lastHoleAt > holeGapForKind(kind) &&
+          (x === null || hasScreenHoleGap(x, w, kind))
+        );
       }
       function canSpawnObstacle(km, direction) {
         const gap = direction === 1 ? SPAWN.ONCOMING_GAP : SPAWN.OBSTACLE_GAP;
@@ -852,26 +871,26 @@
           scheduleNext("hole", km + 0.02, d);
           return spawnItemPattern(km, d, { x: -38, high: false, type: Math.random() < 0.7 ? "💰" : "👯‍♀️" });
         }
-        if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "SMALL" });
-        if (pattern === "medium_hole" && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "MEDIUM" });
-        if (pattern === "large_hole" && km >= 5 && canSpawnHole(km)) return spawnHolePattern(km, d, { kind: "LARGE" });
+        if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km, "SMALL")) return spawnHolePattern(km, d, { kind: "SMALL" });
+        if (pattern === "medium_hole" && canSpawnHole(km, "MEDIUM")) return spawnHolePattern(km, d, { kind: "MEDIUM" });
+        if (pattern === "large_hole" && km >= 5 && canSpawnHole(km, "LARGE")) return spawnHolePattern(km, d, { kind: "LARGE" });
         if (pattern === "walker" && canSpawnObstacle(km, -1)) return spawnObstaclePattern(km, d, -1, "🚶");
-        if (pattern === "hole_then_bike" && canSpawnHole(km)) {
+        if (pattern === "hole_then_bike" && canSpawnHole(km, "SMALL")) {
           spawnHolePattern(km, d, { kind: "SMALL" });
           if (canSpawnObstacle(km + 0.24, -1)) spawnObstaclePattern(km + 0.24, d, -1, "🚴", -126);
           return;
         }
-        if (pattern === "small_hole_cash" && canSpawnHole(km)) {
+        if (pattern === "small_hole_cash" && canSpawnHole(km, "SMALL")) {
           spawnHolePattern(km, d, { kind: "SMALL" });
           if (canSpawnItem(km + 0.10)) spawnItemPattern(km, d, { x: -92, high: true, type: "💰" });
           return;
         }
         if (pattern === "bolt_before_small_hole" && canSpawnItem(km)) {
           spawnItemPattern(km, d, { x: -40, high: false, type: "🔩" });
-          if (canSpawnHole(km + 0.16)) spawnHolePattern(km + 0.16, d, { kind: "SMALL", x: -132 });
+          if (canSpawnHole(km + 0.16, "SMALL", -132, HOLE_TYPES.SMALL.max)) spawnHolePattern(km + 0.16, d, { kind: "SMALL", x: -132 });
           return;
         }
-        if (pattern === "medium_hole_gear" && canSpawnHole(km)) {
+        if (pattern === "medium_hole_gear" && canSpawnHole(km, "MEDIUM")) {
           spawnHolePattern(km, d, { kind: "MEDIUM" });
           if (canSpawnItem(km + 0.14)) spawnItemPattern(km, d, { x: -112, high: false, type: "⚙️" });
           return;
@@ -897,11 +916,22 @@
         if (kind === "LARGE" && km < 5) kind = "MEDIUM";
         const type = HOLE_TYPES[kind] || HOLE_TYPES.MEDIUM;
         const w = rand(type.min, type.max);
-        holes.push({ x: opt.x ?? -w - 16, y: groundY - 6, w, h: H - groundY + 14, kind });
+        const x = opt.x ?? -w - 16;
+        if (!canSpawnHole(km, kind, x, w)) {
+          scheduleNext("hole", km + 0.03, d);
+          return false;
+        }
+        holes.push({ x, y: groundY - 6, w, h: H - groundY + 14, kind });
         spawn.lastHoleAt = km;
+        spawn.lastHoleKind = kind;
         spawn.lastDangerAt = km;
         spawn.nextObstacleAt = Math.max(spawn.nextObstacleAt, km + type.safeAfter);
-        if (kind === "LARGE") spawn.nextOncomingAt = Math.max(spawn.nextOncomingAt, km + 0.24);
+        spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + holeGapForKind(kind));
+        if (kind === "LARGE") {
+          spawn.nextOncomingAt = Math.max(spawn.nextOncomingAt, km + 0.28);
+          spawn.nextObstacleAt = Math.max(spawn.nextObstacleAt, km + 0.22);
+        }
+        return true;
       }
       function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44) {
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
@@ -1473,14 +1503,20 @@
         o.stop(audioCtx.currentTime + dur);
       }
       // 13. 結果処理
+      function calculateFinalScoreMeters(source = run) {
+        // Formula: run.runMeters + run.bonusMeters - run.penaltyMeters - run.missPenaltyMeters
+        const runMeters = Number.isFinite(source.runMeters) ? source.runMeters : 0;
+        const bonusMeters = Number.isFinite(source.bonusMeters) ? source.bonusMeters : 0;
+        const penaltyMeters = Number.isFinite(source.penaltyMeters) ? source.penaltyMeters : 0;
+        const missPenaltyMeters = Number.isFinite(source.missPenaltyMeters) ? source.missPenaltyMeters : 0;
+        return Math.max(0, Math.round(runMeters + bonusMeters - penaltyMeters - missPenaltyMeters));
+      }
       function finishGame(reason) {
         if (mode !== MODE.PLAYING) return;
         mode = MODE.RESULT;
         run.finishReason = reason;
-        run.scoreMeters = Math.max(
-          0,
-          Math.round(run.runMeters + run.bonusMeters - run.penaltyMeters - run.missPenaltyMeters),
-        );
+        run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
+        run.scoreMeters = calculateFinalScoreMeters(run);
         run.finalScore = run.scoreMeters;
         resultSnapshot = {
           score: run.finalScore,
@@ -1500,6 +1536,7 @@
         el.resultComment.textContent = getResultComment(resultSnapshot.score);
         el.resultScore.textContent = km(resultSnapshot.score);
         el.resultBreakdown.textContent = "";
+        el.resultBreakdown.children = [];
         el.resultBreakdown.className = "resultMeta";
         [
           ["実走行距離", km(resultSnapshot.runMeters)],

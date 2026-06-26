@@ -58,7 +58,7 @@ for (let step=0; step<${MAX_STEPS} && mode===MODE.PLAYING && (run.runMeters<${TA
   for (const it of items){ if (it.emoji==='👯‍♀️') sawDancer=true; }
   if (threat && player.onGround) inputState.jumpBuffer = HIT.JUMP_BUFFER_SEC;
   update(FIXED_STEP);
-  if (run.dancerInvincible>6.8) dancerInv=true;
+  if (run.dancerInvincible>3.8) dancerInv=true;
   if (sawBike && run.runMeters>1000 && run.accidents===0) bikeCleared=true;
   maxObs=Math.max(maxObs,obstacles.length); maxItems=Math.max(maxItems,items.length); maxHoles=Math.max(maxHoles,holes.length); maxParticles=Math.max(maxParticles,particles.length);
 }
