@@ -1,32 +1,18 @@
-# kiriganaito v6 emergency test report
-
-Date: 2026-06-27
-Version: `kiriganaito-2026-06-28-v6-score-competition`
+# kiriganaito v7 emergency test report
 
 ## Summary
-- Updated CLIENT_VERSION, HTML meta, home display, and result display to v6.
-- Replaced subtract-to-zero scoring with capped penalty scoring: penalties can reduce only up to 50% of gross distance.
-- Result score, `resultSnapshot.score`, and mocked Supabase `p_score` are aligned as integer meters.
-- Reduced miss-penalty growth by making 💰 penalty-free and limiting 🔩/⚙️ miss penalties to challenge items.
-- Changed 👯‍♀️ invincibility to `performance.now()` real-time 4 seconds and added forced obstacle opportunities during invincibility.
-- Added guaranteed 3km+ oncoming candidates with retry intervals and result diagnostics.
-- Increased score-item variety, empty-road diagnostics, chase density counters, and 1km speed multiplier reporting.
-- Supabase/RPC payload shape was not changed; tests mock fetch and perform no production score submission.
+- Updated CLIENT_VERSION, HTML meta, home display, and result display to `kiriganaito-2026-06-28-v7-result-dom-density`.
+- Fixed result DOM rendering by caching `resultComment` and splitting result processing into snapshot/header/breakdown/version/submission stages.
+- Increased hole density with short retry scheduling and recorded max/average hole gaps.
+- Increased oncoming obstacle retry/spawn behavior after 3km and recorded candidate/spawn/retry counts.
+- Supabase/RPC behavior remains mocked in tests; production submission is not performed by the test harness.
 
-## Test results
-- PASS: `node tests/progressive-autoplay.js`
-  - 1km reached in natural harness; 5km/10km/30km/150km not reached by the simple autopilot after density increase.
-  - console errors: 0, warnings: 0.
-- PASS: `node tests/release-comprehensive.js`
-  - Final verdict: WARN only because Playwright is unavailable in the environment.
-  - Result scores are non-zero after real running, penalty cap prevents zero clamp, and result score matches `p_score`.
-  - Supabase production submission: false.
-- PASS: `node tests/endurance-150km.js`
-  - 150km verification completed with score 436.87km and version `kiriganaito-2026-06-28-v6-score-competition`.
-  - 3km+ oncoming spawns recorded; max speed multiplier reached 1.350倍.
-- PASS: forbidden old version strings were checked with the required grep commands and returned no matches.
+## v7 緊急修正テスト結果
+- `node tests/progressive-autoplay.js`: PASS（console error/warning 0、Supabase 本番送信なし）。自然走行は最大 780m、密度増加により早期穴落ち傾向のため実機確認対象。
+- `node tests/release-comprehensive.js`: PASS/WARN（finalVerdict=WARN、console error 0、resultComment DOM キャッシュ、finishGame 完走、非0結果スコア、内訳、ランキング送信モック到達、CLIENT_VERSION v7 を確認）。WARN は Playwright 未導入によるスクリーンショット未取得。
+- `node tests/endurance-150km.js`: PASS（console error/warning 0、Supabase 本番送信なし）。密度調整後の自然走行は 19.05km で終了し、結果画面と送信 payload は非0で v7。
 
 ## Manual device checks recommended
-- Confirm on a smartphone that 3km+ oncoming obstacles are visually recognizable as moving toward 🚚.
-- Confirm 👯‍♀️ shows roughly 4 real seconds and obstacle hits during that window are prevented while holes still end the run.
-- Confirm item routes feel varied rather than equal-interval jumps.
+- 実機で結果画面の大きな記録、内訳、ランキング送信状態が初回表示から更新されること。
+- 実機で 0.5km 以降に小穴が十分見えること、穴同士が接触しないこと。
+- 実機で 3km 以降の対向障害物が左から右へ向かう障害物として見えること。

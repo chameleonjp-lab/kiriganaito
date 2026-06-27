@@ -43,7 +43,7 @@ function runSeed(seed){
   const script = html.match(/<script>([\s\S]*)<\/script>/)[1];
   const appended = `
 ;(() => {
-el.resultComment = $('resultComment');
+
 fetchBestRanking = async () => ({ ok: true, rows: [], error: '' });
 fetchPlayStats = async () => ({ ok: true, stats: { play_count: 0, player_count: 0 }, error: '' });
 sendScoreAfterResult = async (result) => { global.__mockSubmitPayload = pendingToRpcPayload({gameSlug: GAME_SLUG, displayName: 'TEST150', score: Math.trunc(Number(result.score)), clientVersion: CLIENT_VERSION}); setRankingStatus('ランキング送信モック'); fetchAndRenderResultRanking(); return { ok: true }; };
