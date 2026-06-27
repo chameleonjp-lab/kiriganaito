@@ -37,7 +37,7 @@ function runOne(seed,target){
   const ctx=createContext(seed); const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8'); const script=html.match(/<script>([\s\S]*)<\/script>/)[1];
   const appended=`;(()=>{
 fetchBestRanking=async()=>({ok:true,rows:[],error:''}); fetchPlayStats=async()=>({ok:true,stats:{play_count:0,player_count:0},error:''});
-el.resultComment=$('resultComment'); sendScoreAfterResult=async(result)=>{global.__mockSubmitPayload=pendingToRpcPayload({gameSlug:GAME_SLUG,displayName:'AUTO',score:Math.trunc(Number(result.score)),clientVersion:CLIENT_VERSION}); setRankingStatus('ランキング送信モック'); return {ok:true}}; flushPendingScores=async()=>({ok:true});
+ sendScoreAfterResult=async(result)=>{global.__mockSubmitPayload=pendingToRpcPayload({gameSlug:GAME_SLUG,displayName:'AUTO',score:Math.trunc(Number(result.score)),clientVersion:CLIENT_VERSION}); setRankingStatus('ランキング送信モック'); return {ok:true}}; flushPendingScores=async()=>({ok:true});
 el.playerName.value='AUTO'; localStorage.setItem('kiriganaitoName','AUTO'); startGame();
 const target=${target}, maxSteps=${MAX_STEPS_FOR_150KM}; let maxRun=0,maxScore=0,maxDanger=0,lastJumpAt=null,sawDancer=false,dancerPicked=false,sawBike=false,bikeCleared=false, bikeJumped=false;
 let lastVisible={holes:[],obstacles:[],items:[]}, lastPlayer={}, lastPatternName='', warningRendered=false, truckBlackRisk=false, lastDangerAhead=[];
