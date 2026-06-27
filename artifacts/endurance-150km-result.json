@@ -1,48 +1,52 @@
 {
-  "generatedAt": "2026-06-27T14:42:58.391Z",
+  "generatedAt": "2026-06-27T15:26:58.901Z",
   "targetMeters": 150000,
-  "seed": 150001,
+  "seed": 150002,
   "result": {
     "autopilot": {
       "mode": "RESULT",
-      "runMeters": 5860,
-      "scoreMeters": 6140,
+      "runMeters": 14241,
+      "scoreMeters": 21461,
       "reason": "🚓に捕まりました",
       "accidents": 3,
       "maxDanger": 3,
       "maxObs": 1,
-      "maxItems": 5,
+      "maxItems": 8,
       "maxHoles": 1,
-      "maxParticles": 34,
-      "sawDancer": false,
-      "dancerInv": false,
+      "maxParticles": 48,
+      "sawDancer": true,
+      "dancerInv": true,
       "sawBike": true,
-      "bikeCleared": true
+      "bikeCleared": false
     },
     "mode": "RESULT",
-    "runMeters": 5860,
-    "scoreMeters": 6140,
+    "runMeters": 14241,
+    "scoreMeters": 21461,
     "reason": "🚓に捕まりました",
     "accidents": 3,
     "maxDanger": 3,
-    "elapsedMs": 136883,
-    "hudRun": "5.86km",
-    "hudScore": "6.34km",
-    "resultScore": "6.14km",
+    "elapsedMs": 302600,
+    "hudRun": "14.24km",
+    "hudScore": "21.56km",
+    "resultScore": "21.46km",
     "resultReason": "終了理由：警戒度3で🚓に捕まりました。",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "最終スコア",
-        "6.14km"
+        "21.46km"
+      ],
+      [
+        "記録の内訳",
+        ""
       ],
       [
         "実走行距離",
-        "5.86km"
+        "14.24km"
       ],
       [
         "アイテム加算",
-        "+1.88km"
+        "+14.77km"
       ],
       [
         "事故ペナルティ",
@@ -50,11 +54,15 @@
       ],
       [
         "取り逃がしペナルティ",
-        "-1.00km"
+        "-6.95km"
       ],
       [
         "補正込み",
-        "6.14km"
+        "21.46km"
+      ],
+      [
+        "プレイ内容",
+        ""
       ],
       [
         "事故回数",
@@ -62,62 +70,138 @@
       ],
       [
         "取得アイテム数",
-        "21個"
+        "177個"
       ],
       [
         "走行時間",
-        "136.9秒"
+        "302.6秒"
       ],
       [
         "終了理由",
         "警戒度3で🚓に捕まりました。"
       ],
       [
-        "穴出現数",
-        "36個"
+        "出現数",
+        ""
       ],
       [
-        "障害物出現数",
-        "9個"
+        "穴",
+        "114個"
+      ],
+      [
+        "障害物",
+        "14個"
+      ],
+      [
+        "対向障害物",
+        "5個"
+      ],
+      [
+        "加点アイテム",
+        "605個"
+      ],
+      [
+        "無敵アイテム",
+        "7個"
+      ],
+      [
+        "逃走中の障害物",
+        "7個"
+      ],
+      [
+        "逃走中の穴",
+        "6個"
       ],
       [
         "対向障害物候補",
-        "22回"
+        "429回"
       ],
       [
-        "対向障害物出現数",
-        "3個"
+        "診断",
+        ""
       ],
       [
-        "加点アイテム出現数",
-        "90個"
+        "runMeters",
+        "14241"
       ],
       [
-        "無敵アイテム出現数",
-        "0個"
+        "maxRunMeters",
+        "14241"
       ],
       [
-        "全アイテム出現数",
-        "90個"
+        "lastNonZeroRunMeters",
+        "14240.822287504016"
+      ],
+      [
+        "bonusMeters",
+        "14770"
+      ],
+      [
+        "penaltyMeters",
+        "600"
+      ],
+      [
+        "missPenaltyMeters",
+        "6950"
+      ],
+      [
+        "elapsed",
+        "302.600"
+      ],
+      [
+        "scoreMeters",
+        "21461"
+      ],
+      [
+        "finalScore",
+        "21461"
+      ],
+      [
+        "resultSnapshot.score",
+        "21461"
+      ],
+      [
+        "resultSnapshot.runMeters",
+        "14241"
+      ],
+      [
+        "resultScore.textContent",
+        "21.46km"
+      ],
+      [
+        "ranking payload p_score",
+        "21461"
+      ],
+      [
+        "score",
+        "21461"
+      ],
+      [
+        "zeroReason",
+        "normal_non_zero"
+      ],
+      [
+        "最大速度倍率",
+        "1.350倍"
       ],
       [
         "version",
-        "kiriganaito-2026-06-27-v4-score-density"
+        "kiriganaito-2026-06-27-v5-result-root-density"
       ]
     ],
     "maxObs": 1,
-    "maxItems": 5,
+    "maxItems": 8,
     "maxHoles": 1,
-    "maxParticles": 34,
-    "sawDancer": false,
-    "dancerInv": false,
+    "maxParticles": 48,
+    "sawDancer": true,
+    "dancerInv": true,
     "sawBike": true,
-    "bikeCleared": true,
+    "bikeCleared": false,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 6140,
-      "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
+      "p_score": 21461,
+      "p_client_version": "kiriganaito-2026-06-27-v5-result-root-density"
     },
     "debug": ""
   },

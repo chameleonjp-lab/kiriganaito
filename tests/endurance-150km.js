@@ -8,12 +8,12 @@ const seeds = [150001, 150002, 150003, 150004, 150005];
 function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
 
 function makeEl(id){
-  const el = { id, textContent:'', value:'', hidden:false, className:'', children:[], style:{},
+  const el = { id, textContent:'', value:'', hidden:false, className:'', children:[], get childNodes(){return this.children}, style:{},
     classList:{ add(){}, remove(){}, toggle(){} },
     append(...xs){ this.children.push(...xs); }, appendChild(x){ this.children.push(x); return x; },
     addEventListener(){}, setAttribute(){}, getBoundingClientRect(){ return {width:390,height:430}; }
   };
-  Object.defineProperty(el, 'innerHTML', { get(){ return this.children.map(c=>c.textContent||'').join(''); }, set(v){ this.children = []; this.textContent = String(v); } });
+  Object.defineProperty(el, 'innerHTML', { get(){ return this.children.map(c=>c.textContent||'').join(''); }, set(v){ this.children.splice(0); this.textContent = String(v); } });
   return el;
 }
 function createContext(seed){
@@ -66,7 +66,7 @@ const autopilot = { mode, runMeters: Math.round(run.runMeters), scoreMeters: run
 if (mode===MODE.PLAYING && run.runMeters>=${TARGET} && run.scoreMeters>=${TARGET}) {
   finishGame('150km自然走行検証完了');
 }
-global.__result={autopilot, mode, runMeters:resultSnapshot.runMeters, scoreMeters:resultSnapshot.score, reason:resultSnapshot.reason, accidents:resultSnapshot.accidents, maxDanger:resultSnapshot.maxDanger, elapsedMs:resultSnapshot.elapsedMs, hudRun:el.hudRun.textContent, hudScore:el.hudScore.textContent, resultScore:el.resultScore.textContent, resultReason:el.resultReason.textContent, rankingStatus:el.rankingStatus.textContent, resultBreakdown:(el.resultBreakdown.children||[]).map(c=>c.children?.map?.(x=>x.textContent)||[]), maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared, mockSubmitPayload: global.__mockSubmitPayload, debug:el.debug.textContent};
+global.__result={autopilot, mode, runMeters:resultSnapshot.runMeters, scoreMeters:resultSnapshot.score, reason:resultSnapshot.reason, accidents:resultSnapshot.accidents, maxDanger:resultSnapshot.maxDanger, elapsedMs:resultSnapshot.elapsedMs, hudRun:el.hudRun.textContent, hudScore:el.hudScore.textContent, resultScore:el.resultScore.textContent, resultReason:el.resultReason.textContent, rankingStatus:el.rankingStatus.textContent, resultBreakdown:(el.resultBreakdown.childNodes||[]).map(c=>c.children?.map?.(x=>x.textContent)||[]), maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared, mockSubmitPayload: global.__mockSubmitPayload, debug:el.debug.textContent};
 })();`;
   try { Function(script + appended)(); } catch(e) { ctx.consoleErrors.push(e.stack); }
   return {...ctx, result: global.__result};

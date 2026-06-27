@@ -521,8 +521,25 @@ Web Share API が使える場合は使い、使えない場合はクリップボ
 - スコア計算式、事故ペナルティ、各アイテムの加算・取り逃がしペナルティ、👯‍♀️ の 4 秒無敵を除くスコア・ランキング仕様は変更していません。ランキング、pending queue、Supabase URL、Publishable key、RPC パス、RPC 引数、ランキング送信値も変更していません。
 - Supabase URL、Publishable key、RPC 引数、ランキング送信値、ランキング取得 payload、ランキング表示の基本データ構造、ゲーム slug、公開 URL は変更していません。ただし、通信失敗時の記録消失を防ぐため、localStorage の pending queue とランキング再送処理を追加しています。
 
-### 公開反映確認バージョン（2026-06-27 v3）
+### 公開反映確認バージョン（旧版からの更新）
 
-- `CLIENT_VERSION` は `kiriganaito-2026-06-27-v4-score-density` です。`GAME_SLUG`、`PUBLIC_URL`、Supabase URL、RPC 仕様は変更しません。
+- `CLIENT_VERSION` は `kiriganaito-2026-06-27-v5-result-root-density` です。`GAME_SLUG`、`PUBLIC_URL`、Supabase URL、RPC 仕様は変更しません。
 - 対向障害物は 3.00km 未満では出現しません。3.00km 到達後は最初の候補を 0.05〜0.12km 以内に置き、3.00〜5.00km は 0.12〜0.22km、5.00km 以降は 0.09〜0.18km、逃走中は 0.07〜0.14km ごとに候補化します。
 - 0.50km 以降は穴または障害物が次に見えやすい密度へ寄せ、1.50km 以降と 3.00km 以降はさらに短い `holeGap` / `obs` 間隔を使います。ただし穴同士の接触、障害物の過密重なり、2段ジャンプ必須配置は禁止します。
+
+## 2026-06-27 v5 result-root-density 緊急修正
+
+- `CLIENT_VERSION` は `kiriganaito-2026-06-27-v5-result-root-density` です。HTML の `x-client-version`、ホーム画面、結果画面にも同じ v5 を表示します。旧版の公開修正ラベルは実装・仕様・テスト・artifact に残しません。
+- 結果画面はランキング欄より上に「記録の内訳」「プレイ内容」「出現数」「診断」を表示します。最終スコアが `0.00km` でも、実走行距離、アイテム加算、事故ペナルティ、取り逃がしペナルティ、補正込み、事故回数、取得アイテム数、走行時間、終了理由を確認できます。
+- `zeroReason` は `normal_non_zero`、`penalty_clamped`、`bug_zero_run`、`bug_render_stale` のいずれかを結果画面に表示し、0.00km がペナルティ由来か実走行距離未反映バグかを判別します。ランキング payload には `zeroReason` を含めません。
+- 診断には `run.runMeters`、`run.maxRunMeters`、`run.lastNonZeroRunMeters`、`run.bonusMeters`、`run.penaltyMeters`、`run.missPenaltyMeters`、`run.elapsed`、`run.scoreMeters`、`run.finalScore`、`resultSnapshot.score`、`resultSnapshot.runMeters`、`el.resultScore.textContent`、ランキング送信用 `p_score` 相当値を表示します。
+- 出現数カウンターには、穴、障害物、対向障害物、加点アイテム、無敵アイテム、逃走中の障害物、逃走中の穴、対向障害物候補を表示します。
+- 結果内訳のクリアは `textContent = ""` と `replaceChildren()` を使い、読み取り専用の `children` へ配列を代入しません。
+- 事故ペナルティは 1.00km 未満が `-100m`、1.00km 以降が `-200m` です。穴落ちは即終了、警戒度3終了は維持します。ランキング `p_score` は変更後の補正込みスコアです。
+- 「何もない道」は、画面内または直近の出現予定に穴・障害物・加点アイテム・無敵アイテムが存在しない状態です。v5 では穴、障害物、加点アイテムの予定を独立処理し、同じフレームで複数種が生成可能な構造にして、この比率を前回より半減させる方針です。
+- 加点アイテム（💰/🔩/⚙️）は専用スケジュールで大幅に増やし、目安比率は 💰 70%、🔩 15%、⚙️ 15% です。👯‍♀️ は加点アイテム10倍の対象に含めません。
+- 無敵アイテム 👯‍♀️ は、現在の `nextDancerAt`、4秒無敵、穴には落ちる、スコア加算なし、取り逃がし減点なし、地上付近の置物型を維持します。今回、比率・クールダウンは変更しません。
+- 逃走中は開始直後 0.7 秒の短い余白後、専用の短い予定で穴・静止障害物・加点アイテムを高密度化します。3km 未満は対向障害物なし、3km 以降は対向障害物も高密度化します。
+- 対向障害物は 3.00km から解禁し、3.00km 到達直後は 0.05〜0.12km 以内、3.00〜5.00km は 0.12〜0.22km、5.00km 以降は 0.09〜0.18km、逃走中かつ3km以降は 0.07〜0.14km ごとに候補を作ります。安全距離不足時は短距離で再試行します。
+- 🚚速度倍率は `getSpeedMultiplierByKm(km) = Math.min(1.35, 1 + Math.floor(km) * 0.035)` です。実走行距離加算、道路スクロール、穴、障害物、アイテム、対向障害物移動に適用し、逃走倍率と組み合わせます。ジャンプ力と重力は変更しません。
+- Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行、ランキング送信仕様、`GAME_SLUG`、`PUBLIC_URL` は変更しません。

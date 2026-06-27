@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-06-27-v3-public-fix" />
+    <meta name="x-client-version" content="kiriganaito-2026-06-27-v5-result-root-density" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-27-v3-public-fix</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-27-v5-result-root-density</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-27-v3-public-fix</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-27-v5-result-root-density</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-27-v4-score-density",
+        CLIENT_VERSION = "kiriganaito-2026-06-27-v5-result-root-density",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -413,8 +413,8 @@
         SHAKE_FINISH = 7,
         ESCAPED_FLASH_SEC = 1.15,
         DPR_MAX = 2,
-        MAX_OBS = 28,
-        MAX_ITEMS = 24,
+        MAX_OBS = 36,
+        MAX_ITEMS = 40,
         MAX_ROAD = 34,
         MAX_PARTICLES = 96,
         FIXED_STEP = 1 / 60,
@@ -598,13 +598,18 @@
           scoreItemSpawnCount: 0,
           invincibleItemSpawnCount: 0,
           itemSpawnCount: 0,
+          chaseObstacleSpawnCount: 0,
+          chaseHoleSpawnCount: 0,
+          maxSpeedMultiplier: 1,
           nextDancerAt: 1.5,
         };
         spawn = {
           nextObstacleAt: 0.055,
           nextHoleAt: 0.095,
-          nextItemAt: 0.020,
+          nextItemAt: 0.012,
+          nextScoreItemAt: 0.012,
           nextOncomingAt: 3.05 + rand(0, 0.07),
+          chaseGraceUntil: 0,
           lastDangerAt: -9,
           lastHoleAt: -9,
           lastHoleKind: "NONE",
@@ -741,6 +746,7 @@
         player.inv = Math.max(0, player.inv - dt);
         run.dancerInvincible = Math.max(0, run.dancerInvincible - dt);
         const speedMult = getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000);
+        run.maxSpeedMultiplier = Math.max(run.maxSpeedMultiplier || 1, speedMult);
         let visual = (run.chase > 0 ? CHASE_MULT : 1) * speedMult;
         run.visualScroll += VISUAL_SCROLL_SPEED * speedMult * (run.chase > 0 ? CHASE_VISUAL_SCROLL_MULT : 1) * dt;
         let move = BASE_SPEED * 55 * visual * dt;
@@ -781,19 +787,19 @@
         return groundY + Math.sin((x + scroll * 0.35) / 42) * 3;
       }
       function getSpeedMultiplierByKm(km) {
-        return Math.min(1.45, 1 + Math.floor(Math.max(0, km)) * 0.04);
+        return Math.min(1.35, 1 + Math.floor(Math.max(0, km)) * 0.035);
       }
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
-          return { obs: chase ? 0.028 : 0.034, holeGap: chase ? 0.058 : 0.070, item: 0.024, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
+          return { obs: chase ? 0.018 : 0.026, holeGap: chase ? 0.040 : 0.052, item: 0.006, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return { obs: chase ? 0.018 : 0.022, holeGap: chase ? 0.042 : 0.050, item: 0.015, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.012 : 0.017, holeGap: chase ? 0.030 : 0.038, item: 0.0045, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 3)
-          return { obs: chase ? 0.017 : 0.021, holeGap: chase ? 0.038 : 0.046, item: 0.0145, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.011 : 0.016, holeGap: chase ? 0.028 : 0.035, item: 0.0042, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
-          return { obs: chase ? 0.015 : 0.018, holeGap: chase ? 0.034 : 0.042, item: chase ? 0.016 : 0.013, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
-        return { obs: chase ? 0.014 : 0.017, holeGap: chase ? 0.032 : 0.039, item: chase ? 0.016 : 0.0125, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
+          return { obs: chase ? 0.010 : 0.014, holeGap: chase ? 0.026 : 0.032, item: chase ? 0.004 : 0.0038, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+        return { obs: chase ? 0.009 : 0.013, holeGap: chase ? 0.024 : 0.030, item: chase ? 0.004 : 0.0035, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
       }
       function rand(a, b) {
         return a + Math.random() * (b - a);
@@ -810,7 +816,7 @@
           spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.002, 0.010);
         if (kind === "hole")
           spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.004, 0.014);
-        if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.003, 0.010);
+        if (kind === "item") { spawn.nextItemAt = km + d.item + rand(0.003, 0.010); spawn.nextScoreItemAt = spawn.nextItemAt; }
         if (kind === "oncoming") spawn.nextOncomingAt = km + nextOncomingInterval(km);
       }
       function holeGapForKind(kind) {
@@ -846,26 +852,37 @@
       function spawnStuff() {
         const km = run.runMeters / 1000;
         const d = getDifficultyByKm(km);
+        const chase = run.chase > 0;
+        const chaseReady = !chase || run.elapsed >= (spawn.chaseGraceUntil || 0);
+        const dueHole = km >= spawn.nextHoleAt;
+        const dueObstacle = km >= spawn.nextObstacleAt;
+        const dueScoreItem = km >= (spawn.nextScoreItemAt ?? spawn.nextItemAt);
         const oncomingDue = km >= spawn.nextOncomingAt && km >= 3;
         if (oncomingDue) run.oncomingCandidateCount++;
-        if (
-          (oncomingDue || km >= Math.min(spawn.nextHoleAt, spawn.nextObstacleAt, spawn.nextItemAt)) &&
-          holes.length < 12 &&
-          obstacles.length < MAX_OBS &&
-          items.length < MAX_ITEMS
-        ) {
-          const itemDue = km >= spawn.nextItemAt;
-          const pattern = oncomingDue && canSpawnObstacle(km, 1)
-            ? (run.chase > 0 ? "chase_oncoming" : "oncoming_safe")
-            : itemDue && canSpawnItem(km) && Math.random() < 0.82
-              ? (Math.random() < 0.70 ? "high_coin" : Math.random() < 0.50 ? "risky_gear" : "bolt_item")
-              : selectPatternByDifficulty(km, d);
-          spawnPattern(pattern, km, d);
+
+        if (dueScoreItem && items.length < MAX_ITEMS) {
+          if (canSpawnItem(km)) spawnScoreItemPattern(km, d);
+          scheduleNext("item", km, d);
         }
-        if (km >= spawn.nextHoleAt) scheduleNext("hole", km, d);
-        if (km >= spawn.nextObstacleAt) scheduleNext("obstacle", km, d);
-        if (km >= spawn.nextItemAt) scheduleNext("item", km, d);
-        if (km >= spawn.nextOncomingAt) scheduleNext("oncoming", km, d);
+        if (dueHole && holes.length < 16 && chaseReady) {
+          const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]);
+          if (!spawnHolePattern(km, d, { kind })) scheduleNext("hole", km + 0.006, d);
+        }
+        if (dueObstacle && obstacles.length < MAX_OBS && chaseReady) {
+          if (!spawnObstaclePattern(km, d, -1, chase ? (Math.random() < 0.72 ? "🚶" : null) : null)) scheduleNext("obstacle", km + 0.006, d);
+        }
+        if (oncomingDue && obstacles.length < MAX_OBS) {
+          if (canSpawnObstacle(km, 1)) spawnObstaclePattern(km, d, 1, null, -54);
+          else spawn.nextOncomingAt = km + rand(0.015, 0.035);
+        }
+        if (km >= run.nextDancerAt && items.length < MAX_ITEMS && canSpawnItem(km) && Math.random() < 0.006) {
+          spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
+        }
+      }
+      function spawnScoreItemPattern(km, d) {
+        const r = Math.random();
+        const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️";
+        return spawnItemPattern(km, d, { high: false, type, x: -36 - rand(0, 34) });
       }
       function selectPatternByDifficulty(km, d) {
         const safeOncoming = km >= 3 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
@@ -955,6 +972,7 @@
         }
         holes.push({ x, y: groundY - 6, w, h: H - groundY + 14, kind });
         run.holeSpawnCount++;
+        if (run.chase > 0) run.chaseHoleSpawnCount++;
         spawn.lastHoleAt = km;
         spawn.lastHoleKind = kind;
         spawn.lastDangerAt = km;
@@ -967,6 +985,7 @@
         return true;
       }
       function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44) {
+        if (!canSpawnObstacle(km, dir)) return false;
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
         let t = OBS_TYPES[(Math.random() * maxType) | 0];
         if (forcedEmoji) t = OBS_TYPES.find((v) => v[0] === forcedEmoji) || t;
@@ -984,11 +1003,13 @@
         spawn.lastObstacleAt = km;
         spawn.lastDangerAt = km;
         run.obstacleSpawnCount++;
+        if (run.chase > 0) run.chaseObstacleSpawnCount++;
         if (dir === 1) {
           run.oncomingSpawnCount++;
           spawn.lastOncomingAt = km;
           spawn.nextOncomingAt = km + nextOncomingInterval(km);
         }
+        return true;
       }
       function spawnItemPattern(km, d, opt = {}) {
         let availableItems = run.chase > 0
@@ -1194,6 +1215,10 @@
         run.danger++;
         run.maxDanger = Math.max(run.maxDanger, run.danger);
         run.chase = CHASE_TIME;
+        spawn.chaseGraceUntil = run.elapsed + 0.7;
+        spawn.nextObstacleAt = Math.min(spawn.nextObstacleAt, run.runMeters / 1000 + 0.018);
+        spawn.nextHoleAt = Math.min(spawn.nextHoleAt, run.runMeters / 1000 + 0.024);
+        spawn.nextScoreItemAt = Math.min(spawn.nextScoreItemAt || spawn.nextItemAt, run.runMeters / 1000 + 0.010);
         player.inv = HIT.INVINCIBLE_SEC;
         burst(o.x, o.y, "#ff765f", 16);
         floatText(player.x + 14, player.y - 20, "-" + km(accidentPenalty), "#ffebe0");
@@ -1605,7 +1630,12 @@
           scoreItemSpawnCount: run.scoreItemSpawnCount || 0,
           invincibleItemSpawnCount: run.invincibleItemSpawnCount || 0,
           itemSpawnCount: run.itemSpawnCount || 0,
+          chaseObstacleSpawnCount: run.chaseObstacleSpawnCount || 0,
+          chaseHoleSpawnCount: run.chaseHoleSpawnCount || 0,
+          maxSpeedMultiplier: run.maxSpeedMultiplier || 1,
+          elapsed: run.elapsed,
         };
+        resultSnapshot.zeroReason = resultSnapshot.score > 0 ? "normal_non_zero" : resultSnapshot.runMeters > 0 ? "penalty_clamped" : run.elapsed > 1 ? "bug_zero_run" : "bug_render_stale";
         show("result");
         mode = MODE.RESULT;
         el.resultReason.textContent = getReasonText(reason);
@@ -1617,22 +1647,43 @@
         el.resultBreakdown.className = "resultMeta";
         [
           ["最終スコア", km(resultSnapshot.score)],
+          ["記録の内訳", ""],
           ["実走行距離", km(resultSnapshot.runMeters)],
           ["アイテム加算", "+" + km(resultSnapshot.bonusMeters)],
           ["事故ペナルティ", "-" + km(resultSnapshot.penaltyMeters)],
           ["取り逃がしペナルティ", "-" + km(resultSnapshot.missPenaltyMeters)],
           ["補正込み", km(resultSnapshot.score)],
+          ["プレイ内容", ""],
           ["事故回数", resultSnapshot.accidents + "回"],
           ["取得アイテム数", resultSnapshot.items + "個"],
           ["走行時間", (resultSnapshot.elapsedMs / 1000).toFixed(1) + "秒"],
           ["終了理由", getReasonText(reason).replace(/^終了理由：/, "")],
-          ["穴出現数", resultSnapshot.holeSpawnCount + "個"],
-          ["障害物出現数", resultSnapshot.obstacleSpawnCount + "個"],
+          ["出現数", ""],
+          ["穴", resultSnapshot.holeSpawnCount + "個"],
+          ["障害物", resultSnapshot.obstacleSpawnCount + "個"],
+          ["対向障害物", resultSnapshot.oncomingSpawnCount + "個"],
+          ["加点アイテム", resultSnapshot.scoreItemSpawnCount + "個"],
+          ["無敵アイテム", resultSnapshot.invincibleItemSpawnCount + "個"],
+          ["逃走中の障害物", resultSnapshot.chaseObstacleSpawnCount + "個"],
+          ["逃走中の穴", resultSnapshot.chaseHoleSpawnCount + "個"],
           ["対向障害物候補", resultSnapshot.oncomingCandidateCount + "回"],
-          ["対向障害物出現数", resultSnapshot.oncomingSpawnCount + "個"],
-          ["加点アイテム出現数", resultSnapshot.scoreItemSpawnCount + "個"],
-          ["無敵アイテム出現数", resultSnapshot.invincibleItemSpawnCount + "個"],
-          ["全アイテム出現数", resultSnapshot.itemSpawnCount + "個"],
+          ["診断", ""],
+          ["runMeters", String(run.runMeters)],
+          ["maxRunMeters", String(run.maxRunMeters)],
+          ["lastNonZeroRunMeters", String(run.lastNonZeroRunMeters)],
+          ["bonusMeters", String(run.bonusMeters)],
+          ["penaltyMeters", String(run.penaltyMeters)],
+          ["missPenaltyMeters", String(run.missPenaltyMeters)],
+          ["elapsed", run.elapsed.toFixed(3)],
+          ["scoreMeters", String(run.scoreMeters)],
+          ["finalScore", String(run.finalScore)],
+          ["resultSnapshot.score", String(resultSnapshot.score)],
+          ["resultSnapshot.runMeters", String(resultSnapshot.runMeters)],
+          ["resultScore.textContent", el.resultScore.textContent],
+          ["ranking payload p_score", String(resultSnapshot.score)],
+          ["score", String(resultSnapshot.score)],
+          ["zeroReason", resultSnapshot.zeroReason],
+          ["最大速度倍率", resultSnapshot.maxSpeedMultiplier.toFixed(3) + "倍"],
           ["version", CLIENT_VERSION],
         ].forEach((r) => {
           let d = document.createElement("div");

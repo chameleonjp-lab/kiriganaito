@@ -8,10 +8,10 @@ const SUPABASE_HOST = 'https://mlpnjgezrnhdxsxolyzj.supabase.co';
 const MAX_STEPS_FOR_150KM = 260000;
 function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
 function makeEl(id){
-  const el={id,textContent:'',value:'',hidden:false,className:'',children:[],style:{},onclick:null,
+  const el={id,textContent:'',value:'',hidden:false,className:'',children:[],get childNodes(){return this.children},style:{},onclick:null,
     classList:{add(){},remove(){},toggle(){}},append(...xs){this.children.push(...xs)},appendChild(x){this.children.push(x);return x},
     addEventListener(){},setAttribute(){},getBoundingClientRect(){return {width:390,height:430}}};
-  Object.defineProperty(el,'innerHTML',{get(){return this.children.map(c=>c.textContent||'').join('')},set(v){this.children=[];this.textContent=String(v)}});
+  Object.defineProperty(el,'innerHTML',{get(){return this.children.map(c=>c.textContent||'').join('')},set(v){this.children.splice(0);this.textContent=String(v)}});
   return el;
 }
 function createContext(seed){
