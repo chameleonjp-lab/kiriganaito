@@ -1,40 +1,40 @@
 {
-  "generatedAt": "2026-06-27T15:26:58.901Z",
+  "generatedAt": "2026-06-27T15:56:17.111Z",
   "targetMeters": 150000,
-  "seed": 150002,
+  "seed": 150001,
   "result": {
     "autopilot": {
-      "mode": "RESULT",
-      "runMeters": 14241,
-      "scoreMeters": 21461,
-      "reason": "🚓に捕まりました",
-      "accidents": 3,
-      "maxDanger": 3,
+      "mode": "PLAYING",
+      "runMeters": 150000,
+      "scoreMeters": 436870,
+      "reason": "",
+      "accidents": 0,
+      "maxDanger": 0,
       "maxObs": 1,
-      "maxItems": 8,
+      "maxItems": 10,
       "maxHoles": 1,
       "maxParticles": 48,
       "sawDancer": true,
       "dancerInv": true,
       "sawBike": true,
-      "bikeCleared": false
+      "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 14241,
-    "scoreMeters": 21461,
-    "reason": "🚓に捕まりました",
-    "accidents": 3,
-    "maxDanger": 3,
-    "elapsedMs": 302600,
-    "hudRun": "14.24km",
-    "hudScore": "21.56km",
-    "resultScore": "21.46km",
-    "resultReason": "終了理由：警戒度3で🚓に捕まりました。",
+    "runMeters": 150000,
+    "scoreMeters": 436870,
+    "reason": "150km自然走行検証完了",
+    "accidents": 0,
+    "maxDanger": 0,
+    "elapsedMs": 2871250,
+    "hudRun": "150.00km",
+    "hudScore": "436.87km",
+    "resultScore": "436.87km",
+    "resultReason": "終了理由：150km自然走行検証完了",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "最終スコア",
-        "21.46km"
+        "436.87km"
       ],
       [
         "記録の内訳",
@@ -42,23 +42,39 @@
       ],
       [
         "実走行距離",
-        "14.24km"
+        "150.00km"
       ],
       [
         "アイテム加算",
-        "+14.77km"
+        "+296.07km"
+      ],
+      [
+        "基礎距離",
+        "446.07km"
       ],
       [
         "事故ペナルティ",
-        "-0.60km"
+        "-0.00km"
       ],
       [
         "取り逃がしペナルティ",
-        "-6.95km"
+        "-9.20km"
       ],
       [
-        "補正込み",
-        "21.46km"
+        "総ペナルティ",
+        "-9.20km"
+      ],
+      [
+        "ペナルティ適用上限",
+        "223.03km"
+      ],
+      [
+        "実適用ペナルティ",
+        "-9.20km"
+      ],
+      [
+        "カットされたペナルティ",
+        "0.00km"
       ],
       [
         "プレイ内容",
@@ -66,19 +82,35 @@
       ],
       [
         "事故回数",
-        "<strong>3回</strong>"
+        "0回"
       ],
       [
-        "取得アイテム数",
-        "177個"
+        "加点アイテム出現数",
+        "6543個"
+      ],
+      [
+        "加点アイテム取得数",
+        "3501個"
+      ],
+      [
+        "取得率",
+        "53.5%"
+      ],
+      [
+        "取り逃がし対象アイテム数",
+        "419個"
+      ],
+      [
+        "取り逃がし発生数",
+        "184回"
       ],
       [
         "走行時間",
-        "302.6秒"
+        "2871.3秒"
       ],
       [
         "終了理由",
-        "警戒度3で🚓に捕まりました。"
+        "150km自然走行検証完了"
       ],
       [
         "出現数",
@@ -86,35 +118,63 @@
       ],
       [
         "穴",
-        "114個"
+        "1116個"
       ],
       [
         "障害物",
-        "14個"
+        "209個"
       ],
       [
         "対向障害物",
-        "5個"
+        "39個"
       ],
       [
         "加点アイテム",
-        "605個"
+        "6543個"
       ],
       [
         "無敵アイテム",
-        "7個"
+        "81個"
       ],
       [
         "逃走中の障害物",
-        "7個"
+        "0個"
       ],
       [
         "逃走中の穴",
-        "6個"
+        "0個"
+      ],
+      [
+        "逃走中の加点アイテム",
+        "0個"
+      ],
+      [
+        "逃走中の対向障害物",
+        "0個"
+      ],
+      [
+        "無敵中に出た障害物数",
+        "110個"
+      ],
+      [
+        "無敵で防いだ事故数",
+        "177回"
+      ],
+      [
+        "最大空白時間",
+        "0.00秒"
+      ],
+      [
+        "最大空白距離",
+        "0.000km"
+      ],
+      [
+        "空白率",
+        "0.0%"
       ],
       [
         "対向障害物候補",
-        "429回"
+        "3070回"
       ],
       [
         "診断",
@@ -122,59 +182,59 @@
       ],
       [
         "runMeters",
-        "14241"
+        "150000"
       ],
       [
         "maxRunMeters",
-        "14241"
+        "150000.39641282664"
       ],
       [
         "lastNonZeroRunMeters",
-        "14240.822287504016"
+        "150000.39641282664"
       ],
       [
         "bonusMeters",
-        "14770"
+        "296070"
       ],
       [
         "penaltyMeters",
-        "600"
+        "0"
       ],
       [
         "missPenaltyMeters",
-        "6950"
+        "9200"
       ],
       [
         "elapsed",
-        "302.600"
+        "2871.250"
       ],
       [
         "scoreMeters",
-        "21461"
+        "436870"
       ],
       [
         "finalScore",
-        "21461"
+        "436870"
       ],
       [
         "resultSnapshot.score",
-        "21461"
+        "436870"
       ],
       [
         "resultSnapshot.runMeters",
-        "14241"
+        "150000"
       ],
       [
         "resultScore.textContent",
-        "21.46km"
+        "436.87km"
       ],
       [
         "ranking payload p_score",
-        "21461"
+        "436870"
       ],
       [
         "score",
-        "21461"
+        "436870"
       ],
       [
         "zeroReason",
@@ -186,22 +246,22 @@
       ],
       [
         "version",
-        "kiriganaito-2026-06-27-v5-result-root-density"
+        "kiriganaito-2026-06-28-v6-score-competition"
       ]
     ],
     "maxObs": 1,
-    "maxItems": 8,
+    "maxItems": 10,
     "maxHoles": 1,
     "maxParticles": 48,
     "sawDancer": true,
     "dancerInv": true,
     "sawBike": true,
-    "bikeCleared": false,
+    "bikeCleared": true,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 21461,
-      "p_client_version": "kiriganaito-2026-06-27-v5-result-root-density"
+      "p_score": 436870,
+      "p_client_version": "kiriganaito-2026-06-28-v6-score-competition"
     },
     "debug": ""
   },
