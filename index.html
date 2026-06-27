@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-27-v3-public-fix",
+        CLIENT_VERSION = "kiriganaito-2026-06-27-v4-score-density",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -413,8 +413,8 @@
         SHAKE_FINISH = 7,
         ESCAPED_FLASH_SEC = 1.15,
         DPR_MAX = 2,
-        MAX_OBS = 18,
-        MAX_ITEMS = 12,
+        MAX_OBS = 28,
+        MAX_ITEMS = 24,
         MAX_ROAD = 34,
         MAX_PARTICLES = 96,
         FIXED_STEP = 1 / 60,
@@ -595,13 +595,15 @@
           oncomingSpawnCount: 0,
           oncomingCandidateCount: 0,
           dancerSpawnCount: 0,
+          scoreItemSpawnCount: 0,
+          invincibleItemSpawnCount: 0,
           itemSpawnCount: 0,
           nextDancerAt: 1.5,
         };
         spawn = {
-          nextObstacleAt: 0.07,
-          nextHoleAt: 0.13,
-          nextItemAt: 0.10,
+          nextObstacleAt: 0.055,
+          nextHoleAt: 0.095,
+          nextItemAt: 0.020,
           nextOncomingAt: 3.05 + rand(0, 0.07),
           lastDangerAt: -9,
           lastHoleAt: -9,
@@ -738,15 +740,16 @@
         inputState.landedPulse = Math.max(0, inputState.landedPulse - dt);
         player.inv = Math.max(0, player.inv - dt);
         run.dancerInvincible = Math.max(0, run.dancerInvincible - dt);
-        let visual = run.chase > 0 ? CHASE_MULT : 1;
-        run.visualScroll += VISUAL_SCROLL_SPEED * (run.chase > 0 ? CHASE_VISUAL_SCROLL_MULT : 1) * dt;
+        const speedMult = getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000);
+        let visual = (run.chase > 0 ? CHASE_MULT : 1) * speedMult;
+        run.visualScroll += VISUAL_SCROLL_SPEED * speedMult * (run.chase > 0 ? CHASE_VISUAL_SCROLL_MULT : 1) * dt;
         let move = BASE_SPEED * 55 * visual * dt;
         run.runMeters = Math.max(0, Number.isFinite(run.runMeters) ? run.runMeters : 0);
         run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
         if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         spawnStuff();
         updateThings(move, dt);
-        run.runMeters += BASE_SPEED * 9 * dt;
+        run.runMeters += BASE_SPEED * 9 * speedMult * dt;
         run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
         if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         checkCollisions();
@@ -777,17 +780,20 @@
         const scroll = run ? run.visualScroll : 0;
         return groundY + Math.sin((x + scroll * 0.35) / 42) * 3;
       }
+      function getSpeedMultiplierByKm(km) {
+        return Math.min(1.45, 1 + Math.floor(Math.max(0, km)) * 0.04);
+      }
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
-          return { obs: chase ? 0.034 : 0.042, holeGap: chase ? 0.074 : 0.092, item: 0.24, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
+          return { obs: chase ? 0.028 : 0.034, holeGap: chase ? 0.058 : 0.070, item: 0.024, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return { obs: chase ? 0.023 : 0.028, holeGap: chase ? 0.056 : 0.066, item: 0.15, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.018 : 0.022, holeGap: chase ? 0.042 : 0.050, item: 0.015, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 3)
-          return { obs: chase ? 0.021 : 0.026, holeGap: chase ? 0.052 : 0.062, item: 0.145, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.017 : 0.021, holeGap: chase ? 0.038 : 0.046, item: 0.0145, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
-          return { obs: chase ? 0.018 : 0.022, holeGap: chase ? 0.046 : 0.056, item: chase ? 0.16 : 0.13, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
-        return { obs: chase ? 0.016 : 0.020, holeGap: chase ? 0.044 : 0.052, item: chase ? 0.16 : 0.125, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
+          return { obs: chase ? 0.015 : 0.018, holeGap: chase ? 0.034 : 0.042, item: chase ? 0.016 : 0.013, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+        return { obs: chase ? 0.014 : 0.017, holeGap: chase ? 0.032 : 0.039, item: chase ? 0.016 : 0.0125, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
       }
       function rand(a, b) {
         return a + Math.random() * (b - a);
@@ -804,7 +810,7 @@
           spawn.nextObstacleAt = km + d.obs + chasePad + rand(0.002, 0.010);
         if (kind === "hole")
           spawn.nextHoleAt = km + d.holeGap + chasePad + rand(0.004, 0.014);
-        if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.03, 0.10);
+        if (kind === "item") spawn.nextItemAt = km + d.item + rand(0.003, 0.010);
         if (kind === "oncoming") spawn.nextOncomingAt = km + nextOncomingInterval(km);
       }
       function holeGapForKind(kind) {
@@ -844,11 +850,16 @@
         if (oncomingDue) run.oncomingCandidateCount++;
         if (
           (oncomingDue || km >= Math.min(spawn.nextHoleAt, spawn.nextObstacleAt, spawn.nextItemAt)) &&
-          holes.length < 8 &&
+          holes.length < 12 &&
           obstacles.length < MAX_OBS &&
           items.length < MAX_ITEMS
         ) {
-          const pattern = oncomingDue && canSpawnObstacle(km, 1) ? (run.chase > 0 ? "chase_oncoming" : "oncoming_safe") : selectPatternByDifficulty(km, d);
+          const itemDue = km >= spawn.nextItemAt;
+          const pattern = oncomingDue && canSpawnObstacle(km, 1)
+            ? (run.chase > 0 ? "chase_oncoming" : "oncoming_safe")
+            : itemDue && canSpawnItem(km) && Math.random() < 0.82
+              ? (Math.random() < 0.70 ? "high_coin" : Math.random() < 0.50 ? "risky_gear" : "bolt_item")
+              : selectPatternByDifficulty(km, d);
           spawnPattern(pattern, km, d);
         }
         if (km >= spawn.nextHoleAt) scheduleNext("hole", km, d);
@@ -875,7 +886,7 @@
         if (km >= 3 && safeOncoming) pool.push({ name: chase ? "chase_oncoming" : "oncoming_safe", weight: 5 });
         if (km >= run.nextDancerAt) pool.push({ name: "dancer", weight: 0.04 });
         if (chase) pool.push({ name: "chase_small_hole", weight: 9 });
-        if (chase) pool.push({ name: "breather", weight: 0.45 });
+        if (chase) pool.push({ name: "breather", weight: 0.18 });
         const total = pool.reduce((a, b) => a + b.weight, 0);
         let r = Math.random() * total;
         for (let i = 0; i < pool.length; i++) {
@@ -927,6 +938,7 @@
         }
         if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "💰" });
         if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️" });
+        if (pattern === "bolt_item" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "🔩" });
         if (pattern === "dancer" && km >= run.nextDancerAt && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
         if ((pattern === "oncoming_safe" || pattern === "chase_oncoming") && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, -54);
         if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1);
@@ -983,7 +995,8 @@
           ? ITEM_TYPES.filter((v) => v.kind !== "invincible" && (!v.missPenalty || Math.random() < 0.18))
           : ITEM_TYPES.filter((v) => v.kind !== "invincible" || km >= run.nextDancerAt);
         if (!availableItems.length) availableItems = ITEM_TYPES.filter((v) => !v.missPenalty);
-        let t = availableItems[(Math.random() * availableItems.length) | 0];
+        const scorePool = [ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[1], ITEM_TYPES[2]];
+        let t = run.chase > 0 || Math.random() < 0.96 ? scorePool[(Math.random() * scorePool.length) | 0] : availableItems[(Math.random() * availableItems.length) | 0];
         if (opt.type) t = ITEM_TYPES.find((v) => v.emoji === opt.type) || t;
         if (t.kind === "invincible" && !opt.type && (km < run.nextDancerAt || Math.random() < 0.96)) t = ITEM_TYPES[0];
         if (run.chase > 0 && t.missPenalty && !opt.type && Math.random() < 0.82) {
@@ -998,7 +1011,10 @@
         run.itemSpawnCount++;
         if (isDancer) {
           run.dancerSpawnCount++;
+          run.invincibleItemSpawnCount++;
           run.nextDancerAt = km + 1.5;
+        } else {
+          run.scoreItemSpawnCount++;
         }
         items.push({
           x: opt.x ?? -36,
@@ -1027,13 +1043,13 @@
             o.direction === 1
               ? (BASE_SPEED + o.speed) * 42
               : STATIC_OBSTACLE_SCROLL_PX;
-          o.x += relPx * (run.chase > 0 ? CHASE_MULT : 1) * dt;
+          o.x += relPx * getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000) * (run.chase > 0 ? CHASE_MULT : 1) * dt;
           if (o.x > W + 70 || !o.active) obstacles.splice(i, 1);
         }
         for (let i = items.length - 1; i >= 0; i--) {
           let it = items[i];
           const itemMove = it.placed
-            ? BASE_SPEED * 55 * (it.speedMult || DANCER_PLACE_SCROLL_MULT) * dt
+            ? BASE_SPEED * 55 * getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000) * (it.speedMult || DANCER_PLACE_SCROLL_MULT) * dt
             : move;
           it.x += itemMove;
           if (shouldApplyMissPenalty(it)) applyMissPenalty(it);
@@ -1556,14 +1572,24 @@
         if (mode !== MODE.PLAYING) return;
         mode = MODE.RESULT;
         run.finishReason = reason;
-        run.runMeters = getFinalRunMeters();
-        run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
-        run.scoreMeters = calculateFinalScoreMeters(run);
+        let finalRunMeters = getFinalRunMeters();
+        if (run.elapsed > 1 && finalRunMeters === 0) {
+          finalRunMeters = Math.max(0, Math.round(Math.max(run.maxRunMeters || 0, run.lastNonZeroRunMeters || 0)));
+        }
+        run.runMeters = finalRunMeters;
+        run.maxRunMeters = Math.max(run.maxRunMeters || 0, finalRunMeters || 0);
+        const snapshotSource = {
+          runMeters: finalRunMeters,
+          bonusMeters: run.bonusMeters,
+          penaltyMeters: run.penaltyMeters,
+          missPenaltyMeters: run.missPenaltyMeters || 0,
+        };
+        run.scoreMeters = calculateFinalScoreMeters(snapshotSource);
         run.finalScore = run.scoreMeters;
         resultSnapshot = {
-          score: run.finalScore,
+          score: calculateFinalScoreMeters(snapshotSource),
           reason,
-          runMeters: getFinalRunMeters(),
+          runMeters: finalRunMeters,
           bonusMeters: run.bonusMeters,
           penaltyMeters: run.penaltyMeters,
           missPenaltyMeters: run.missPenaltyMeters || 0,
@@ -1576,6 +1602,8 @@
           oncomingSpawnCount: run.oncomingSpawnCount || 0,
           oncomingCandidateCount: run.oncomingCandidateCount || 0,
           dancerSpawnCount: run.dancerSpawnCount || 0,
+          scoreItemSpawnCount: run.scoreItemSpawnCount || 0,
+          invincibleItemSpawnCount: run.invincibleItemSpawnCount || 0,
           itemSpawnCount: run.itemSpawnCount || 0,
         };
         show("result");
@@ -1593,6 +1621,7 @@
           ["アイテム加算", "+" + km(resultSnapshot.bonusMeters)],
           ["事故ペナルティ", "-" + km(resultSnapshot.penaltyMeters)],
           ["取り逃がしペナルティ", "-" + km(resultSnapshot.missPenaltyMeters)],
+          ["補正込み", km(resultSnapshot.score)],
           ["事故回数", resultSnapshot.accidents + "回"],
           ["取得アイテム数", resultSnapshot.items + "個"],
           ["走行時間", (resultSnapshot.elapsedMs / 1000).toFixed(1) + "秒"],
@@ -1601,7 +1630,8 @@
           ["障害物出現数", resultSnapshot.obstacleSpawnCount + "個"],
           ["対向障害物候補", resultSnapshot.oncomingCandidateCount + "回"],
           ["対向障害物出現数", resultSnapshot.oncomingSpawnCount + "個"],
-          ["👯‍♀️出現数", resultSnapshot.dancerSpawnCount + "個"],
+          ["加点アイテム出現数", resultSnapshot.scoreItemSpawnCount + "個"],
+          ["無敵アイテム出現数", resultSnapshot.invincibleItemSpawnCount + "個"],
           ["全アイテム出現数", resultSnapshot.itemSpawnCount + "個"],
           ["version", CLIENT_VERSION],
         ].forEach((r) => {

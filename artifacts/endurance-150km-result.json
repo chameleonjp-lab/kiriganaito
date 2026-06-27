@@ -1,106 +1,114 @@
 {
-  "generatedAt": "2026-06-26T22:25:26.095Z",
+  "generatedAt": "2026-06-27T14:42:58.391Z",
   "targetMeters": 150000,
-  "seed": 150005,
+  "seed": 150001,
   "result": {
     "autopilot": {
       "mode": "RESULT",
-      "runMeters": 8794,
-      "scoreMeters": 9214,
-      "reason": "穴に落ちました",
-      "accidents": 0,
-      "maxDanger": 0,
+      "runMeters": 5860,
+      "scoreMeters": 6140,
+      "reason": "🚓に捕まりました",
+      "accidents": 3,
+      "maxDanger": 3,
       "maxObs": 1,
-      "maxItems": 3,
-      "maxHoles": 2,
-      "maxParticles": 19,
+      "maxItems": 5,
+      "maxHoles": 1,
+      "maxParticles": 34,
       "sawDancer": false,
       "dancerInv": false,
       "sawBike": true,
       "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 8794,
-    "scoreMeters": 9214,
-    "reason": "穴に落ちました",
-    "accidents": 0,
-    "maxDanger": 0,
-    "elapsedMs": 224617,
-    "hudRun": "8.79km",
-    "hudScore": "9.21km",
-    "resultScore": "9.21km",
-    "resultReason": "終了理由：穴に落ちました。足元確認、大事です。",
+    "runMeters": 5860,
+    "scoreMeters": 6140,
+    "reason": "🚓に捕まりました",
+    "accidents": 3,
+    "maxDanger": 3,
+    "elapsedMs": 136883,
+    "hudRun": "5.86km",
+    "hudScore": "6.34km",
+    "resultScore": "6.14km",
+    "resultReason": "終了理由：警戒度3で🚓に捕まりました。",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
         "最終スコア",
-        "9.21km"
+        "6.14km"
       ],
       [
         "実走行距離",
-        "8.79km"
+        "5.86km"
       ],
       [
         "アイテム加算",
-        "+0.87km"
+        "+1.88km"
       ],
       [
         "事故ペナルティ",
-        "-0.00km"
+        "-0.60km"
       ],
       [
         "取り逃がしペナルティ",
-        "-0.45km"
+        "-1.00km"
+      ],
+      [
+        "補正込み",
+        "6.14km"
       ],
       [
         "事故回数",
-        "0回"
+        "<strong>3回</strong>"
       ],
       [
         "取得アイテム数",
-        "10個"
+        "21個"
       ],
       [
         "走行時間",
-        "224.6秒"
+        "136.9秒"
       ],
       [
         "終了理由",
-        "穴に落ちました。足元確認、大事です。"
+        "警戒度3で🚓に捕まりました。"
       ],
       [
         "穴出現数",
-        "48個"
+        "36個"
       ],
       [
         "障害物出現数",
-        "17個"
+        "9個"
       ],
       [
         "対向障害物候補",
-        "38回"
+        "22回"
       ],
       [
         "対向障害物出現数",
-        "2個"
+        "3個"
       ],
       [
-        "👯‍♀️出現数",
+        "加点アイテム出現数",
+        "90個"
+      ],
+      [
+        "無敵アイテム出現数",
         "0個"
       ],
       [
         "全アイテム出現数",
-        "23個"
+        "90個"
       ],
       [
         "version",
-        "kiriganaito-2026-06-27-v3-public-fix"
+        "kiriganaito-2026-06-27-v4-score-density"
       ]
     ],
     "maxObs": 1,
-    "maxItems": 3,
-    "maxHoles": 2,
-    "maxParticles": 19,
+    "maxItems": 5,
+    "maxHoles": 1,
+    "maxParticles": 34,
     "sawDancer": false,
     "dancerInv": false,
     "sawBike": true,
@@ -108,8 +116,8 @@
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 9214,
-      "p_client_version": "kiriganaito-2026-06-27-v3-public-fix"
+      "p_score": 6140,
+      "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
     },
     "debug": ""
   },
