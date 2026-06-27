@@ -18,7 +18,7 @@ function makeEl(id){
 }
 function createContext(seed){
   const elements = new Map();
-  const ids = ['home','rules','name','game','result','error','gameCanvas','startBtn','jumpBtn','retireBtn','homeRanking','resultRanking','homeStats','resultStats','homeToast','playerName','nameError','hudRun','hudScore','hudTime','hudChase','hudDanger','hudChaseBox','hudDangerBox','playStatus','resultReason','resultComment','resultScore','resultBreakdown','rankingStatus','rankingRetryBtn','clientVersionNote','debug','errorText','homeBtn','errorHomeBtn','nameBtn','rulesBtn','rulesBackBtn','readyBtn','otherGamesResult'];
+  const ids = ['home','rules','name','game','result','error','gameCanvas','startBtn','jumpBtn','retireBtn','homeRanking','resultRanking','homeStats','resultStats','homeToast','playerName','nameError','hudRun','hudScore','hudTime','hudChase','hudDanger','hudChaseBox','hudDangerBox','playStatus','resultReason','resultComment','resultScore','resultBreakdown','rankingStatus','rankingRetryBtn','clientVersionNote','homeVersionNote','resultVersionTop','debug','errorText','homeBtn','errorHomeBtn','nameBtn','rulesBtn','rulesBackBtn','readyBtn','otherGamesResult'];
   for (const id of ids) elements.set(id, makeEl(id));
   const canvas = elements.get('gameCanvas');
   canvas.getContext = () => new Proxy({ createLinearGradient(){ return { addColorStop(){} }; }, createRadialGradient(){ return { addColorStop(){} }; }, measureText(t){ return {width:String(t).length*10}; } }, { get(target, prop){ if (prop in target) return target[prop]; return () => {}; }, set(){ return true; } });
@@ -66,7 +66,7 @@ const autopilot = { mode, runMeters: Math.round(run.runMeters), scoreMeters: run
 if (mode===MODE.PLAYING && run.runMeters>=${TARGET} && run.scoreMeters>=${TARGET}) {
   finishGame('150km自然走行検証完了');
 }
-global.__result={autopilot, mode, runMeters:resultSnapshot.runMeters, scoreMeters:resultSnapshot.score, reason:resultSnapshot.reason, accidents:resultSnapshot.accidents, maxDanger:resultSnapshot.maxDanger, elapsedMs:resultSnapshot.elapsedMs, hudRun:el.hudRun.textContent, hudScore:el.hudScore.textContent, resultScore:el.resultScore.textContent, resultReason:el.resultReason.textContent, rankingStatus:el.rankingStatus.textContent, resultBreakdown:el.resultBreakdown.children.map(c=>c.children?.map?.(x=>x.textContent)||[]), maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared, mockSubmitPayload: global.__mockSubmitPayload, debug:el.debug.textContent};
+global.__result={autopilot, mode, runMeters:resultSnapshot.runMeters, scoreMeters:resultSnapshot.score, reason:resultSnapshot.reason, accidents:resultSnapshot.accidents, maxDanger:resultSnapshot.maxDanger, elapsedMs:resultSnapshot.elapsedMs, hudRun:el.hudRun.textContent, hudScore:el.hudScore.textContent, resultScore:el.resultScore.textContent, resultReason:el.resultReason.textContent, rankingStatus:el.rankingStatus.textContent, resultBreakdown:(el.resultBreakdown.children||[]).map(c=>c.children?.map?.(x=>x.textContent)||[]), maxObs,maxItems,maxHoles,maxParticles,sawDancer,dancerInv,sawBike,bikeCleared, mockSubmitPayload: global.__mockSubmitPayload, debug:el.debug.textContent};
 })();`;
   try { Function(script + appended)(); } catch(e) { ctx.consoleErrors.push(e.stack); }
   return {...ctx, result: global.__result};
