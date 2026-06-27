@@ -1,5 +1,5 @@
 kiriganaito 150km endurance verification
-HUD run: 14.24km
-HUD score: 21.56km
-Result score: 21.46km
-Reason: 終了理由：警戒度3で🚓に捕まりました。
+HUD run: 150.00km
+HUD score: 436.87km
+Result score: 436.87km
+Reason: 終了理由：150km自然走行検証完了
