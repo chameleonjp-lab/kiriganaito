@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T22:25:44.163Z",
+  "generatedAt": "2026-06-27T14:42:55.957Z",
   "finalVerdict": "WARN",
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
@@ -49,10 +49,10 @@
     "consoleWarnings": []
   },
   "naturalAutoplayCheck": {
-    "maxRunMeters": 1563,
-    "maxScoreMeters": 1363,
-    "bestSeed": 3003,
-    "highestTargetReached": 1000,
+    "maxRunMeters": 906,
+    "maxScoreMeters": 1276,
+    "bestSeed": 3005,
+    "highestTargetReached": 0,
     "natural150kmReached": false,
     "targets": [
       1000,
@@ -79,9 +79,8 @@
       3005
     ],
     "mostCommonFailure": {
-      "hole_after_obstacle_unavoidable": 4,
-      "hole_timing_early": 25,
-      "none": 1
+      "hole_timing_early": 13,
+      "hole_after_obstacle_unavoidable": 2
     }
   },
   "longDistanceDisplayCheck": {
@@ -96,7 +95,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 150000,
-          "p_client_version": "kiriganaito-2026-06-27-v3-public-fix"
+          "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
         }
       },
       {
@@ -108,7 +107,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 999990,
-          "p_client_version": "kiriganaito-2026-06-27-v3-public-fix"
+          "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
         }
       },
       {
@@ -120,7 +119,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 1000000,
-          "p_client_version": "kiriganaito-2026-06-27-v3-public-fix"
+          "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
         }
       }
     ],
@@ -166,6 +165,10 @@
           "-0.00km"
         ],
         [
+          "補正込み",
+          "0.20km"
+        ],
+        [
           "事故回数",
           "0回"
         ],
@@ -183,7 +186,7 @@
         ],
         [
           "穴出現数",
-          "2個"
+          "1個"
         ],
         [
           "障害物出現数",
@@ -198,16 +201,20 @@
           "0個"
         ],
         [
-          "👯‍♀️出現数",
+          "加点アイテム出現数",
+          "3個"
+        ],
+        [
+          "無敵アイテム出現数",
           "0個"
         ],
         [
           "全アイテム出現数",
-          "0個"
+          "3個"
         ],
         [
           "version",
-          "kiriganaito-2026-06-27-v3-public-fix"
+          "kiriganaito-2026-06-27-v4-score-density"
         ]
       ],
       "elapsedMs": 5000
@@ -240,6 +247,10 @@
           "-0.00km"
         ],
         [
+          "補正込み",
+          "0.39km"
+        ],
+        [
           "事故回数",
           "0回"
         ],
@@ -257,11 +268,11 @@
         ],
         [
           "穴出現数",
-          "2個"
+          "3個"
         ],
         [
           "障害物出現数",
-          "1個"
+          "0個"
         ],
         [
           "対向障害物候補",
@@ -272,16 +283,20 @@
           "0個"
         ],
         [
-          "👯‍♀️出現数",
+          "加点アイテム出現数",
+          "6個"
+        ],
+        [
+          "無敵アイテム出現数",
           "0個"
         ],
         [
           "全アイテム出現数",
-          "0個"
+          "6個"
         ],
         [
           "version",
-          "kiriganaito-2026-06-27-v3-public-fix"
+          "kiriganaito-2026-06-27-v4-score-density"
         ]
       ],
       "elapsedMs": 10000
@@ -314,6 +329,10 @@
           "-0.00km"
         ],
         [
+          "補正込み",
+          "0.20km"
+        ],
+        [
           "事故回数",
           "0回"
         ],
@@ -335,7 +354,7 @@
         ],
         [
           "障害物出現数",
-          "1個"
+          "0個"
         ],
         [
           "対向障害物候補",
@@ -346,16 +365,20 @@
           "0個"
         ],
         [
-          "👯‍♀️出現数",
+          "加点アイテム出現数",
+          "3個"
+        ],
+        [
+          "無敵アイテム出現数",
           "0個"
         ],
         [
           "全アイテム出現数",
-          "0個"
+          "3個"
         ],
         [
           "version",
-          "kiriganaito-2026-06-27-v3-public-fix"
+          "kiriganaito-2026-06-27-v4-score-density"
         ]
       ],
       "elapsedMs": 5000
@@ -386,6 +409,10 @@
         [
           "取り逃がしペナルティ",
           "-0.00km"
+        ],
+        [
+          "補正込み",
+          "0.39km"
         ],
         [
           "事故回数",
@@ -420,16 +447,20 @@
           "0個"
         ],
         [
-          "👯‍♀️出現数",
+          "加点アイテム出現数",
+          "6個"
+        ],
+        [
+          "無敵アイテム出現数",
           "0個"
         ],
         [
           "全アイテム出現数",
-          "0個"
+          "6個"
         ],
         [
           "version",
-          "kiriganaito-2026-06-27-v3-public-fix"
+          "kiriganaito-2026-06-27-v4-score-density"
         ]
       ],
       "elapsedMs": 10000
@@ -455,7 +486,7 @@
       "smallOk": true,
       "mediumLargeCombo": false,
       "largeThenOncoming": false,
-      "lastPatternName": "walker",
+      "lastPatternName": "short_hole",
       "holeTimingEarly": false
     },
     "consoleErrors": [],
@@ -466,7 +497,11 @@
     "finalRunGuard": true,
     "holeApproxDouble": true,
     "obstacleApproxTriple": true,
-    "dancerHalf": true,
+    "dancerMaintained": true,
+    "scoreItemSpawnCounter": true,
+    "invincibleItemSpawnCounter": true,
+    "speedKmMultiplier": true,
+    "oncomingAfter3km": true,
     "noWalkerCoin": true
   },
   "rankingMockCheck": {
@@ -474,12 +509,12 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "RANK",
       "p_score": 1234,
-      "p_client_version": "kiriganaito-2026-06-27-v3-public-fix"
+      "p_client_version": "kiriganaito-2026-06-27-v4-score-density"
     },
     "pScoreInteger": true,
     "usesSubmitRpc": true,
     "noDirectInsert": true,
-    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-06-27-v3-public-fix\"}]",
+    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-06-27-v4-score-density\"}]",
     "pendingKey": "kiriganaito_pending_scores_v1",
     "retryButtonVisible": true,
     "realSupabaseSubmission": false,
@@ -490,7 +525,7 @@
       },
       {
         "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/submit_score",
-        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-06-27-v3-public-fix\"}"
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-06-27-v4-score-density\"}"
       }
     ]
   },

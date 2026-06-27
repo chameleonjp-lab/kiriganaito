@@ -120,7 +120,7 @@
 
 ## 6.1 出現ロジックと難易度上昇
 
-出現は毎フレーム乱数だけに頼らず、距離ベースの予定値で管理します。通常走行の `BASE_SPEED` は `4.35` を維持し、🚚の体感速度は前回調整より少し速い状態を維持します。背景の `VISUAL_SCROLL_SPEED` は `200` で、ランキング上は同じスコア式のままです。
+出現は毎フレーム乱数だけに頼らず、距離ベースの予定値で管理します。通常走行の `BASE_SPEED` は `4.35` を維持します。さらに `getSpeedMultiplierByKm(km) = Math.min(1.45, 1 + Math.floor(km) * 0.04)` で 1km ごとに 1.00倍、1.04倍、1.08倍……最大 1.45倍まで緩やかに上げ、距離加算・スクロール・障害物接近速度へ同じ倍率を反映します。背景の `VISUAL_SCROLL_SPEED` は `200` で、ランキング上は同じスコア式のままです。
 
 - `nextObstacleAt`、`nextHoleAt`、`nextItemAt` で次の出現距離を管理します。初期予定は `0.07km`、`0.13km`、`0.10km` として開始直後の待ち時間を短くします。
 - `lastDangerAt`、`lastHoleAt`、`lastHoleKind`、`lastObstacleAt`、`lastOncomingAt` で直近の危険配置を記録します。
@@ -523,6 +523,6 @@ Web Share API が使える場合は使い、使えない場合はクリップボ
 
 ### 公開反映確認バージョン（2026-06-27 v3）
 
-- `CLIENT_VERSION` は `kiriganaito-2026-06-27-v3-public-fix` です。`GAME_SLUG`、`PUBLIC_URL`、Supabase URL、RPC 仕様は変更しません。
+- `CLIENT_VERSION` は `kiriganaito-2026-06-27-v4-score-density` です。`GAME_SLUG`、`PUBLIC_URL`、Supabase URL、RPC 仕様は変更しません。
 - 対向障害物は 3.00km 未満では出現しません。3.00km 到達後は最初の候補を 0.05〜0.12km 以内に置き、3.00〜5.00km は 0.12〜0.22km、5.00km 以降は 0.09〜0.18km、逃走中は 0.07〜0.14km ごとに候補化します。
 - 0.50km 以降は穴または障害物が次に見えやすい密度へ寄せ、1.50km 以降と 3.00km 以降はさらに短い `holeGap` / `obs` 間隔を使います。ただし穴同士の接触、障害物の過密重なり、2段ジャンプ必須配置は禁止します。
