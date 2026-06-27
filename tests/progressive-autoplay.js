@@ -16,7 +16,7 @@ function makeEl(id){
 }
 function createContext(seed){
   const elements=new Map();
-  const ids=['home','rules','name','game','result','error','gameCanvas','startBtn','jumpBtn','retireBtn','homeRanking','resultRanking','homeStats','resultStats','homeToast','playerName','nameError','hudRun','hudScore','hudTime','hudChase','hudDanger','hudChaseBox','hudDangerBox','playStatus','resultReason','resultComment','resultScore','resultBreakdown','rankingStatus','rankingRetryBtn','clientVersionNote','debug','errorText','homeBtn','errorHomeBtn','nameBtn','rulesBtn','rulesBackBtn','readyBtn','otherGamesResult'];
+  const ids=['home','rules','name','game','result','error','gameCanvas','startBtn','jumpBtn','retireBtn','homeRanking','resultRanking','homeStats','resultStats','homeToast','playerName','nameError','hudRun','hudScore','hudTime','hudChase','hudDanger','hudChaseBox','hudDangerBox','playStatus','resultReason','resultComment','resultScore','resultBreakdown','rankingStatus','rankingRetryBtn','clientVersionNote','homeVersionNote','resultVersionTop','debug','errorText','homeBtn','errorHomeBtn','nameBtn','rulesBtn','rulesBackBtn','readyBtn','otherGamesResult'];
   ids.forEach(id=>elements.set(id,makeEl(id)));
   const drawCalls=[];
   const canvas=elements.get('gameCanvas');
