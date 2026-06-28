@@ -1,35 +1,35 @@
 {
-  "generatedAt": "2026-06-27T18:55:12.165Z",
+  "generatedAt": "2026-06-28T07:57:01.336Z",
   "targetMeters": 150000,
-  "seed": 150005,
+  "seed": 150002,
   "result": {
     "autopilot": {
-      "mode": "RESULT",
-      "runMeters": 19045,
-      "scoreMeters": 20995,
-      "reason": "穴に落ちました",
-      "accidents": 2,
-      "maxDanger": 2,
-      "maxObs": 2,
+      "mode": "PLAYING",
+      "runMeters": 150000,
+      "scoreMeters": 187340,
+      "reason": "",
+      "accidents": 0,
+      "maxDanger": 0,
+      "maxObs": 3,
       "maxItems": 4,
-      "maxHoles": 2,
-      "maxParticles": 30,
+      "maxHoles": 1,
+      "maxParticles": 38,
       "sawDancer": true,
       "dancerInv": true,
       "sawBike": true,
       "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 19045,
-    "scoreMeters": 20995,
-    "reason": "穴に落ちました",
-    "accidents": 2,
-    "maxDanger": 2,
-    "elapsedMs": 393483,
-    "hudRun": "19.04km",
-    "hudScore": "20.99km",
-    "resultScore": "21.00km",
-    "resultReason": "終了理由：穴に落ちました。足元確認、大事です。",
+    "runMeters": 150000,
+    "scoreMeters": 187340,
+    "reason": "150km自然走行検証完了",
+    "accidents": 0,
+    "maxDanger": 0,
+    "elapsedMs": 2871250,
+    "hudRun": "150.00km",
+    "hudScore": "187.34km",
+    "resultScore": "187.34km",
+    "resultReason": "終了理由：150km自然走行検証完了",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
       [
@@ -38,35 +38,35 @@
       ],
       [
         "実走行距離",
-        "19.05km"
+        "150.00km"
       ],
       [
         "アイテム加算",
-        "+2.45km"
+        "+37.54km"
       ],
       [
         "基礎距離",
-        "21.50km"
+        "187.54km"
       ],
       [
         "事故ペナルティ",
-        "-0.40km"
+        "-0.00km"
       ],
       [
         "取り逃がしペナルティ",
-        "-0.10km"
+        "-0.20km"
       ],
       [
         "総ペナルティ",
-        "-0.50km"
+        "-0.20km"
       ],
       [
         "ペナルティ適用上限",
-        "10.75km"
+        "93.77km"
       ],
       [
         "実適用ペナルティ",
-        "-0.50km"
+        "-0.20km"
       ],
       [
         "カットされたペナルティ",
@@ -74,7 +74,7 @@
       ],
       [
         "最終スコア",
-        "21.00km"
+        "187.34km"
       ],
       [
         "プレイ内容",
@@ -82,27 +82,27 @@
       ],
       [
         "事故回数",
-        "<strong>2回</strong>"
+        "0回"
       ],
       [
         "加点アイテム出現数",
-        "35個"
+        "478個"
       ],
       [
         "加点アイテム取得数",
-        "28個"
+        "435個"
       ],
       [
         "取得率",
-        "80.0%"
+        "91.0%"
       ],
       [
         "走行時間",
-        "393.5秒"
+        "2871.3秒"
       ],
       [
         "終了理由",
-        "穴に落ちました。足元確認、大事です。"
+        "150km自然走行検証完了"
       ],
       [
         "出現数",
@@ -110,63 +110,83 @@
       ],
       [
         "穴",
-        "202個"
+        "551個"
       ],
       [
         "穴出現数",
-        "202個"
+        "551個"
       ],
       [
         "最大穴間隔",
-        "0.237km"
+        "1.134km"
       ],
       [
         "平均穴間隔",
-        "0.094km"
+        "0.272km"
       ],
       [
         "障害物",
-        "121個"
+        "2115個"
       ],
       [
         "最大障害物間隔",
-        "3.095km"
+        "0.174km"
       ],
       [
         "平均障害物間隔",
-        "0.157km"
+        "0.071km"
       ],
       [
         "対向障害物",
-        "114個"
+        "1037個"
       ],
       [
         "対向障害物候補数",
-        "315回"
+        "40307回"
       ],
       [
         "対向障害物出現数",
-        "114個"
+        "1037個"
       ],
       [
         "対向障害物失敗再試行数",
-        "201回"
+        "636回"
+      ],
+      [
+        "穴間必須障害物出現数",
+        "undefined個"
+      ],
+      [
+        "穴間通常障害物出現数",
+        "undefined個"
+      ],
+      [
+        "穴間対向障害物出現数",
+        "undefined個"
+      ],
+      [
+        "穴間障害物生成失敗再試行数",
+        "undefined回"
+      ],
+      [
+        "穴だけ連続した回数",
+        "undefined回"
       ],
       [
         "加点アイテム",
-        "35個"
+        "478個"
       ],
       [
         "無敵アイテム",
-        "2個"
+        "24個"
       ],
       [
         "逃走中の障害物",
-        "7個"
+        "0個"
       ],
       [
         "逃走中の穴",
-        "17個"
+        "0個"
       ],
       [
         "逃走中の加点アイテム",
@@ -174,7 +194,7 @@
       ],
       [
         "逃走中の対向障害物",
-        "7個"
+        "0個"
       ],
       [
         "診断",
@@ -182,39 +202,39 @@
       ],
       [
         "runMeters",
-        "19045"
+        "150000"
       ],
       [
         "maxRunMeters",
-        "19045.11453750257"
+        "150000.39641282664"
       ],
       [
         "lastNonZeroRunMeters",
-        "19045.11453750257"
+        "150000.39641282664"
       ],
       [
         "scoreMeters",
-        "20995"
+        "187340"
       ],
       [
         "finalScore",
-        "20995"
+        "187340"
       ],
       [
         "resultSnapshot.score",
-        "20995"
+        "187340"
       ],
       [
         "resultSnapshot.runMeters",
-        "19045"
+        "150000"
       ],
       [
         "resultScore.textContent",
-        "21.00km"
+        "187.34km"
       ],
       [
         "ranking payload p_score",
-        "20995"
+        "187340"
       ],
       [
         "zeroReason",
@@ -222,13 +242,13 @@
       ],
       [
         "version",
-        "kiriganaito-2026-06-28-v7-result-dom-density"
+        "kiriganaito-2026-06-28-v8-hole-obstacle-link"
       ]
     ],
-    "maxObs": 2,
+    "maxObs": 3,
     "maxItems": 4,
-    "maxHoles": 2,
-    "maxParticles": 30,
+    "maxHoles": 1,
+    "maxParticles": 38,
     "sawDancer": true,
     "dancerInv": true,
     "sawBike": true,
@@ -236,8 +256,8 @@
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 20995,
-      "p_client_version": "kiriganaito-2026-06-28-v7-result-dom-density"
+      "p_score": 187340,
+      "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
     },
     "debug": ""
   },
