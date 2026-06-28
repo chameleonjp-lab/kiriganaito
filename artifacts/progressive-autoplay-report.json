@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T08:48:18.662Z",
+  "generatedAt": "2026-06-28T09:31:22.275Z",
   "targets": [
     1000,
     5000,
@@ -27,9 +27,9 @@
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
   "summary": {
-    "maxRunMeters": 1464,
-    "maxScoreMeters": 1634,
-    "bestSeed": 2002,
+    "maxRunMeters": 1531,
+    "maxScoreMeters": 1490,
+    "bestSeed": 3003,
     "highestTargetReached": 1000,
     "natural150kmReached": false
   },
@@ -83,7 +83,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 930,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -149,7 +149,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 869,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -209,7 +209,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1330,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -269,7 +269,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1030,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -329,7 +329,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1090,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -389,7 +389,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1030,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -449,7 +449,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1070,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -509,7 +509,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -569,7 +569,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -629,7 +629,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1170,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -670,26 +670,27 @@
         "jumping": false
       },
       "lastJumpAt": {
-        "runMeters": 955.9,
-        "elapsed": 24.42,
+        "runMeters": 948.1,
+        "elapsed": 24.22,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -185.4,
-            "width": 31.7
+            "type": "obstacle",
+            "lead": 210,
+            "emoji": "🚶",
+            "direction": 1,
+            "speed": 0.38
           }
         ]
       },
       "holesLength": 0,
       "obstaclesLength": 0,
       "itemsLength": 0,
-      "particlesLength": 16,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1160,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -749,7 +750,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 950,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -809,7 +810,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 960,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -850,14 +851,15 @@
         "jumping": false
       },
       "lastJumpAt": {
-        "runMeters": 944.2,
-        "elapsed": 24.12,
+        "runMeters": 945.5,
+        "elapsed": 24.15,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -183.8,
-            "width": 28.6
+            "type": "obstacle",
+            "lead": 210,
+            "emoji": "🚶",
+            "direction": 1,
+            "speed": 0.38
           }
         ]
       },
@@ -869,7 +871,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1240,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -929,7 +931,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -944,8 +946,8 @@
       "seed": 1001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1391,
-      "maxScoreMeters": 1421,
+      "maxRunMeters": 1524,
+      "maxScoreMeters": 1653,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -953,7 +955,7 @@
       "maxDanger": 3,
       "sawDancer": false,
       "dancerPicked": false,
-      "sawBike": false,
+      "sawBike": true,
       "bikeCleared": false,
       "warningRendered": true,
       "truckBlackRisk": false,
@@ -962,42 +964,42 @@
         "obstacles": [
           {
             "x": 261.4,
-            "emoji": "🚶",
+            "emoji": "🏃🏻",
             "direction": -1,
-            "speed": 1
+            "speed": 2
           }
         ],
         "items": []
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 258.3,
+        "y": 257.8,
         "vy": 479.2,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1362.3,
-        "elapsed": 34.48,
+        "runMeters": 1494.6,
+        "elapsed": 37.75,
         "dangerAhead": [
           {
             "type": "obstacle",
             "lead": 149.3,
-            "emoji": "🚶",
+            "emoji": "🏃🏻",
             "direction": -1,
-            "speed": 1
+            "speed": 2
           }
         ]
       },
       "holesLength": 0,
       "obstaclesLength": 1,
       "itemsLength": 0,
-      "particlesLength": 29,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1221,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1454,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1063,7 +1065,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 869,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1078,280 +1080,8 @@
       "seed": 1003,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1376,
-      "maxScoreMeters": 1705,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 277.9,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 257.6,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1346.7,
-        "elapsed": 34.1,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 145.1,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 29,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1506,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 1004,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1380,
-      "maxScoreMeters": 1409,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 258,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1350.8,
-        "elapsed": 34.2,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1210,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 1005,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1399,
-      "maxScoreMeters": 1488,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 258.1,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1369.7,
-        "elapsed": 34.67,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 21,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1289,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 2001,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1387,
-      "maxScoreMeters": 1417,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 258.3,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1358.2,
-        "elapsed": 34.38,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 22,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1217,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 2002,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1464,
-      "maxScoreMeters": 1634,
+      "maxRunMeters": 1475,
+      "maxScoreMeters": 2204,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -1368,6 +1098,74 @@
         "obstacles": [
           {
             "x": 265.5,
+            "emoji": "🏃🏻",
+            "direction": -1,
+            "speed": 2
+          }
+        ],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 261,
+        "vy": 503.3,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1445.3,
+        "elapsed": 36.53,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🏃🏻",
+            "direction": -1,
+            "speed": 2
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 0,
+      "particlesLength": 37,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 2005,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 1004,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1530,
+      "maxScoreMeters": 1729,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "none",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": true,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 261.4,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1377,14 +1175,14 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 260.7,
-        "vy": 503.3,
+        "y": 258.1,
+        "vy": 479.2,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1434.5,
-        "elapsed": 36.27,
+        "runMeters": 1500.7,
+        "elapsed": 37.9,
         "dangerAhead": [
           {
             "type": "obstacle",
@@ -1402,8 +1200,8 @@
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1434,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1530,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1415,11 +1213,11 @@
       ]
     },
     {
-      "seed": 2003,
+      "seed": 1005,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1391,
-      "maxScoreMeters": 1590,
+      "maxRunMeters": 1388,
+      "maxScoreMeters": 1677,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -1451,8 +1249,8 @@
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1361.6,
-        "elapsed": 34.47,
+        "runMeters": 1358.9,
+        "elapsed": 34.4,
         "dangerAhead": [
           {
             "type": "obstacle",
@@ -1466,12 +1264,12 @@
       "holesLength": 0,
       "obstaclesLength": 1,
       "itemsLength": 0,
-      "particlesLength": 26,
+      "particlesLength": 35,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1391,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1478,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1483,11 +1281,77 @@
       ]
     },
     {
-      "seed": 2004,
+      "seed": 2001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1385,
-      "maxScoreMeters": 1485,
+      "maxRunMeters": 1455,
+      "maxScoreMeters": 1685,
+      "finishReason": "穴に落ちました",
+      "failureCategory": "hole_timing_early",
+      "lastPatternName": "none",
+      "accidents": 2,
+      "maxDanger": 2,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": false,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [
+          {
+            "x": 254.5,
+            "w": 51.4,
+            "right": 305.9
+          }
+        ],
+        "obstacles": [],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 273.6,
+        "vy": 0,
+        "onGround": true,
+        "jumping": false
+      },
+      "lastJumpAt": {
+        "runMeters": 1420.3,
+        "elapsed": 35.92,
+        "dangerAhead": [
+          {
+            "type": "hole",
+            "lead": 169.8,
+            "center": -195.5,
+            "width": 51.4
+          }
+        ]
+      },
+      "holesLength": 1,
+      "obstaclesLength": 0,
+      "itemsLength": 0,
+      "particlesLength": 15,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1685,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 2002,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1446,
+      "maxScoreMeters": 1615,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -1503,7 +1367,7 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 261.4,
+            "x": 265.5,
             "emoji": "🏃🏻",
             "direction": -1,
             "speed": 2
@@ -1513,14 +1377,14 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 258.2,
-        "vy": 479.2,
+        "y": 261.6,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1356.2,
-        "elapsed": 34.33,
+        "runMeters": 1416.3,
+        "elapsed": 35.82,
         "dangerAhead": [
           {
             "type": "obstacle",
@@ -1534,12 +1398,153 @@
       "holesLength": 0,
       "obstaclesLength": 1,
       "itemsLength": 0,
-      "particlesLength": 27,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1285,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1416,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 2003,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1455,
+      "maxScoreMeters": 1855,
+      "finishReason": "穴に落ちました",
+      "failureCategory": "hole_timing_early",
+      "lastPatternName": "none",
+      "accidents": 2,
+      "maxDanger": 2,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": false,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [
+          {
+            "x": 255.3,
+            "w": 30,
+            "right": 285.3
+          }
+        ],
+        "obstacles": [],
+        "items": [
+          {
+            "x": 235.1,
+            "y": 218.7,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 273.6,
+        "vy": 0,
+        "onGround": true,
+        "jumping": false
+      },
+      "lastJumpAt": {
+        "runMeters": 1423.7,
+        "elapsed": 36,
+        "dangerAhead": [
+          {
+            "type": "hole",
+            "lead": 169.8,
+            "center": -184.8,
+            "width": 30
+          }
+        ]
+      },
+      "holesLength": 1,
+      "obstaclesLength": 0,
+      "itemsLength": 1,
+      "particlesLength": 7,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1855,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 2004,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1439,
+      "maxScoreMeters": 1638,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "none",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": true,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 265.5,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 262.4,
+        "vy": 503.3,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1408.9,
+        "elapsed": 35.63,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 0,
+      "particlesLength": 17,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1439,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1607,7 +1612,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1481,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1622,212 +1627,8 @@
       "seed": 3001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1409,
-      "maxScoreMeters": 1668,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 257.4,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1379.8,
-        "elapsed": 34.92,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1469,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 3002,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1376,
-      "maxScoreMeters": 1326,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 257.8,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1347.4,
-        "elapsed": 34.12,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 25,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1126,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 3003,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1394,
-      "maxScoreMeters": 1453,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "none",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 261.4,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 258.3,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1365,
-        "elapsed": 34.55,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 149.3,
-            "emoji": "🏃🏻",
-            "direction": -1,
-            "speed": 2
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 21,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1254,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 3004,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1440,
-      "maxScoreMeters": 1679,
+      "maxRunMeters": 1455,
+      "maxScoreMeters": 1815,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -1844,30 +1645,30 @@
         "obstacles": [
           {
             "x": 265.5,
-            "emoji": "🏃🏻",
+            "emoji": "🚶",
             "direction": -1,
-            "speed": 2
+            "speed": 1
           }
         ],
         "items": []
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 262.2,
+        "y": 260.9,
         "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1410.2,
-        "elapsed": 35.67,
+        "runMeters": 1425.7,
+        "elapsed": 36.05,
         "dangerAhead": [
           {
             "type": "obstacle",
             "lead": 149.3,
-            "emoji": "🏃🏻",
+            "emoji": "🚶",
             "direction": -1,
-            "speed": 2
+            "speed": 1
           }
         ]
       },
@@ -1878,8 +1679,212 @@
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1480,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1615,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 3002,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1458,
+      "maxScoreMeters": 1607,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "none",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": true,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 265.5,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 260.8,
+        "vy": 503.3,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1428.4,
+        "elapsed": 36.12,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 0,
+      "particlesLength": 25,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1408,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 3003,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1531,
+      "maxScoreMeters": 1490,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "none",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": true,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 261.4,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 258.2,
+        "vy": 479.2,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1502.1,
+        "elapsed": 37.93,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 0,
+      "particlesLength": 17,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1291,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 3004,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1429,
+      "maxScoreMeters": 1898,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "none",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": true,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 265.5,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ],
+        "items": []
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 263.5,
+        "vy": 503.3,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1399.4,
+        "elapsed": 35.4,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🚴",
+            "direction": -1,
+            "speed": 3
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 0,
+      "particlesLength": 25,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 1699,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1894,8 +1899,8 @@
       "seed": 3005,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1373,
-      "maxScoreMeters": 1602,
+      "maxRunMeters": 1526,
+      "maxScoreMeters": 1826,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "none",
@@ -1911,7 +1916,7 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 261.4,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1921,18 +1926,18 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 257.2,
+        "y": 258,
         "vy": 479.2,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1344,
-        "elapsed": 34.03,
+        "runMeters": 1497.3,
+        "elapsed": 37.82,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1942,12 +1947,12 @@
       "holesLength": 0,
       "obstaclesLength": 1,
       "itemsLength": 0,
-      "particlesLength": 31,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1403,
-        "p_client_version": "kiriganaito-2026-06-28-v11-oncoming-avoidability"
+        "p_score": 1626,
+        "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1961,7 +1966,7 @@
   ],
   "findings": [
     "Highest target reached: 1000m",
-    "Best natural run: 1464m seed 2002",
+    "Best natural run: 1531m seed 3003",
     "Most common failure category: none"
   ],
   "recommendedFixes": [
