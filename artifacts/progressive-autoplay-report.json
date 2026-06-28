@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T07:57:00.636Z",
+  "generatedAt": "2026-06-28T08:09:07.350Z",
   "targets": [
     1000,
     5000,
@@ -83,7 +83,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1200,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -149,7 +149,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 939,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -209,7 +209,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1080,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -269,7 +269,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -329,7 +329,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1090,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -389,7 +389,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -449,7 +449,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -509,7 +509,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1200,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -569,7 +569,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -629,7 +629,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1360,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -695,7 +695,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 931,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -755,7 +755,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -815,7 +815,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -875,7 +875,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1140,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -935,7 +935,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1060,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1003,7 +1003,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1386,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1069,7 +1069,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 939,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1137,7 +1137,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1406,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1205,7 +1205,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1296,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1273,7 +1273,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1258,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1341,7 +1341,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1393,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1409,7 +1409,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1373,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1477,7 +1477,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1508,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1545,7 +1545,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1453,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1613,7 +1613,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1553,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1679,7 +1679,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 931,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1747,7 +1747,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1448,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1815,7 +1815,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1289,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1883,7 +1883,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1337,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1951,7 +1951,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1237,
-        "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
       },
       "consoleErrors": [],
       "consoleWarnings": [],

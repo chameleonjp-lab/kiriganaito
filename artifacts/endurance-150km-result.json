@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T07:57:01.336Z",
+  "generatedAt": "2026-06-28T08:09:08.107Z",
   "targetMeters": 150000,
   "seed": 150002,
   "result": {
@@ -154,23 +154,23 @@
       ],
       [
         "穴間必須障害物出現数",
-        "undefined個"
+        "551個"
       ],
       [
         "穴間通常障害物出現数",
-        "undefined個"
+        "551個"
       ],
       [
         "穴間対向障害物出現数",
-        "undefined個"
+        "0個"
       ],
       [
         "穴間障害物生成失敗再試行数",
-        "undefined回"
+        "53582回"
       ],
       [
         "穴だけ連続した回数",
-        "undefined回"
+        "0回"
       ],
       [
         "加点アイテム",
@@ -242,7 +242,7 @@
       ],
       [
         "version",
-        "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+        "kiriganaito-2026-06-28-v9-counter-fix"
       ]
     ],
     "maxObs": 3,
@@ -257,7 +257,7 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
       "p_score": 187340,
-      "p_client_version": "kiriganaito-2026-06-28-v8-hole-obstacle-link"
+      "p_client_version": "kiriganaito-2026-06-28-v9-counter-fix"
     },
     "debug": ""
   },
