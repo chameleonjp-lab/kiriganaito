@@ -1,12 +1,12 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-06-28-v10-early-oncoming`
+Version: `kiriganaito-2026-06-28-v11-oncoming-avoidability`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v10-early-oncoming` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v11-oncoming-avoidability` に統一します。
 
 ## v7 スコア計算
 結果画面の大きな記録、`resultSnapshot.score`、ランキング RPC の `p_score` は同じ `scoreMeters` を使います。Supabase/RPC/ランキング payload 形状は変更しません。
@@ -73,9 +73,18 @@ Version: `kiriganaito-2026-06-28-v10-early-oncoming`
 - client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵実時間4秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
-- CLIENT_VERSION は `kiriganaito-2026-06-28-v10-early-oncoming`。
+- CLIENT_VERSION は `kiriganaito-2026-06-28-v11-oncoming-avoidability`。
 - 結果画面の `resultComment` は DOM キャッシュ `el` に登録し、`finishGame()` は `buildResultSnapshot()`、`renderResultHeader()`、`renderResultBreakdown()`、`renderResultVersion()` の段階描画に分割する。
 - 結果内訳はランキング欄より上に、記録の内訳、プレイ内容、出現数、診断、ランキング送信 payload の `p_score`、`zeroReason`、version を表示する。
 - 穴生成失敗時は通常間隔を再加算せず `retryHoleSoon(km)` により 0.006〜0.014km で短距離リトライする。小穴中心に増やし、穴同士の接触と2段ジャンプ必須配置は禁止する。
 - 0.80km以降の対向障害物は `retryOncomingSoon(km)` で 0.02〜0.04km 後に再試行し、候補だけ増えて出現しない状態を避ける。対向障害物候補数、出現数、失敗再試行数を結果に表示する。
 - Supabase は既存 RPC `submit_score` / `get_best_score_ranking` と publishable key のみを使い、テストでは本番送信しない。
+
+## 対向障害物の反射回避可能性（v11）
+
+- 対向障害物は `0.80km` 以降に出現しますが、必ずプレイヤーが画面上で認識できる位置に現れてから接触判定が成立するまでの反射回避猶予を持たせます。
+- 最低反応猶予は `0.80〜1.50km: 0.90秒`、`1.50〜2.00km: 0.80秒`、`2.00〜5.00km: 0.70秒`、`5.00km以降: 0.62秒` とします。逃走中は `0.55秒` を基準にしますが、逃走中でも `0.50秒未満` は禁止します。
+- 対向障害物の Time To Collision は、生成座標そのものではなく、左画面端で認識可能になった位置からプレイヤー接触位置までを、`updateThings()` と同じ相対速度（`(BASE_SPEED + obstacle.speed) * 42 * getSpeedMultiplierByKm(km) * chase倍率`）で割って推定します。
+- `0.80〜1.50km` は歩行者中心、`1.50〜2.00km` は自転車までを基本とし、バイク・車は `2.00km` 以降に段階的に混ぜます。
+- 穴直後の着地点、大穴直後、対向障害物直後の大穴、画面内の複合回避が過密な状態では対向障害物を生成しません。
+- `oncoming_unavoidable` は許容しません。`oncoming_unavoidable === 0` および `unavoidableOncomingCount === 0` をリリース条件にします。
