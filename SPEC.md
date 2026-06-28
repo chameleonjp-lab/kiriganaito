@@ -1,12 +1,12 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-06-28-v7-result-dom-density`
+Version: `kiriganaito-2026-06-28-v8-hole-obstacle-link`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v7-result-dom-density` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v8-hole-obstacle-link` に統一します。
 
 ## v7 スコア計算
 結果画面の大きな記録、`resultSnapshot.score`、ランキング RPC の `p_score` は同じ `scoreMeters` を使います。Supabase/RPC/ランキング payload 形状は変更しません。
@@ -46,11 +46,19 @@ Version: `kiriganaito-2026-06-28-v7-result-dom-density`
 - 安全距離で出せない場合は 0.03〜0.06km 後に再試行します。大穴直後や大穴直前の避け不能配置は禁止します。
 - 結果画面には対向障害物候補数、対向障害物出現数を表示します。
 
+## 穴間必須障害物
+- 穴と穴の間には、必ず1つ以上の通常障害物または対向障害物を出します。穴だけが連続する配置は禁止します。
+- 穴生成に成功したら `spawn.needObstacleBeforeNextHole` を true にし、障害物生成に成功するまで次の穴を禁止または短距離延期します。障害物生成に成功したら false に戻し、次の穴を生成可能にします。
+- 3.00km 未満では通常障害物のみを出し、🚶 / 🏃🏻 / 🚴 を中心に選びます。3.00km 以降は通常障害物 65% / 対向障害物 35%、5.00km 以降は通常障害物 55% / 対向障害物 45%、逃走中かつ3.00km以降は通常障害物 45% / 対向障害物 55% を目安にランダムに混ぜます。
+- 対向障害物が安全距離不足で出せない場合は通常障害物へフォールバックし、「対向障害物候補だけ増えて出現しない」状態を避けます。
+- 穴直後 0.07km 以内、大穴直後 0.22km 以内の通常障害物、大穴直後 0.28km 以内の対向障害物、障害物直後 0.07km 以内の穴、対向障害物直後 0.18km 以内の大穴は禁止します。穴を越えた着地地点の即障害物、障害物直後の即穴、穴+障害物+穴で1回ジャンプでは処理不能な配置、2段ジャンプ必須配置を作りません。
+- 結果画面には穴間必須障害物出現数、穴間通常障害物出現数、穴間対向障害物出現数、穴間障害物生成失敗再試行数、穴だけ連続した回数を表示します。`consecutiveHoleViolationCount` は通常 0 でなければいけません。
+
 ## アイテム配置の競技性
 加点アイテムは10倍級に増やしつつ、低い位置、中間位置、高い位置、穴の手前、穴の奥、障害物の後、障害物の前を混ぜます。同じ高さ・同じ間隔・同じジャンプリズムが3個以上続かないよう、`run.lastItemLane` と `run.lastItemTimingType` で直近配置を避けます。2段ジャンプ必須、取れない高さ、完全な運任せ配置は禁止します。
 
 ## 密度と逃走中
-「何もない道」は、画面内または直近予定に穴・障害物・加点アイテム・無敵アイテムがない状態です。v7 では穴、障害物、加点アイテム、対向障害物のスケジュールを独立させ、同じフレームで複数種が出せるようにし、最大数も増やして空白率を従来の半分に近づけます。結果画面またはテストには最大空白時間、最大空白距離、空白率を出します。
+「何もない道」は、画面内または直近予定に穴・障害物・加点アイテム・無敵アイテムがない状態です。v8 では穴、障害物、加点アイテム、対向障害物のスケジュールを独立させ、同じフレームで複数種が出せるようにし、最大数も増やして空白率を従来の半分に近づけます。結果画面またはテストには最大空白時間、最大空白距離、空白率を出します。
 
 逃走開始直後 0.7 秒は短い余白を置き、その後は 0.4〜0.8 秒ごとに小穴、静止障害物、加点アイテム、3km以降の対向障害物を追加します。👯‍♀️ の比率は増やしません。結果画面には `run.chaseObstacleSpawnCount`、`run.chaseHoleSpawnCount`、`run.chaseScoreItemSpawnCount`、`run.chaseOncomingSpawnCount` を表示します。
 
@@ -64,7 +72,7 @@ Version: `kiriganaito-2026-06-28-v7-result-dom-density`
 - client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵実時間4秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
-- CLIENT_VERSION は `kiriganaito-2026-06-28-v7-result-dom-density`。
+- CLIENT_VERSION は `kiriganaito-2026-06-28-v8-hole-obstacle-link`。
 - 結果画面の `resultComment` は DOM キャッシュ `el` に登録し、`finishGame()` は `buildResultSnapshot()`、`renderResultHeader()`、`renderResultBreakdown()`、`renderResultVersion()` の段階描画に分割する。
 - 結果内訳はランキング欄より上に、記録の内訳、プレイ内容、出現数、診断、ランキング送信 payload の `p_score`、`zeroReason`、version を表示する。
 - 穴生成失敗時は通常間隔を再加算せず `retryHoleSoon(km)` により 0.006〜0.014km で短距離リトライする。小穴中心に増やし、穴同士の接触と2段ジャンプ必須配置は禁止する。

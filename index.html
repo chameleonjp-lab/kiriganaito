@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-06-28-v7-result-dom-density" />
+    <meta name="x-client-version" content="kiriganaito-2026-06-28-v8-hole-obstacle-link" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-28-v7-result-dom-density</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-28-v8-hole-obstacle-link</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-28-v7-result-dom-density</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-28-v8-hole-obstacle-link</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-28-v7-result-dom-density",
+        CLIENT_VERSION = "kiriganaito-2026-06-28-v8-hole-obstacle-link",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -444,8 +444,11 @@
         JUMP_BUFFER_SEC: 0.12,
       };
       const SPAWN = {
-        HOLE_AFTER_OBSTACLE: 0.055,
+        HOLE_AFTER_OBSTACLE: 0.070,
         OBSTACLE_AFTER_HOLE: 0.085,
+        REQUIRED_OBSTACLE_AFTER_HOLE: 0.070,
+        REQUIRED_ONCOMING_AFTER_HOLE: 0.110,
+        LARGE_HOLE_AFTER_ONCOMING: 0.180,
         OBSTACLE_GAP: 0.065,
         ONCOMING_GAP: 0.105,
         ITEM_OBSTACLE_GAP: 0.07,
@@ -623,6 +626,11 @@
           chaseHoleSpawnCount: 0,
           holeRetryCount: 0,
           oncomingRetryCount: 0,
+          betweenHoleObstacleSpawnCount: 0,
+          betweenHoleNormalObstacleSpawnCount: 0,
+          betweenHoleOncomingSpawnCount: 0,
+          betweenHoleObstacleRetryCount: 0,
+          consecutiveHoleViolationCount: 0,
           maxHoleGapKm: 0,
           totalHoleGapKm: 0,
           holeGapSamples: 0,
@@ -649,6 +657,8 @@
           lastPatternName: "none",
           nextChaseEventAt: 999,
           oncomingRetryAt: 0,
+          needObstacleBeforeNextHole: false,
+          lastHoleResolvedByObstacleAt: -9,
         };
         inputState = { jumpBuffer: 0, landedPulse: 0 };
         rankingState = { status: "idle", rows: [], stats: null, error: "" };
@@ -885,7 +895,9 @@
       }
       function canSpawnHole(km, kind = "SMALL", x = null, w = 0) {
         return (
+          !spawn.needObstacleBeforeNextHole &&
           km - spawn.lastObstacleAt > SPAWN.HOLE_AFTER_OBSTACLE &&
+          (kind !== "LARGE" || km - spawn.lastOncomingAt > SPAWN.LARGE_HOLE_AFTER_ONCOMING) &&
           km - spawn.lastHoleAt > holeGapForKind(kind) &&
           (x === null || hasScreenHoleGap(x, w, kind))
         );
@@ -893,12 +905,52 @@
       function canSpawnObstacle(km, direction) {
         const gap = direction === 1 ? SPAWN.ONCOMING_GAP : SPAWN.OBSTACLE_GAP;
         if (direction === 1) {
-          return km >= 3 && km - spawn.lastHoleAt > 0.04 && km - spawn.lastOncomingAt > gap;
+          return km >= 3 && km - spawn.lastHoleAt > (spawn.lastHoleKind === "LARGE" ? 0.28 : 0.07) && km - spawn.lastOncomingAt > gap;
         }
         return (
           km - spawn.lastHoleAt > SPAWN.OBSTACLE_AFTER_HOLE &&
           km - spawn.lastObstacleAt > gap
         );
+      }
+
+      function canSpawnRequiredObstacle(km, direction) {
+        const afterHole = direction === 1 ? SPAWN.REQUIRED_ONCOMING_AFTER_HOLE : SPAWN.REQUIRED_OBSTACLE_AFTER_HOLE;
+        const largeExtra = spawn.lastHoleKind === "LARGE" ? (direction === 1 ? 0.28 : 0.22) : afterHole;
+        return km - spawn.lastHoleAt > Math.max(afterHole, largeExtra) && canSpawnObstacle(km, direction);
+      }
+      function forcedBetweenHoleEmoji(km) {
+        if (km < 3) {
+          const early = ["🚶", "🏃🏻", "🚴"];
+          return early[(Math.random() * early.length) | 0];
+        }
+        return null;
+      }
+      function resolveBetweenHoleObstacle(km, dir) {
+        if (!spawn.needObstacleBeforeNextHole) return;
+        spawn.needObstacleBeforeNextHole = false;
+        spawn.lastHoleResolvedByObstacleAt = km;
+        run.betweenHoleObstacleSpawnCount++;
+        if (dir === 1) run.betweenHoleOncomingSpawnCount++;
+        else run.betweenHoleNormalObstacleSpawnCount++;
+      }
+      function spawnRequiredObstacleBetweenHoles(km, d) {
+        const allowOncoming = km >= 3;
+        const chase = run.chase > 0;
+        let useOncoming = false;
+        if (allowOncoming) {
+          const p = km >= 5 ? 0.45 : 0.35;
+          useOncoming = Math.random() < (chase ? Math.max(p, 0.55) : p);
+        }
+        if (useOncoming && canSpawnRequiredObstacle(km, 1)) {
+          if (spawnObstaclePattern(km, d, 1, null, -54)) return true;
+        }
+        if (canSpawnRequiredObstacle(km, -1)) {
+          if (spawnObstaclePattern(km, d, -1, forcedBetweenHoleEmoji(km))) return true;
+        }
+        if (!useOncoming && allowOncoming && canSpawnRequiredObstacle(km, 1)) {
+          if (spawnObstaclePattern(km, d, 1, null, -54)) return true;
+        }
+        return false;
       }
       function canSpawnItem(km) {
         return (
@@ -923,6 +975,25 @@
         run.maxEmptyKm = Math.max(run.maxEmptyKm || 0, run.currentEmptyKm || 0);
         if (oncomingDue) run.oncomingCandidateCount++;
 
+        if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && obstacles.length < MAX_OBS && km >= spawn.nextObstacleAt) {
+          if (spawnObstaclePattern(km, d, -1, OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0])) { run.invincibleObstacleSpawned++; run.invincibleObstacleSpawnCount++; spawn.nextObstacleAt = km + rand(0.018, 0.045); }
+        }
+        if (spawn.needObstacleBeforeNextHole && obstacles.length < MAX_OBS && chaseReady) {
+          if (spawnRequiredObstacleBetweenHoles(km, d)) {
+            scheduleNext("hole", km, d);
+          } else {
+            run.betweenHoleObstacleRetryCount++;
+            spawn.nextObstacleAt = km + rand(0.006, 0.018);
+            spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + rand(0.012, 0.024));
+          }
+          return;
+        }
+        if (dueHole && spawn.needObstacleBeforeNextHole) {
+          run.betweenHoleObstacleRetryCount++;
+          spawn.nextHoleAt = km + rand(0.012, 0.024);
+          spawn.nextObstacleAt = Math.min(spawn.nextObstacleAt, km + rand(0.006, 0.018));
+        }
+
         if (chase && chaseReady && run.elapsed >= (spawn.nextChaseEventAt || 999)) {
           const roll = Math.random();
           if (roll < 0.34 && holes.length < 16) spawnHolePattern(km, d, { kind: "SMALL" });
@@ -930,14 +1001,11 @@
           else if (items.length < MAX_ITEMS) spawnScoreItemPattern(km, d);
           spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
         }
-        if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && obstacles.length < MAX_OBS && km >= spawn.nextObstacleAt) {
-          if (spawnObstaclePattern(km, d, -1, OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0])) { run.invincibleObstacleSpawned++; run.invincibleObstacleSpawnCount++; spawn.nextObstacleAt = km + rand(0.018, 0.045); }
-        }
         if (dueScoreItem && items.length < MAX_ITEMS) {
           if (canSpawnItem(km)) spawnScoreItemPattern(km, d);
           scheduleNext("item", km, d);
         }
-        if (dueHole && holes.length < 16 && chaseReady) {
+        if (dueHole && !spawn.needObstacleBeforeNextHole && holes.length < 16 && chaseReady) {
           const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]);
           if (!spawnHolePattern(km, d, { kind })) retryHoleSoon(km);
         }
@@ -1043,6 +1111,7 @@
           retryHoleSoon(km);
           return false;
         }
+        if (spawn.needObstacleBeforeNextHole) run.consecutiveHoleViolationCount++;
         holes.push({ x, y: groundY - 6, w, h: H - groundY + 14, kind });
         run.holeSpawnCount++;
         if (run.lastHoleSpawnKm >= 0) { const gapKm = km - run.lastHoleSpawnKm; run.totalHoleGapKm = (run.totalHoleGapKm || 0) + gapKm; run.holeGapSamples = (run.holeGapSamples || 0) + 1; run.maxHoleGapKm = Math.max(run.maxHoleGapKm || 0, gapKm); }
@@ -1050,6 +1119,7 @@
         if (run.chase > 0) run.chaseHoleSpawnCount++;
         spawn.lastHoleAt = km;
         spawn.lastHoleKind = kind;
+        spawn.needObstacleBeforeNextHole = true;
         spawn.lastDangerAt = km;
         spawn.nextObstacleAt = Math.max(spawn.nextObstacleAt, km + type.safeAfter);
         spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + holeGapForKind(kind));
@@ -1081,6 +1151,7 @@
         if (run.lastObstacleSpawnKm >= 0) { const gapKm = km - run.lastObstacleSpawnKm; run.totalObstacleGapKm = (run.totalObstacleGapKm || 0) + gapKm; run.obstacleGapSamples = (run.obstacleGapSamples || 0) + 1; run.maxObstacleGapKm = Math.max(run.maxObstacleGapKm || 0, gapKm); }
         run.lastObstacleSpawnKm = km;
         if (run.chase > 0) run.chaseObstacleSpawnCount++;
+        resolveBetweenHoleObstacle(km, dir);
         if (dir === 1) {
           run.oncomingSpawnCount++;
           if (run.chase > 0) run.chaseOncomingSpawnCount++;
@@ -1753,7 +1824,7 @@
         return [
           ["記録の内訳", ""], ["実走行距離", km(snapshot.runMeters)], ["アイテム加算", "+" + km(snapshot.bonusMeters)], ["基礎距離", km(snapshot.runMeters + snapshot.bonusMeters)], ["事故ペナルティ", "-" + km(snapshot.accidentPenaltyMeters)], ["取り逃がしペナルティ", "-" + km(snapshot.missPenaltyMeters)], ["総ペナルティ", "-" + km(snapshot.rawPenaltyMeters)], ["ペナルティ適用上限", km(snapshot.penaltyCapMeters)], ["実適用ペナルティ", "-" + km(snapshot.appliedPenaltyMeters)], ["カットされたペナルティ", km(snapshot.cutPenaltyMeters)], ["最終スコア", km(snapshot.score)],
           ["プレイ内容", ""], ["事故回数", snapshot.accidents + "回"], ["加点アイテム出現数", snapshot.scoreItemSpawnCount + "個"], ["加点アイテム取得数", snapshot.items + "個"], ["取得率", (snapshot.itemPickupRate * 100).toFixed(1) + "%"], ["走行時間", (snapshot.elapsedMs / 1000).toFixed(1) + "秒"], ["終了理由", getReasonText(snapshot.reason).replace(/^終了理由：/, "")],
-          ["出現数", ""], ["穴", snapshot.holeSpawnCount + "個"], ["穴出現数", snapshot.holeSpawnCount + "個"], ["最大穴間隔", snapshot.maxHoleGapKm.toFixed(3) + "km"], ["平均穴間隔", snapshot.avgHoleGapKm.toFixed(3) + "km"], ["障害物", snapshot.obstacleSpawnCount + "個"], ["最大障害物間隔", snapshot.maxObstacleGapKm.toFixed(3) + "km"], ["平均障害物間隔", snapshot.avgObstacleGapKm.toFixed(3) + "km"], ["対向障害物", snapshot.oncomingSpawnCount + "個"], ["対向障害物候補数", snapshot.oncomingCandidateCount + "回"], ["対向障害物出現数", snapshot.oncomingSpawnCount + "個"], ["対向障害物失敗再試行数", snapshot.oncomingRetryCount + "回"], ["加点アイテム", snapshot.scoreItemSpawnCount + "個"], ["無敵アイテム", snapshot.invincibleItemSpawnCount + "個"], ["逃走中の障害物", snapshot.chaseObstacleSpawnCount + "個"], ["逃走中の穴", snapshot.chaseHoleSpawnCount + "個"], ["逃走中の加点アイテム", snapshot.chaseScoreItemSpawnCount + "個"], ["逃走中の対向障害物", snapshot.chaseOncomingSpawnCount + "個"],
+          ["出現数", ""], ["穴", snapshot.holeSpawnCount + "個"], ["穴出現数", snapshot.holeSpawnCount + "個"], ["最大穴間隔", snapshot.maxHoleGapKm.toFixed(3) + "km"], ["平均穴間隔", snapshot.avgHoleGapKm.toFixed(3) + "km"], ["障害物", snapshot.obstacleSpawnCount + "個"], ["最大障害物間隔", snapshot.maxObstacleGapKm.toFixed(3) + "km"], ["平均障害物間隔", snapshot.avgObstacleGapKm.toFixed(3) + "km"], ["対向障害物", snapshot.oncomingSpawnCount + "個"], ["対向障害物候補数", snapshot.oncomingCandidateCount + "回"], ["対向障害物出現数", snapshot.oncomingSpawnCount + "個"], ["対向障害物失敗再試行数", snapshot.oncomingRetryCount + "回"], ["穴間必須障害物出現数", snapshot.betweenHoleObstacleSpawnCount + "個"], ["穴間通常障害物出現数", snapshot.betweenHoleNormalObstacleSpawnCount + "個"], ["穴間対向障害物出現数", snapshot.betweenHoleOncomingSpawnCount + "個"], ["穴間障害物生成失敗再試行数", snapshot.betweenHoleObstacleRetryCount + "回"], ["穴だけ連続した回数", snapshot.consecutiveHoleViolationCount + "回"], ["加点アイテム", snapshot.scoreItemSpawnCount + "個"], ["無敵アイテム", snapshot.invincibleItemSpawnCount + "個"], ["逃走中の障害物", snapshot.chaseObstacleSpawnCount + "個"], ["逃走中の穴", snapshot.chaseHoleSpawnCount + "個"], ["逃走中の加点アイテム", snapshot.chaseScoreItemSpawnCount + "個"], ["逃走中の対向障害物", snapshot.chaseOncomingSpawnCount + "個"],
           ["診断", ""], ["runMeters", String(run.runMeters)], ["maxRunMeters", String(run.maxRunMeters)], ["lastNonZeroRunMeters", String(run.lastNonZeroRunMeters)], ["scoreMeters", String(run.scoreMeters)], ["finalScore", String(run.finalScore)], ["resultSnapshot.score", String(snapshot.score)], ["resultSnapshot.runMeters", String(snapshot.runMeters)], ["resultScore.textContent", el.resultScore ? el.resultScore.textContent : ""], ["ranking payload p_score", String(snapshot.score)], ["zeroReason", snapshot.zeroReason], ["version", CLIENT_VERSION],
         ];
       }
