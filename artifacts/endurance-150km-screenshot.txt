@@ -3,3 +3,4 @@ HUD run: 150.00km
 HUD score: 187.34km
 Result score: 187.34km
 Reason: 終了理由：150km自然走行検証完了
+CLIENT_VERSION: kiriganaito-2026-06-28-v9-counter-fix

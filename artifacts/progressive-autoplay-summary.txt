@@ -1,3 +1,4 @@
+CLIENT_VERSION: kiriganaito-2026-06-28-v9-counter-fix
 実行コマンド: node tests/progressive-autoplay.js
 検証方法: index.html のゲームロジックを Node ハーネスで読み込み、runMeters/scoreMeters を直接代入せず、画面上の holes/obstacles/items と player 状態を読んでジャンプ入力だけを行う自然走行を複数 seed・段階目標で実行。
 Supabase遮断: fetch とランキング/送信関数をテスト内でモックし、https://mlpnjgezrnhdxsxolyzj.supabase.co への実送信を行わず submit_score は成功扱い、ランキングは空、統計は0件扱い。

@@ -1,12 +1,12 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-06-28-v8-hole-obstacle-link`
+Version: `kiriganaito-2026-06-28-v9-counter-fix`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v8-hole-obstacle-link` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v9-counter-fix` に統一します。
 
 ## v7 スコア計算
 結果画面の大きな記録、`resultSnapshot.score`、ランキング RPC の `p_score` は同じ `scoreMeters` を使います。Supabase/RPC/ランキング payload 形状は変更しません。
@@ -72,7 +72,7 @@ Version: `kiriganaito-2026-06-28-v8-hole-obstacle-link`
 - client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵実時間4秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
-- CLIENT_VERSION は `kiriganaito-2026-06-28-v8-hole-obstacle-link`。
+- CLIENT_VERSION は `kiriganaito-2026-06-28-v9-counter-fix`。
 - 結果画面の `resultComment` は DOM キャッシュ `el` に登録し、`finishGame()` は `buildResultSnapshot()`、`renderResultHeader()`、`renderResultBreakdown()`、`renderResultVersion()` の段階描画に分割する。
 - 結果内訳はランキング欄より上に、記録の内訳、プレイ内容、出現数、診断、ランキング送信 payload の `p_score`、`zeroReason`、version を表示する。
 - 穴生成失敗時は通常間隔を再加算せず `retryHoleSoon(km)` により 0.006〜0.014km で短距離リトライする。小穴中心に増やし、穴同士の接触と2段ジャンプ必須配置は禁止する。
