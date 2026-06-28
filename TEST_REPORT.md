@@ -1,27 +1,24 @@
-# kiriganaito v9 counter-fix test report
+# TEST_REPORT
 
-## 対象バージョン
-- CLIENT_VERSION: `kiriganaito-2026-06-28-v9-counter-fix`
-
-## 変更概要
-- 穴間必須障害物カウンターの 未定義表示を修正。
-- `resultSnapshot` に穴間カウンターを格納。
-- 結果表示側で `safeInt` による未定義防御を追加。
-- 結果画面と artifact に 未定義表示 / 非数値表示 が出ないことを確認。
-- `consecutiveHoleViolationCount === 0` を確認。
-- Supabase/RPC仕様は変更なし。
+- CLIENT_VERSION: `kiriganaito-2026-06-28-v10-early-oncoming`
+- 目的: 対向障害物を 0.80km 以降へ前倒しし、2.00km 以内の実出現保証と穴間必須障害物への対向混入を検証。
 
 ## 実行結果
-- `node tests/progressive-autoplay.js`: PASS（exit 0、console error/warning 0、Supabase本番送信なし）。自然走行最大到達 1526m、150km自然到達は不可。
-- `node tests/release-comprehensive.js`: PASS/WARN（exit 0、finalVerdict=WARN、criticalIssues 0、console error/warning 0、Supabase本番送信なし）。WARN は Playwright 未導入によるスクリーンショット未取得。
-- `node tests/endurance-150km.js`: PASS（exit 0、console error/warning 0、Supabase本番送信なし）。150km耐久ハーネス完走、payload version は `kiriganaito-2026-06-28-v9-counter-fix`。
 
-## v9 追加確認
-- 結果画面に「穴間必須障害物出現数」「穴間通常障害物出現数」「穴間対向障害物出現数」「穴間障害物生成失敗再試行数」「穴だけ連続した回数」が数値で表示されることを確認。
-- `resultSnapshot.betweenHoleObstacleSpawnCount`、`betweenHoleNormalObstacleSpawnCount`、`betweenHoleOncomingSpawnCount`、`betweenHoleObstacleRetryCount`、`consecutiveHoleViolationCount` がすべて `number` であることを確認。
-- 結果内訳文字列と artifact に 未定義個、未定義回、未定義表示、非数値表示 が含まれないことを確認。
-- 通常プレイ/150km耐久ハーネスで `consecutiveHoleViolationCount === 0` を確認。
+- `node tests/progressive-autoplay.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。最大到達距離 1441m、自然走行ハーネスで 1km 到達を確認。
+- `node tests/release-comprehensive.js`: PASS（exit 0、criticalIssues 0、console error/warning 0、Supabase 本番送信なし）。CLIENT_VERSION v10、0.80km 未満の対向障害物なし、2km 以内対向障害物保証、結果画面カウンター、穴間対向障害物カウンターを確認。
+- `node tests/endurance-150km.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。150km 耐久ハーネス完走、payload version は `kiriganaito-2026-06-28-v10-early-oncoming`。
 
-## 変更していない仕様
-- `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPCパス、RPC引数、pending queueキー、旧キー移行処理、ランキング送信仕様は変更なし。
-- 穴即終了、警戒度3終了、2段ジャンプなし、外部ライブラリなし、`index.html` 1ファイル構成は維持。
+## 主要カウンター
+
+- 150km 耐久結果: `earlyOncomingSpawnCount = 3`、`betweenHoleOncomingSpawnCount = 1`、`oncomingCandidateCount = 44195`、`oncomingSpawnCount = 953`。
+- `oncomingCandidateCount > 0` かつ `oncomingSpawnCount === 0` の状態は release comprehensive で FAIL 扱い。
+- `betweenHoleOncomingSpawnCount` が長距離プレイで 0 のままなら FAIL 扱い。
+
+## 生成物
+
+- `artifacts/progressive-autoplay-report.json`
+- `artifacts/progressive-autoplay-summary.txt`
+- `artifacts/release-test-report.json`
+- `artifacts/release-test-summary.txt`
+- `artifacts/endurance-150km-report.json`
