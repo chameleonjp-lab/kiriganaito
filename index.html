@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-06-28-v12-oncoming-speed-control" />
+    <meta name="x-client-version" content="kiriganaito-2026-06-28-v13-hole-fall-density" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-28-v12-oncoming-speed-control</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-28-v13-hole-fall-density</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-28-v12-oncoming-speed-control</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-28-v13-hole-fall-density</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-28-v12-oncoming-speed-control",
+        CLIENT_VERSION = "kiriganaito-2026-06-28-v13-hole-fall-density",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -430,7 +430,8 @@
         DANCER_PLACE_SCROLL_MULT = 0.55,
         DANCER_SIZE = 36,
         BIKE_SHRINK_TOP_EXTRA = 4,
-        JUMP_APEX_HEIGHT = JUMP_POWER * JUMP_POWER / (2 * GRAVITY);
+        JUMP_APEX_HEIGHT = JUMP_POWER * JUMP_POWER / (2 * GRAVITY),
+        HOLE_FALL_GROUND_TOLERANCE = 6;
       const HIT = {
         PLAYER_SHRINK_X: 8,
         PLAYER_SHRINK_TOP: 8,
@@ -453,11 +454,11 @@
         ONCOMING_GAP: 0.105,
         ITEM_OBSTACLE_GAP: 0.07,
         ITEM_HOLE_GAP: 0.06,
-        HOLE_GAP: 0.060,
-        SMALL_HOLE_GAP: 0.040,
-        MEDIUM_HOLE_GAP: 0.075,
-        LARGE_HOLE_GAP: 0.135,
-        HOLE_SCREEN_GAP_PX: 54,
+        HOLE_GAP: 0.045,
+        SMALL_HOLE_GAP: 0.030,
+        MEDIUM_HOLE_GAP: 0.060,
+        LARGE_HOLE_GAP: 0.120,
+        HOLE_SCREEN_GAP_PX: 28,
         ONCOMING_AFTER_HOLE_SAFE_GAP: 0.145,
         ONCOMING_AFTER_LARGE_HOLE_SAFE_GAP: 0.300,
         LARGE_HOLE_AFTER_ONCOMING_SAFE_GAP: 0.300,
@@ -466,7 +467,7 @@
         ONCOMING_SPAWN_X_NORMAL = -112,
         ONCOMING_SPAWN_X_CHASE = -96;
       const HOLE_TYPES = {
-        SMALL: { min: 28, max: 40, safeAfter: 0.045 },
+        SMALL: { min: 24, max: 34, safeAfter: 0.040 },
         MEDIUM: { min: 46, max: 62, safeAfter: 0.085 },
         LARGE: { min: 68, max: 82, safeAfter: 0.14 },
       };
@@ -798,17 +799,7 @@
         player.vy += GRAVITY * dt;
         player.y += player.vy * dt;
         let gy = getGroundY(player.x);
-        if (player.y + player.h >= gy) {
-          player.y = gy - player.h;
-          player.vy = 0;
-          player.onGround = true;
-          if (!wasGround) {
-            player.landedFlash = 0.12;
-            inputState.landedPulse = 0.12;
-            smoke(player.x + player.w * 0.45, gy - 3, LANDING_SMOKE_COUNT, 1);
-            playTone(220, 0.035, "triangle");
-          }
-        } else player.onGround = false;
+        const wantsGroundContact = player.y + player.h >= gy - HOLE_FALL_GROUND_TOLERANCE && player.vy >= 0;
         player.landedFlash = Math.max(0, player.landedFlash - dt);
         inputState.landedPulse = Math.max(0, inputState.landedPulse - dt);
         player.inv = Math.max(0, player.inv - dt);
@@ -823,6 +814,18 @@
         if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         spawnStuff();
         updateThings(move, dt);
+        if (wantsGroundContact && checkHoleFall()) return;
+        if (player.y + player.h >= gy) {
+          player.y = gy - player.h;
+          player.vy = 0;
+          player.onGround = true;
+          if (!wasGround) {
+            player.landedFlash = 0.12;
+            inputState.landedPulse = 0.12;
+            smoke(player.x + player.w * 0.45, gy - 3, LANDING_SMOKE_COUNT, 1);
+            playTone(220, 0.035, "triangle");
+          }
+        } else player.onGround = false;
         run.runMeters += BASE_SPEED * 9 * speedMult * dt;
         run.maxRunMeters = Math.max(run.maxRunMeters || 0, run.runMeters || 0);
         if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
@@ -874,11 +877,11 @@
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
-          return { obs: chase ? 0.012 : 0.020, holeGap: chase ? 0.026 : 0.040, item: 0.006, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
+          return { obs: chase ? 0.010 : 0.016, holeGap: chase ? 0.022 : 0.032, item: 0.006, types: 1, oncoming: 0, holeKinds: ["SMALL"] };
         if (km < 1.5)
-          return { obs: chase ? 0.009 : 0.014, holeGap: chase ? 0.020 : 0.028, item: 0.0045, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.008 : 0.012, holeGap: chase ? 0.018 : 0.022, item: 0.0045, types: 3, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 3)
-          return { obs: chase ? 0.008 : 0.013, holeGap: chase ? 0.018 : 0.026, item: 0.0042, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
+          return { obs: chase ? 0.007 : 0.011, holeGap: chase ? 0.016 : 0.020, item: 0.0042, types: 5, oncoming: 0, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         if (km < 5)
           return { obs: chase ? 0.007 : 0.011, holeGap: chase ? 0.016 : 0.024, item: chase ? 0.004 : 0.0038, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM"] };
         return { obs: chase ? 0.006 : 0.010, holeGap: chase ? 0.014 : 0.022, item: chase ? 0.004 : 0.0035, types: 5, oncoming: 1, holeKinds: ["SMALL", "SMALL", "SMALL", "SMALL", "SMALL", "MEDIUM", "LARGE"] };
@@ -918,7 +921,7 @@
         return Math.max(base, previous);
       }
       function hasScreenHoleGap(x, w, kind) {
-        const required = (kind === "LARGE" ? 72 : kind === "MEDIUM" ? 62 : SPAWN.HOLE_SCREEN_GAP_PX);
+        const required = (kind === "LARGE" ? 56 : kind === "MEDIUM" ? 42 : SPAWN.HOLE_SCREEN_GAP_PX);
         return holes.every((h) => x + w + required < h.x || h.x + h.w + required < x);
       }
       function canSpawnHole(km, kind = "SMALL", x = null, w = 0) {
@@ -945,12 +948,12 @@
       }
       function getOncomingSpeedScale(km) {
         if (km < 0.8) return 0;
-        if (km < 1.5) return 0.30;
-        if (km < 2.0) return 0.38;
-        if (km < 3.0) return 0.60;
-        if (km < 5.0) return 0.70;
-        if (run && run.chase > 0) return 0.78;
-        return 0.80;
+        if (km < 1.5) return 0.50;
+        if (km < 2.0) return 0.60;
+        if (km < 3.0) return 0.68;
+        if (km < 5.0) return 0.75;
+        if (run && run.chase > 0) return 0.82;
+        return 0.84;
       }
       function getEstimatedOncomingPxPerSec(obstacleSpeed, km) {
         const speedMult = getSpeedMultiplierByKm(km);
@@ -1012,6 +1015,7 @@
       function canSpawnRequiredObstacle(km, direction) {
         const afterHole = direction === 1 ? SPAWN.REQUIRED_ONCOMING_AFTER_HOLE : SPAWN.REQUIRED_OBSTACLE_AFTER_HOLE;
         const largeExtra = spawn.lastHoleKind === "LARGE" ? (direction === 1 ? 0.28 : 0.22) : afterHole;
+        if (direction === -1) return km - spawn.lastHoleAt > Math.max(afterHole, largeExtra) && km - spawn.lastObstacleAt > 0.030;
         return km - spawn.lastHoleAt > Math.max(afterHole, largeExtra) && canSpawnObstacle(km, direction);
       }
       function betweenHoleOncomingRate(km) {
@@ -1066,6 +1070,7 @@
         }
         if (useOncoming && km >= 1.5 && safeInt(run.betweenHoleOncomingSpawnCount) === 0) return false;
         if (canSpawnRequiredObstacle(km, -1)) {
+          spawn.lastObstacleAt = Math.min(spawn.lastObstacleAt, km - SPAWN.OBSTACLE_GAP - 0.001);
           if (spawnObstaclePattern(km, d, -1, forcedBetweenHoleEmoji(km))) return true;
         }
         if (!useOncoming && allowOncoming && canSpawnRequiredObstacle(km, 1)) {
@@ -1245,7 +1250,7 @@
           return false;
         }
         if (spawn.needObstacleBeforeNextHole) run.consecutiveHoleViolationCount = safeInt(run.consecutiveHoleViolationCount) + 1;
-        holes.push({ x, y: groundY - 6, w, h: H - groundY + 14, kind });
+        holes.push({ x, prevX: x, y: groundY - 6, w, h: H - groundY + 14, kind });
         run.holeSpawnCount++;
         if (run.lastHoleSpawnKm >= 0) { const gapKm = km - run.lastHoleSpawnKm; run.totalHoleGapKm = (run.totalHoleGapKm || 0) + gapKm; run.holeGapSamples = (run.holeGapSamples || 0) + 1; run.maxHoleGapKm = Math.max(run.maxHoleGapKm || 0, gapKm); }
         run.lastHoleSpawnKm = km;
@@ -1321,7 +1326,7 @@
           if (run.chase > 0) run.chaseOncomingSpawnCount++;
           spawn.lastOncomingAt = km;
           spawn.nextOncomingAt = km + nextOncomingInterval(km);
-          spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + SPAWN.LARGE_HOLE_AFTER_ONCOMING_SAFE_GAP);
+          if (spawn.lastHoleKind === "LARGE") spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + 0.070);
         }
         return true;
       }
@@ -1373,6 +1378,7 @@
       }
       function updateThings(move, dt) {
         for (let i = holes.length - 1; i >= 0; i--) {
+          holes[i].prevX = holes[i].x;
           holes[i].x += move;
           if (holes[i].x > W + 30) holes.splice(i, 1);
         }
@@ -1479,19 +1485,46 @@
           h: h.h,
         };
       }
+      function getPlayerFootPoints() {
+        const r = playerRect();
+        const footY = player.y + player.h;
+        return [
+          { x: r.x + r.w * 0.28, y: footY },
+          { x: r.x + r.w * 0.50, y: footY },
+          { x: r.x + r.w * 0.72, y: footY },
+        ];
+      }
+      function isFootOverHole(hole, point) {
+        const h = holeRect(hole);
+        return point.x >= h.x && point.x <= h.x + h.w;
+      }
+      function didHoleSweepAcrossFoot(hole, footX) {
+        const margin = HIT.HOLE_MARGIN_X;
+        const prevLeft = (Number.isFinite(hole.prevX) ? hole.prevX : hole.x) + margin;
+        const prevRight = (Number.isFinite(hole.prevX) ? hole.prevX : hole.x) + hole.w - margin;
+        const nowLeft = hole.x + margin;
+        const nowRight = hole.x + hole.w - margin;
+        return (
+          (footX >= Math.min(prevLeft, nowLeft) && footX <= Math.max(prevRight, nowRight)) ||
+          (footX >= nowLeft && footX <= nowRight)
+        );
+      }
+      function footPointIsOverAnyHole() {
+        const points = getPlayerFootPoints();
+        return holes.some((hole) => points.some((p) => isFootOverHole(hole, p) || didHoleSweepAcrossFoot(hole, p.x)));
+      }
+      function checkHoleFall() {
+        const points = getPlayerFootPoints();
+        const nearGround = points.some((p) => p.y >= getGroundY(p.x) - HOLE_FALL_GROUND_TOLERANCE);
+        if (nearGround && footPointIsOverAnyHole()) {
+          finishGame("穴に落ちました");
+          return true;
+        }
+        return false;
+      }
       function checkCollisions() {
         let pr = playerRect();
-        for (let i = 0; i < holes.length; i++) {
-          let h = holeRect(holes[i]);
-          if (
-            player.x + player.w * 0.55 > h.x &&
-            player.x + player.w * 0.15 < h.x + h.w &&
-            player.y + player.h >= groundY - HIT.HOLE_FALL_Y
-          ) {
-            finishGame("穴に落ちました");
-            return;
-          }
-        }
+        if (checkHoleFall()) return;
         for (let i = items.length - 1; i >= 0; i--) {
           let it = items[i];
           if (rects(pr, itemRect(it))) {
@@ -2017,7 +2050,25 @@
         el.resultBreakdown.textContent = "";
         if (el.resultBreakdown.replaceChildren) el.resultBreakdown.replaceChildren(); else el.resultBreakdown.innerHTML = "";
         el.resultBreakdown.className = "resultMeta";
-        resultRows(snapshot).forEach((r) => { const d = document.createElement("div"); d.className = "statLine" + (r[0] === "事故回数" && snapshot.accidents >= 2 ? " accidentHeavy" : ""); const a = document.createElement("span"), b = document.createElement("b"); a.textContent = r[0]; b.textContent = r[1]; if (r[0] === "事故回数" && snapshot.accidents >= 2) b.innerHTML = "<strong>" + r[1] + "</strong>"; d.append(a, b); el.resultBreakdown.appendChild(d); });
+        let diagnostics = false;
+        const diagnosticRows = new Set(["診断", "runMeters", "maxRunMeters", "lastNonZeroRunMeters", "scoreMeters", "finalScore", "resultSnapshot.score", "resultSnapshot.runMeters", "resultScore.textContent", "ranking payload p_score", "zeroReason", "version"]);
+        const toggle = document.createElement("button");
+        toggle.textContent = "詳細診断を表示";
+        toggle.className = "secondary";
+        toggle.onclick = () => {
+          diagnostics = !diagnostics;
+          toggle.textContent = diagnostics ? "詳細診断を隠す" : "詳細診断を表示";
+          (el.resultBreakdown.childNodes || []).forEach((node) => {
+            if (node && node.dataset && node.dataset.diagnostic === "1") node.hidden = !diagnostics;
+          });
+        };
+        resultRows(snapshot).forEach((r) => {
+          if (r[0] === "診断") el.resultBreakdown.appendChild(toggle);
+          const d = document.createElement("div");
+          d.className = "statLine" + (r[0] === "事故回数" && snapshot.accidents >= 2 ? " accidentHeavy" : "");
+          if (diagnosticRows.has(r[0])) { d.dataset = d.dataset || {}; d.dataset.diagnostic = "1"; d.hidden = true; }
+          const a = document.createElement("span"), b = document.createElement("b"); a.textContent = r[0]; b.textContent = r[1]; if (r[0] === "事故回数" && snapshot.accidents >= 2) b.innerHTML = "<strong>" + r[1] + "</strong>"; d.append(a, b); el.resultBreakdown.appendChild(d);
+        });
       }
       function renderResultVersion() {
         if (el.resultVersionTop) el.resultVersionTop.textContent = "version: " + CLIENT_VERSION;

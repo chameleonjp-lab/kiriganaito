@@ -1,22 +1,23 @@
 # TEST_REPORT
 
-- CLIENT_VERSION: `kiriganaito-2026-06-28-v12-oncoming-speed-control`
-- 検証日: 2026-06-28
+- CLIENT_VERSION: `kiriganaito-2026-06-28-v13-hole-fall-density`
+- 検証日: 2026-06-30
 
 ## 実行結果
 
-- `node tests/progressive-autoplay.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。自然走行最大 1,531m。
-- `node tests/release-comprehensive.js`: PASS相当（exit 0、criticalIssues 0、console error/warning 0、Supabase 本番送信なし）。artifact verdict は Playwright 未導入警告により WARN。CLIENT_VERSION v12、0.80km 未満対向障害物なし、2km以内対向障害物あり、`oncoming_unavoidable`/`unavoidableOncomingCount` 0、150km耐久相当の対向障害物数回復を確認。
-- `node tests/endurance-150km.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。150km耐久ハーネス完走、payload version は `kiriganaito-2026-06-28-v12-oncoming-speed-control`。
+- `node tests/progressive-autoplay.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。自然走行最大 1,468m。
+- `node tests/release-comprehensive.js`: PASS相当（exit 0、criticalIssues 0、console error/warning 0、Supabase 本番送信なし）。artifact verdict は Playwright 未導入警告により WARN。穴落ち専用テスト、v13 CLIENT_VERSION、2km以内対向障害物、`unavoidableOncomingCount` 0 を確認。
+- `node tests/endurance-150km.js`: PASS（exit 0、console error/warning 0、Supabase 本番送信なし）。150km耐久ハーネス完走、payload version は `kiriganaito-2026-06-28-v13-hole-fall-density`。
 
-## v12 追加検査
+## v13 追加検査
 
-- 対向障害物は、TTC不足だけを理由に大量却下せず、まず専用速度倍率で低速化し、必要時は安全速度を逆算して再判定する。
-- release comprehensive は `oncoming_unavoidable === 0`、`unavoidableOncomingCount === 0`、対向障害物最短TTC 0.50秒以上、早期対向障害物最短TTC 0.80秒以上、150kmで `oncomingSpawnCount >= 300`、`betweenHoleOncomingSpawnCount >= 50`、候補数に対して出現数が極端に少ない状態の禁止を FAIL 条件として検査する。
-- 結果画面に対向障害物近すぎ却下数、速度調整数、平均/最小/最大速度倍率、TTC不足による最終却下数、最小反応猶予、平均反応猶予、最短TTC、2km以内最短TTC、避け不能数を表示する。
+- 足元支持点が穴の水平範囲に入った地上走行・穴中央・穴端・着地・無敵中・障害物事故後無敵中・高速 swept ケースで、すべて `RESULT` かつ `resultSnapshot.reason` が穴になることを検査。
+- 十分な高さでジャンプ中に穴上を越えた場合は `PLAYING` のままになることを検査。
+- 穴には `prevX` を保持し、1フレームで足元を跨ぐ場合も `didHoleSweepAcrossFoot()` で検出する。
+- 結果画面は通常表示と詳細診断を分け、runMeters / resultSnapshot / TTC 系などの開発値は「詳細診断を表示」ボタンで折りたたむ。
 
 ## 主要数値
 
-- release comprehensive 150km耐久: `oncomingSpawnCount = 978`、`betweenHoleOncomingSpawnCount = 978`、`oncomingCandidateCount = 2031`、`oncomingSpeedAdjustCount = 377`、`oncomingTtcFinalRejectCount = 0`、`unavoidableOncomingCount = 0`、`oncomingMinTtcSec = 0.625秒`、`earlyOncomingMinTtcSec = 1.046秒`。
-- endurance-150km.js: `対向障害物出現数 = 973個`、`穴間対向障害物出現数 = 972個`、`対向障害物候補数 = 1745回`、`避け不能対向障害物数 = 0回`、`TTC不足による最終却下数 = 0回`。
-- `oncomingCandidateCount` が大量なのに `oncomingSpawnCount` が1桁、または300未満になる状態は release comprehensive で FAIL 扱い。
+- release comprehensive 150km耐久: `oncomingSpawnCount` は300以上、`betweenHoleOncomingSpawnCount` は50以上、`unavoidableOncomingCount = 0`、`oncomingMinTtcSec = 0.6248秒`、`earlyOncomingMinTtcSec = 1.1839秒`。
+- endurance-150km.js: `穴出現数 = 484個`、`平均穴間隔 = 0.312km`、`障害物出現数` は継続的に生成、`対向障害物最短TTC = 0.69秒`、`2km以内対向障害物最短TTC = 1.38秒`、`避け不能対向障害物数 = 0回`。
+- Supabase/RPC は既存 `submit_score` / `get_best_score_ranking` と publishable key のみを使用し、テストでは本番送信していない。
