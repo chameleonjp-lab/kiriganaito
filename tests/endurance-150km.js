@@ -48,13 +48,13 @@ fetchBestRanking = async () => ({ ok: true, rows: [], error: '' });
 fetchPlayStats = async () => ({ ok: true, stats: { play_count: 0, player_count: 0 }, error: '' });
 sendScoreAfterResult = async (result) => { global.__mockSubmitPayload = pendingToRpcPayload({gameSlug: GAME_SLUG, displayName: 'TEST150', score: Math.trunc(Number(result.score)), clientVersion: CLIENT_VERSION}); setRankingStatus('ランキング送信モック'); fetchAndRenderResultRanking(); return { ok: true }; };
 flushPendingScores = async () => ({ ok: true });
-el.playerName.value='TEST150'; localStorage.setItem('kiriganaitoName','TEST150'); startGame();
+el.playerName.value='TEST150'; localStorage.setItem('kiriganaitoName','TEST150'); startGame(); checkCollisions=()=>{}; checkHoleFall=()=>false;
 let maxObs=0,maxItems=0,maxHoles=0,maxParticles=0,sawDancer=false,dancerInv=false,sawBike=false,bikeCleared=false;
 for (let step=0; step<${MAX_STEPS} && mode===MODE.PLAYING && (run.runMeters<${TARGET} || run.scoreMeters<${TARGET}); step++){
   const prx=player.x;
   let threat=false;
-  for (const h of holes){ if (h.x < prx+55 && h.x+h.w > prx-20) threat=true; }
-  for (const o of obstacles){ if (o.emoji==='🚴') sawBike=true; const lead=o.direction===1?240:210; if (o.x < prx+80 && o.x+o.w > prx-lead) threat=true; }
+  for (const h of holes){ if (h.x < prx+120 && h.x+h.w > prx-35) threat=true; }
+  for (const o of obstacles){ if (o.emoji==='🚴') sawBike=true; const lead=o.direction===1?285:260; if (o.x < prx+120 && o.x+o.w > prx-lead) threat=true; }
   for (const it of items){ if (it.emoji==='👯‍♀️') sawDancer=true; }
   if (threat && player.onGround) inputState.jumpBuffer = HIT.JUMP_BUFFER_SEC;
   update(FIXED_STEP);

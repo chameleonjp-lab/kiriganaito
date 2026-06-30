@@ -1,34 +1,34 @@
 {
-  "generatedAt": "2026-06-28T09:32:07.638Z",
+  "generatedAt": "2026-06-30T01:54:16.757Z",
   "targetMeters": 150000,
   "seed": 150001,
   "result": {
     "autopilot": {
       "mode": "PLAYING",
-      "runMeters": 150000,
-      "scoreMeters": 206490,
+      "runMeters": 151600,
+      "scoreMeters": 150000,
       "reason": "",
-      "accidents": 2,
-      "maxDanger": 2,
+      "accidents": 0,
+      "maxDanger": 0,
       "maxObs": 2,
       "maxItems": 4,
       "maxHoles": 1,
-      "maxParticles": 47,
+      "maxParticles": 12,
       "sawDancer": true,
-      "dancerInv": true,
+      "dancerInv": false,
       "sawBike": true,
       "bikeCleared": true
     },
     "mode": "RESULT",
-    "runMeters": 150000,
-    "scoreMeters": 206490,
+    "runMeters": 151600,
+    "scoreMeters": 150000,
     "reason": "150km自然走行検証完了",
-    "accidents": 2,
-    "maxDanger": 2,
-    "elapsedMs": 2871250,
-    "hudRun": "150.00km",
-    "hudScore": "206.49km",
-    "resultScore": "206.49km",
+    "accidents": 0,
+    "maxDanger": 0,
+    "elapsedMs": 2901517,
+    "hudRun": "151.60km",
+    "hudScore": "150.00km",
+    "resultScore": "150.00km",
     "resultReason": "終了理由：150km自然走行検証完了",
     "rankingStatus": "ランキング送信モック",
     "resultBreakdown": [
@@ -38,35 +38,35 @@
       ],
       [
         "実走行距離",
-        "150.00km"
+        "151.60km"
       ],
       [
         "アイテム加算",
-        "+57.24km"
+        "+0.00km"
       ],
       [
         "基礎距離",
-        "207.24km"
+        "151.60km"
       ],
       [
         "事故ペナルティ",
-        "-0.40km"
+        "-0.00km"
       ],
       [
         "取り逃がしペナルティ",
-        "-0.35km"
+        "-1.60km"
       ],
       [
         "総ペナルティ",
-        "-0.75km"
+        "-1.60km"
       ],
       [
         "ペナルティ適用上限",
-        "103.62km"
+        "75.80km"
       ],
       [
         "実適用ペナルティ",
-        "-0.75km"
+        "-1.60km"
       ],
       [
         "カットされたペナルティ",
@@ -74,7 +74,7 @@
       ],
       [
         "最終スコア",
-        "206.49km"
+        "150.00km"
       ],
       [
         "プレイ内容",
@@ -82,23 +82,23 @@
       ],
       [
         "事故回数",
-        "<strong>2回</strong>"
+        "0回"
       ],
       [
         "加点アイテム出現数",
-        "788個"
+        "405個"
       ],
       [
         "加点アイテム取得数",
-        "686個"
+        "0個"
       ],
       [
         "取得率",
-        "87.1%"
+        "0.0%"
       ],
       [
         "走行時間",
-        "2871.3秒"
+        "2901.5秒"
       ],
       [
         "終了理由",
@@ -110,47 +110,47 @@
       ],
       [
         "穴",
-        "9個"
+        "484個"
       ],
       [
         "穴出現数",
-        "9個"
+        "484個"
       ],
       [
         "最大穴間隔",
-        "0.360km"
+        "1.271km"
       ],
       [
         "平均穴間隔",
-        "0.204km"
+        "0.312km"
       ],
       [
         "障害物",
-        "2301個"
+        "1623個"
       ],
       [
         "最大障害物間隔",
-        "0.165km"
+        "0.302km"
       ],
       [
         "平均障害物間隔",
-        "0.065km"
+        "0.093km"
       ],
       [
         "対向障害物",
-        "973個"
+        "623個"
       ],
       [
         "対向障害物候補数",
-        "1745回"
+        "47722回"
       ],
       [
         "対向障害物出現数",
-        "973個"
+        "623個"
       ],
       [
         "対向障害物失敗再試行数",
-        "522回"
+        "1335回"
       ],
       [
         "2km以内対向障害物出現数",
@@ -162,7 +162,7 @@
       ],
       [
         "2km以内対向障害物再試行数",
-        "7回"
+        "6回"
       ],
       [
         "対向障害物近すぎ却下数",
@@ -170,19 +170,19 @@
       ],
       [
         "対向障害物速度調整数",
-        "2回"
+        "0回"
       ],
       [
         "対向障害物平均速度倍率",
-        "0.80倍"
+        "0.84倍"
       ],
       [
         "対向障害物最小速度倍率",
-        "0.30倍"
+        "0.50倍"
       ],
       [
         "対向障害物最大速度倍率",
-        "0.80倍"
+        "0.84倍"
       ],
       [
         "TTC不足による最終却下数",
@@ -194,15 +194,15 @@
       ],
       [
         "対向障害物平均反応猶予",
-        "0.82秒"
+        "0.81秒"
       ],
       [
         "対向障害物最短TTC",
-        "0.55秒"
+        "0.69秒"
       ],
       [
         "2km以内対向障害物最短TTC",
-        "0.67秒"
+        "1.38秒"
       ],
       [
         "避け不能対向障害物数",
@@ -210,19 +210,19 @@
       ],
       [
         "穴間必須障害物出現数",
-        "9個"
+        "484個"
       ],
       [
         "穴間通常障害物出現数",
-        "9個"
+        "484個"
       ],
       [
         "穴間対向障害物出現数",
-        "972個"
+        "623個"
       ],
       [
         "穴間障害物生成失敗再試行数",
-        "1150回"
+        "49745回"
       ],
       [
         "穴だけ連続した回数",
@@ -230,27 +230,27 @@
       ],
       [
         "加点アイテム",
-        "788個"
+        "405個"
       ],
       [
         "無敵アイテム",
-        "30個"
+        "17個"
       ],
       [
         "逃走中の障害物",
-        "13個"
+        "0個"
       ],
       [
         "逃走中の穴",
-        "4個"
+        "0個"
       ],
       [
         "逃走中の加点アイテム",
-        "4個"
+        "0個"
       ],
       [
         "逃走中の対向障害物",
-        "4個"
+        "0個"
       ],
       [
         "診断",
@@ -258,39 +258,39 @@
       ],
       [
         "runMeters",
-        "150000"
+        "151600"
       ],
       [
         "maxRunMeters",
-        "150000.39641282664"
+        "151600.0654128313"
       ],
       [
         "lastNonZeroRunMeters",
-        "150000.39641282664"
+        "151600.0654128313"
       ],
       [
         "scoreMeters",
-        "206490"
-      ],
-      [
-        "finalScore",
-        "206490"
-      ],
-      [
-        "resultSnapshot.score",
-        "206490"
-      ],
-      [
-        "resultSnapshot.runMeters",
         "150000"
       ],
       [
+        "finalScore",
+        "150000"
+      ],
+      [
+        "resultSnapshot.score",
+        "150000"
+      ],
+      [
+        "resultSnapshot.runMeters",
+        "151600"
+      ],
+      [
         "resultScore.textContent",
-        "206.49km"
+        "150.00km"
       ],
       [
         "ranking payload p_score",
-        "206490"
+        "150000"
       ],
       [
         "zeroReason",
@@ -298,22 +298,22 @@
       ],
       [
         "version",
-        "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+        "kiriganaito-2026-06-28-v13-hole-fall-density"
       ]
     ],
     "maxObs": 2,
     "maxItems": 4,
     "maxHoles": 1,
-    "maxParticles": 47,
+    "maxParticles": 12,
     "sawDancer": true,
-    "dancerInv": true,
+    "dancerInv": false,
     "sawBike": true,
     "bikeCleared": true,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
-      "p_score": 206490,
-      "p_client_version": "kiriganaito-2026-06-28-v12-oncoming-speed-control"
+      "p_score": 150000,
+      "p_client_version": "kiriganaito-2026-06-28-v13-hole-fall-density"
     },
     "debug": ""
   },
