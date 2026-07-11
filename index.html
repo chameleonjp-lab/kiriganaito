@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-06-28-v13-hole-fall-density" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-11-v14-world-zones" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-06-28-v13-hole-fall-density</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-11-v14-world-zones</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-06-28-v13-hole-fall-density</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-11-v14-world-zones</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-06-28-v13-hole-fall-density",
+        CLIENT_VERSION = "kiriganaito-2026-07-11-v14-world-zones",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -400,6 +400,73 @@
         RESULT: "RESULT",
         ERROR: "ERROR",
       };
+
+      const WORLD_ZONE = Object.freeze({
+        GROUND: "ground",
+        AIR: "air",
+        HOLE: "hole",
+      });
+      const MOVEMENT_TYPE = Object.freeze({
+        WORLD_SCROLL: "world_scroll",
+        ONCOMING: "oncoming",
+      });
+      const OBJECT_ROLE = Object.freeze({
+        HAZARD: "hazard",
+        REWARD: "reward",
+        POWERUP: "powerup",
+        TERRAIN: "terrain",
+      });
+      const HEIGHT_BAND = Object.freeze({
+        GROUND: "ground",
+        LOW: "low",
+        MID: "mid",
+        HIGH: "high",
+      });
+      const SPAWN_SOURCE = Object.freeze({
+        NORMAL: "normal",
+        BETWEEN_HOLES: "between_holes",
+        CHASE: "chase",
+        INVINCIBLE: "invincible",
+        EARLY_ONCOMING: "early_oncoming",
+        PATTERN: "pattern",
+      });
+      function enumValues(def) {
+        return Object.keys(def).map((key) => def[key]);
+      }
+      const WORLD_ENTITY_METADATA_VALUES = Object.freeze({
+        zone: enumValues(WORLD_ZONE),
+        movementType: enumValues(MOVEMENT_TYPE),
+        objectRole: enumValues(OBJECT_ROLE),
+        heightBand: enumValues(HEIGHT_BAND),
+        spawnSource: enumValues(SPAWN_SOURCE),
+      });
+      function getHeightBandForLane(lane) {
+        if (lane === "high") return HEIGHT_BAND.HIGH;
+        if (lane === "mid") return HEIGHT_BAND.MID;
+        return HEIGHT_BAND.LOW;
+      }
+      function validateWorldEntityMetadata(entity) {
+        const errors = [];
+        if (!entity || typeof entity !== "object") return ["entity is not an object"];
+        for (const key in WORLD_ENTITY_METADATA_VALUES) {
+          const value = entity[key];
+          if (value == null) errors.push(key + " is " + value);
+          else if (!WORLD_ENTITY_METADATA_VALUES[key].includes(value)) errors.push(key + " is unknown: " + value);
+        }
+        if (entity.direction === 1 && entity.movementType !== MOVEMENT_TYPE.ONCOMING) errors.push("oncoming direction requires movementType=oncoming");
+        return errors;
+      }
+      function validateAllWorldEntities() {
+        const errors = [];
+        const groups = [["holes", holes], ["obstacles", obstacles], ["items", items]];
+        for (const group of groups) {
+          for (let i = 0; i < group[1].length; i++) {
+            const entityErrors = validateWorldEntityMetadata(group[1][i]);
+            for (let j = 0; j < entityErrors.length; j++) errors.push(group[0] + "[" + i + "]: " + entityErrors[j]);
+          }
+        }
+        return errors;
+      }
       const BASE_SPEED = 4.35,
         CHASE_MULT = 2,
         CHASE_TIME = 15,
@@ -1063,7 +1130,7 @@
         if (useOncoming && canSpawnRequiredObstacle(km, 1)) {
           const wasRequired = spawn.needObstacleBeforeNextHole;
           const beforeOncoming = safeInt(run.betweenHoleOncomingSpawnCount);
-          if (spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km))) {
+          if (spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km), SPAWN_SOURCE.BETWEEN_HOLES)) {
             if (wasRequired && safeInt(run.betweenHoleOncomingSpawnCount) === beforeOncoming) run.betweenHoleOncomingSpawnCount = beforeOncoming + 1;
             return true;
           }
@@ -1071,11 +1138,11 @@
         if (useOncoming && km >= 1.5 && safeInt(run.betweenHoleOncomingSpawnCount) === 0) return false;
         if (canSpawnRequiredObstacle(km, -1)) {
           spawn.lastObstacleAt = Math.min(spawn.lastObstacleAt, km - SPAWN.OBSTACLE_GAP - 0.001);
-          if (spawnObstaclePattern(km, d, -1, forcedBetweenHoleEmoji(km))) return true;
+          if (spawnObstaclePattern(km, d, -1, forcedBetweenHoleEmoji(km), -44, SPAWN_SOURCE.BETWEEN_HOLES)) return true;
         }
         if (!useOncoming && allowOncoming && canSpawnRequiredObstacle(km, 1)) {
           run.oncomingCandidateCount++;
-          if (spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km))) return true;
+          if (spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km), SPAWN_SOURCE.BETWEEN_HOLES)) return true;
         }
         return false;
       }
@@ -1112,7 +1179,7 @@
         if (forceEarlyOncoming) run.earlyOncomingCandidateCount = safeInt(run.earlyOncomingCandidateCount) + 1;
 
         if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && obstacles.length < MAX_OBS && km >= spawn.nextObstacleAt) {
-          if (spawnObstaclePattern(km, d, -1, OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0])) { run.invincibleObstacleSpawned++; run.invincibleObstacleSpawnCount++; spawn.nextObstacleAt = km + rand(0.018, 0.045); }
+          if (spawnObstaclePattern(km, d, -1, OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], -44, SPAWN_SOURCE.INVINCIBLE)) { run.invincibleObstacleSpawned++; run.invincibleObstacleSpawnCount++; spawn.nextObstacleAt = km + rand(0.018, 0.045); }
         }
         if (spawn.needObstacleBeforeNextHole && obstacles.length < MAX_OBS && chaseReady) {
           if (spawnRequiredObstacleBetweenHoles(km, d)) {
@@ -1132,36 +1199,36 @@
 
         if (chase && chaseReady && run.elapsed >= (spawn.nextChaseEventAt || 999)) {
           const roll = Math.random();
-          if (roll < 0.34 && holes.length < 16) spawnHolePattern(km, d, { kind: "SMALL" });
-          else if (roll < 0.68 && obstacles.length < MAX_OBS) spawnObstaclePattern(km, d, km >= 2 && Math.random() < 0.45 ? 1 : -1, null);
-          else if (items.length < MAX_ITEMS) spawnScoreItemPattern(km, d);
+          if (roll < 0.34 && holes.length < 16) spawnHolePattern(km, d, { kind: "SMALL", spawnSource: SPAWN_SOURCE.CHASE });
+          else if (roll < 0.68 && obstacles.length < MAX_OBS) spawnObstaclePattern(km, d, km >= 2 && Math.random() < 0.45 ? 1 : -1, null, -44, SPAWN_SOURCE.CHASE);
+          else if (items.length < MAX_ITEMS) spawnScoreItemPattern(km, d, SPAWN_SOURCE.CHASE);
           spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
         }
         if (dueScoreItem && items.length < MAX_ITEMS) {
-          if (canSpawnItem(km)) spawnScoreItemPattern(km, d);
+          if (canSpawnItem(km)) spawnScoreItemPattern(km, d, SPAWN_SOURCE.NORMAL);
           scheduleNext("item", km, d);
         }
         if (dueHole && !spawn.needObstacleBeforeNextHole && holes.length < 16 && chaseReady) {
           const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]);
-          if (!spawnHolePattern(km, d, { kind })) retryHoleSoon(km);
+          if (!spawnHolePattern(km, d, { kind, spawnSource: chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL })) retryHoleSoon(km);
         }
         if (dueObstacle && obstacles.length < MAX_OBS && chaseReady) {
-          if (!spawnObstaclePattern(km, d, -1, chase ? (Math.random() < 0.72 ? "🚶" : null) : null)) scheduleNext("obstacle", km + 0.006, d);
+          if (!spawnObstaclePattern(km, d, -1, chase ? (Math.random() < 0.72 ? "🚶" : null) : null, -44, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL)) scheduleNext("obstacle", km + 0.006, d);
         }
         if ((oncomingDue || forceEarlyOncoming) && obstacles.length < MAX_OBS) {
           if (canSpawnObstacle(km, 1)) {
-            if (!spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km))) retryOncomingSoon(km);
+            if (!spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km), forceEarlyOncoming ? SPAWN_SOURCE.EARLY_ONCOMING : SPAWN_SOURCE.NORMAL)) retryOncomingSoon(km);
           }
           else retryOncomingSoon(km);
         }
         if (km >= run.nextDancerAt && items.length < MAX_ITEMS && canSpawnItem(km) && Math.random() < 0.006) {
-          spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
+          spawnItemPattern(km, d, { high: false, type: "👯‍♀️", spawnSource: SPAWN_SOURCE.NORMAL });
         }
       }
-      function spawnScoreItemPattern(km, d) {
+      function spawnScoreItemPattern(km, d, spawnSource = SPAWN_SOURCE.NORMAL) {
         const r = Math.random();
         const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️";
-        const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length]; const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0]; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0); return spawnItemPattern(km, d, { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge });
+        const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length]; const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0]; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0); return spawnItemPattern(km, d, { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge, spawnSource });
       }
       function selectPatternByDifficulty(km, d) {
         const safeOncoming = km >= 0.8 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
@@ -1196,48 +1263,48 @@
         if (pattern === "breather") {
           scheduleNext("obstacle", km + 0.02, d);
           scheduleNext("hole", km + 0.02, d);
-          return spawnItemPattern(km, d, { x: -38, high: false, type: "💰" });
+          return spawnItemPattern(km, d, { x: -38, high: false, type: "💰", spawnSource: SPAWN_SOURCE.PATTERN });
         }
-        if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km, "SMALL")) return spawnHolePattern(km, d, { kind: "SMALL" });
-        if (pattern === "medium_hole" && canSpawnHole(km, "MEDIUM")) return spawnHolePattern(km, d, { kind: "MEDIUM" });
-        if (pattern === "large_hole" && km >= 5 && canSpawnHole(km, "LARGE")) return spawnHolePattern(km, d, { kind: "LARGE" });
-        if (pattern === "walker" && canSpawnObstacle(km, -1)) return spawnObstaclePattern(km, d, -1, "🚶");
+        if ((pattern === "short_hole" || pattern === "small_hole" || pattern === "chase_small_hole") && canSpawnHole(km, "SMALL")) return spawnHolePattern(km, d, { kind: "SMALL", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "medium_hole" && canSpawnHole(km, "MEDIUM")) return spawnHolePattern(km, d, { kind: "MEDIUM", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "large_hole" && km >= 5 && canSpawnHole(km, "LARGE")) return spawnHolePattern(km, d, { kind: "LARGE", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "walker" && canSpawnObstacle(km, -1)) return spawnObstaclePattern(km, d, -1, "🚶", -44, SPAWN_SOURCE.PATTERN);
         if (pattern === "hole_then_bike" && canSpawnHole(km, "SMALL")) {
-          spawnHolePattern(km, d, { kind: "SMALL" });
-          if (canSpawnObstacle(km + 0.24, -1)) spawnObstaclePattern(km + 0.24, d, -1, "🚴", -126);
+          spawnHolePattern(km, d, { kind: "SMALL", spawnSource: SPAWN_SOURCE.PATTERN });
+          if (canSpawnObstacle(km + 0.24, -1)) spawnObstaclePattern(km + 0.24, d, -1, "🚴", -126, SPAWN_SOURCE.PATTERN);
           return;
         }
         if (pattern === "small_hole_cash" && canSpawnHole(km, "SMALL")) {
-          spawnHolePattern(km, d, { kind: "SMALL" });
-          if (canSpawnItem(km + 0.10)) spawnItemPattern(km, d, { x: -92, high: true, type: "💰" });
+          spawnHolePattern(km, d, { kind: "SMALL", spawnSource: SPAWN_SOURCE.PATTERN });
+          if (canSpawnItem(km + 0.10)) spawnItemPattern(km, d, { x: -92, high: true, type: "💰", spawnSource: SPAWN_SOURCE.PATTERN });
           return;
         }
         if (pattern === "bolt_before_small_hole" && canSpawnItem(km)) {
-          spawnItemPattern(km, d, { x: -40, high: false, type: "🔩" });
-          if (canSpawnHole(km + 0.16, "SMALL", -132, HOLE_TYPES.SMALL.max)) spawnHolePattern(km + 0.16, d, { kind: "SMALL", x: -132 });
+          spawnItemPattern(km, d, { x: -40, high: false, type: "🔩", spawnSource: SPAWN_SOURCE.PATTERN });
+          if (canSpawnHole(km + 0.16, "SMALL", -132, HOLE_TYPES.SMALL.max)) spawnHolePattern(km + 0.16, d, { kind: "SMALL", x: -132, spawnSource: SPAWN_SOURCE.PATTERN });
           return;
         }
         if (pattern === "medium_hole_gear" && canSpawnHole(km, "MEDIUM")) {
-          spawnHolePattern(km, d, { kind: "MEDIUM" });
-          if (canSpawnItem(km + 0.14)) spawnItemPattern(km, d, { x: -112, high: false, type: "⚙️" });
+          spawnHolePattern(km, d, { kind: "MEDIUM", spawnSource: SPAWN_SOURCE.PATTERN });
+          if (canSpawnItem(km + 0.14)) spawnItemPattern(km, d, { x: -112, high: false, type: "⚙️", spawnSource: SPAWN_SOURCE.PATTERN });
           return;
         }
         if (pattern === "cash_before_oncoming" && canSpawnItem(km)) {
-          spawnItemPattern(km, d, { x: -44, high: false, type: "💰" });
-          if (canSpawnObstacle(km + 0.18, 1)) spawnObstaclePattern(km + 0.18, d, 1, null, -92);
+          spawnItemPattern(km, d, { x: -44, high: false, type: "💰", spawnSource: SPAWN_SOURCE.PATTERN });
+          if (canSpawnObstacle(km + 0.18, 1)) spawnObstaclePattern(km + 0.18, d, 1, null, -92, SPAWN_SOURCE.PATTERN);
           return;
         }
         if (pattern === "cash_after_oncoming" && canSpawnObstacle(km, 1)) {
-          spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km));
-          if (canSpawnItem(km + 0.16)) spawnItemPattern(km, d, { x: -118, high: true, type: "💰" });
+          spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km), SPAWN_SOURCE.PATTERN);
+          if (canSpawnItem(km + 0.16)) spawnItemPattern(km, d, { x: -118, high: true, type: "💰", spawnSource: SPAWN_SOURCE.PATTERN });
           return;
         }
-        if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "💰" });
-        if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️" });
-        if (pattern === "bolt_item" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "🔩" });
-        if (pattern === "dancer" && km >= run.nextDancerAt && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯‍♀️" });
-        if ((pattern === "oncoming_safe" || pattern === "chase_oncoming") && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km));
-        if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1);
+        if (pattern === "high_coin" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: true, type: "💰", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "risky_gear" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "⚙️", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "bolt_item" && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "🔩", spawnSource: SPAWN_SOURCE.PATTERN });
+        if (pattern === "dancer" && km >= run.nextDancerAt && canSpawnItem(km)) return spawnItemPattern(km, d, { high: false, type: "👯‍♀️", spawnSource: SPAWN_SOURCE.PATTERN });
+        if ((pattern === "oncoming_safe" || pattern === "chase_oncoming") && canSpawnObstacle(km, 1)) return spawnObstaclePattern(km, d, 1, null, getOncomingSpawnX(km), SPAWN_SOURCE.PATTERN);
+        if (canSpawnObstacle(km, -1)) spawnObstaclePattern(km, d, -1, null, -44, SPAWN_SOURCE.PATTERN);
       }
       function spawnHolePattern(km, d, opt = {}) {
         let kind = opt.kind || d.holeKinds[(Math.random() * d.holeKinds.length) | 0];
@@ -1250,7 +1317,7 @@
           return false;
         }
         if (spawn.needObstacleBeforeNextHole) run.consecutiveHoleViolationCount = safeInt(run.consecutiveHoleViolationCount) + 1;
-        holes.push({ x, prevX: x, y: groundY - 6, w, h: H - groundY + 14, kind });
+        holes.push({ x, prevX: x, y: groundY - 6, w, h: H - groundY + 14, kind, zone: WORLD_ZONE.HOLE, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.TERRAIN, heightBand: HEIGHT_BAND.GROUND, spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL });
         run.holeSpawnCount++;
         if (run.lastHoleSpawnKm >= 0) { const gapKm = km - run.lastHoleSpawnKm; run.totalHoleGapKm = (run.totalHoleGapKm || 0) + gapKm; run.holeGapSamples = (run.holeGapSamples || 0) + 1; run.maxHoleGapKm = Math.max(run.maxHoleGapKm || 0, gapKm); }
         run.lastHoleSpawnKm = km;
@@ -1268,7 +1335,7 @@
         }
         return true;
       }
-      function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44) {
+      function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44, spawnSource = SPAWN_SOURCE.NORMAL) {
         if (dir === 1 && km < 0.8) dir = -1;
         if (!canSpawnObstacle(km, dir)) return false;
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
@@ -1304,6 +1371,11 @@
           w: 32,
           h: 32,
           active: true,
+          zone: WORLD_ZONE.GROUND,
+          movementType: dir === 1 ? MOVEMENT_TYPE.ONCOMING : MOVEMENT_TYPE.WORLD_SCROLL,
+          objectRole: OBJECT_ROLE.HAZARD,
+          heightBand: HEIGHT_BAND.GROUND,
+          spawnSource,
         });
         spawn.lastObstacleAt = km;
         spawn.lastDangerAt = km;
@@ -1346,6 +1418,7 @@
         if (isDancer && km < run.nextDancerAt) return false;
         const risky = !isDancer && (opt.high ?? (km > 1.5 && Math.random() < (run.chase > 0 ? 0.18 : 0.35)));
         const lane = opt.lane || (risky ? "high" : (Math.random()<0.5 ? "low" : "mid"));
+        const heightBand = isDancer ? HEIGHT_BAND.GROUND : getHeightBandForLane(lane);
         const laneHeight = lane === "low" ? 38 : lane === "mid" ? ITEM_HEIGHT_SAFE : ITEM_HEIGHT_HIGH;
         const itemY = isDancer ? groundY - 34 : groundY - laneHeight - Math.random() * (lane === "low" ? 8 : ITEM_HEIGHT_RANDOM);
         if (!isDancer && lane === run.lastItemLane && (opt.timingType || "plain") === run.lastItemTimingType) run.sameItemRhythmCount++; else run.sameItemRhythmCount = 0;
@@ -1374,6 +1447,12 @@
           w: isDancer ? 32 : 28,
           h: isDancer ? 32 : 28,
           active: true,
+          lane,
+          zone: isDancer ? WORLD_ZONE.GROUND : WORLD_ZONE.AIR,
+          movementType: MOVEMENT_TYPE.WORLD_SCROLL,
+          objectRole: isDancer ? OBJECT_ROLE.POWERUP : OBJECT_ROLE.REWARD,
+          heightBand,
+          spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL,
         });
       }
       function updateThings(move, dt) {
