@@ -1,12 +1,12 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-06-28-v13-hole-fall-density`
+Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-06-28-v13-hole-fall-density` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-07-11-v14-world-zones` に統一します。
 
 ## v7 スコア計算
 結果画面の大きな記録、`resultSnapshot.score`、ランキング RPC の `p_score` は同じ `scoreMeters` を使います。Supabase/RPC/ランキング payload 形状は変更しません。
@@ -75,7 +75,7 @@ Version: `kiriganaito-2026-06-28-v13-hole-fall-density`
 - client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵実時間4秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
-- CLIENT_VERSION は `kiriganaito-2026-06-28-v13-hole-fall-density`。
+- CLIENT_VERSION は `kiriganaito-2026-07-11-v14-world-zones`。
 - 結果画面の `resultComment` は DOM キャッシュ `el` に登録し、`finishGame()` は `buildResultSnapshot()`、`renderResultHeader()`、`renderResultBreakdown()`、`renderResultVersion()` の段階描画に分割する。
 - 結果内訳はランキング欄より上に、記録の内訳、プレイ内容、出現数、診断、ランキング送信 payload の `p_score`、`zeroReason`、version を表示する。
 - 穴生成失敗時は通常間隔を再加算せず `retryHoleSoon(km)` により 0.006〜0.014km で短距離リトライする。小穴中心に増やし、穴同士の接触と2段ジャンプ必須配置は禁止する。
@@ -93,10 +93,29 @@ Version: `kiriganaito-2026-06-28-v13-hole-fall-density`
 
 ## v13 穴落ち支持判定 / 密度 hotfix
 
-- CLIENT_VERSION は `kiriganaito-2026-06-28-v13-hole-fall-density`。
+- CLIENT_VERSION は `kiriganaito-2026-07-11-v14-world-zones`。
 - 穴落ちは矩形衝突ではなく、プレイヤー足元の3支持点（左寄り・中央・右寄り）が穴の水平範囲内に入ったかで判定します。
 - `HOLE_FALL_GROUND_TOLERANCE = 6px` とし、地上または着地可能高度で穴上にいる場合は、無敵中でも即 `finishGame("穴に落ちました")` にします。明確に空中を飛び越えている場合のみセーフです。
 - 穴には `prevX` を保存し、現在位置だけでなく前フレームから現在フレームまでの swept 範囲が足元支持点を跨いだ場合も穴落ちにします。
 - 更新順序は、入力/速度、プレイヤー位置、穴・障害物・アイテム移動、穴落ち支持判定、通常着地、障害物/アイテム判定の順にし、穴上で地面に着地できないようにします。
 - 小穴中心に増やすため、穴スケジュール、穴種別幅、画面内穴間隔を v13 用に再調整します。大穴頻度は上げすぎず、穴間には必ず障害物または対向障害物を維持します。
 - 対向障害物速度倍率は 0.80〜1.50km を約0.50、1.50〜2.00km を約0.60、2.00km以降を段階的に0.68〜0.84へ引き上げます。ただし TTC 最低条件と `unavoidableOncomingCount === 0` は維持します。
+
+
+## v14 world-zone metadata contract
+
+- CLIENT_VERSION は `kiriganaito-2026-07-11-v14-world-zones`。
+- 世界内の出現物（穴・障害物・アイテム）は、生成時に `zone`、`movementType`、`objectRole`、`heightBand`、`spawnSource` を持ちます。
+- `zone` は `GROUND` / `AIR` / `HOLE` のいずれかで管理します。
+- `movementType` は `WORLD_SCROLL` / `ONCOMING` で管理します。
+- `objectRole` は `HAZARD` / `REWARD` / `POWERUP` / `TERRAIN` で管理します。
+- `heightBand` は `GROUND` / `LOW` / `MID` / `HIGH` で管理します。
+- `spawnSource` は `NORMAL` / `BETWEEN_HOLES` / `CHASE` / `INVINCIBLE` / `EARLY_ONCOMING` / `PATTERN` で管理します。
+- 穴は `HOLE` / `WORLD_SCROLL` / `TERRAIN` / `GROUND` として扱います。
+- 通常障害物は `GROUND` / `WORLD_SCROLL` / `HAZARD` / `GROUND` として扱います。
+- 対向障害物は `GROUND` / `ONCOMING` / `HAZARD` / `GROUND` として扱い、`direction === 1` と `movementType === ONCOMING` を一致させます。
+- 💰、🔩、⚙️ は `AIR` / `WORLD_SCROLL` / `REWARD` として扱い、既存の `lane` に対応して `LOW` / `MID` / `HIGH` を設定します。互換性のため `lane` は残します。
+- 👯‍♀️ は地上の置物として `GROUND` / `WORLD_SCROLL` / `POWERUP` / `GROUND` として扱います。空中レーンには移動しません。
+- パーティクルはこの分類対象外です。
+- 今回は空中障害物を追加しません。
+- 今回は穴、障害物、対向障害物、アイテムの出現頻度・配置・速度・スコア・当たり判定・画面デザインを変更しません。

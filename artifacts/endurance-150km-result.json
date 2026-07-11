@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T01:54:16.757Z",
+  "generatedAt": "2026-07-11T22:46:44.559Z",
   "targetMeters": 150000,
   "seed": 150001,
   "result": {
@@ -252,6 +252,7 @@
         "逃走中の対向障害物",
         "0個"
       ],
+      [],
       [
         "診断",
         ""
@@ -298,7 +299,7 @@
       ],
       [
         "version",
-        "kiriganaito-2026-06-28-v13-hole-fall-density"
+        "kiriganaito-2026-07-11-v14-world-zones"
       ]
     ],
     "maxObs": 2,
@@ -313,7 +314,7 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
       "p_score": 150000,
-      "p_client_version": "kiriganaito-2026-06-28-v13-hole-fall-density"
+      "p_client_version": "kiriganaito-2026-07-11-v14-world-zones"
     },
     "debug": ""
   },
