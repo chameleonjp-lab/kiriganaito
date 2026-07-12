@@ -119,3 +119,15 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - パーティクルはこの分類対象外です。
 - 今回は空中障害物を追加しません。
 - 今回は穴、障害物、対向障害物、アイテムの出現頻度・配置・速度・スコア・当たり判定・画面デザインを変更しません。
+
+## v15 SpawnDirector 出現管理契約（現行）
+
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-11-v15-spawn-director`。
+- 出現予定は `WORLD_ZONE.GROUND` / `WORLD_ZONE.AIR` / `WORLD_ZONE.HOLE` ごとの固定長キューで管理する。
+- 出現予定は一意の `id`、重複抑止用 `key`、`zone`、`kind`、`spawnSource`、`dueKm`、`attempts`、`status`、`nextAttemptKm`、`payload` を持つ。
+- 同じ `key` の未解決予定は重複登録しない。
+- 通常試行は最大3回で、失敗後は `nextAttemptKm` まで待機する。
+- 最大試行後は安全な代替またはスキップへ移り、必須予定は安全区間を予約して待機する。
+- 代替時も穴・障害物・対向障害物の安全条件は緩和しない。
+- 成功カウンターは `spawnSource` と生成物 metadata を正本として中央集計する方針とし、生成失敗や再試行は出現数へ加算しない。
+- 今回は密度、出現確率、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase 仕様は変更対象外。

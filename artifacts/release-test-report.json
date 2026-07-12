@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T22:46:43.774Z",
+  "generatedAt": "2026-07-12T06:44:40.207Z",
   "finalVerdict": "WARN",
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
@@ -50,9 +50,9 @@
     "consoleWarnings": []
   },
   "naturalAutoplayCheck": {
-    "maxRunMeters": 1467,
-    "maxScoreMeters": 1616,
-    "bestSeed": 3002,
+    "maxRunMeters": 1476,
+    "maxScoreMeters": 3146,
+    "bestSeed": 3005,
     "highestTargetReached": 1000,
     "natural150kmReached": false,
     "targets": [
@@ -80,9 +80,9 @@
       3005
     ],
     "mostCommonFailure": {
-      "none": 13,
-      "hole_timing_early": 5,
-      "oncoming_unavoidable": 12
+      "hole_timing_early": 11,
+      "none": 11,
+      "oncoming_unavoidable": 8
     }
   },
   "longDistanceDisplayCheck": {
@@ -97,7 +97,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 150000,
-          "p_client_version": "kiriganaito-2026-07-11-v14-world-zones"
+          "p_client_version": "kiriganaito-2026-07-11-v15-spawn-director"
         }
       },
       {
@@ -109,7 +109,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 999990,
-          "p_client_version": "kiriganaito-2026-07-11-v14-world-zones"
+          "p_client_version": "kiriganaito-2026-07-11-v15-spawn-director"
         }
       },
       {
@@ -121,7 +121,7 @@
           "p_game_slug": "kiriganaito",
           "p_display_name": "LONG",
           "p_score": 1000000,
-          "p_client_version": "kiriganaito-2026-07-11-v14-world-zones"
+          "p_client_version": "kiriganaito-2026-07-11-v15-spawn-director"
         }
       }
     ],
@@ -258,7 +258,7 @@
         ],
         [
           "加点アイテム出現数",
-          "4個"
+          "11個"
         ],
         [
           "加点アイテム取得数",
@@ -282,11 +282,11 @@
         ],
         [
           "穴",
-          "0個"
+          "1個"
         ],
         [
           "穴出現数",
-          "0個"
+          "1個"
         ],
         [
           "最大穴間隔",
@@ -298,15 +298,15 @@
         ],
         [
           "障害物",
-          "2個"
+          "1個"
         ],
         [
           "最大障害物間隔",
-          "0.076km"
+          "0.000km"
         ],
         [
           "平均障害物間隔",
-          "0.076km"
+          "0.000km"
         ],
         [
           "対向障害物",
@@ -394,7 +394,7 @@
         ],
         [
           "穴間障害物生成失敗再試行数",
-          "0回"
+          "5回"
         ],
         [
           "穴だけ連続した回数",
@@ -402,7 +402,7 @@
         ],
         [
           "加点アイテム",
-          "4個"
+          "11個"
         ],
         [
           "無敵アイテム",
@@ -471,14 +471,14 @@
         ],
         [
           "version",
-          "kiriganaito-2026-07-11-v14-world-zones"
+          "kiriganaito-2026-07-11-v15-spawn-director"
         ]
       ],
-      "breakdownText": "記録の内訳\n\n実走行距離\n0.20km\nアイテム加算\n+0.00km\n基礎距離\n0.20km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.10km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.20km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n4個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n5.0秒\n終了理由\nリタイアしました。次はもう少し先へ。\n出現数\n\n穴\n0個\n穴出現数\n0個\n最大穴間隔\n0.000km\n平均穴間隔\n0.000km\n障害物\n2個\n最大障害物間隔\n0.076km\n平均障害物間隔\n0.076km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n0個\n穴間通常障害物出現数\n0個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n0回\n穴だけ連続した回数\n0回\n加点アイテム\n4個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n196\nmaxRunMeters\n196\nlastNonZeroRunMeters\n195.75000000000085\nscoreMeters\n196\nfinalScore\n196\nresultSnapshot.score\n196\nresultSnapshot.runMeters\n196\nresultScore.textContent\n0.20km\nranking payload p_score\n196\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v14-world-zones",
+      "breakdownText": "記録の内訳\n\n実走行距離\n0.20km\nアイテム加算\n+0.00km\n基礎距離\n0.20km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.10km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.20km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n11個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n5.0秒\n終了理由\nリタイアしました。次はもう少し先へ。\n出現数\n\n穴\n1個\n穴出現数\n1個\n最大穴間隔\n0.000km\n平均穴間隔\n0.000km\n障害物\n1個\n最大障害物間隔\n0.000km\n平均障害物間隔\n0.000km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n0個\n穴間通常障害物出現数\n0個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n5回\n穴だけ連続した回数\n0回\n加点アイテム\n11個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n196\nmaxRunMeters\n196\nlastNonZeroRunMeters\n195.75000000000085\nscoreMeters\n196\nfinalScore\n196\nresultSnapshot.score\n196\nresultSnapshot.runMeters\n196\nresultScore.textContent\n0.20km\nranking payload p_score\n196\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v15-spawn-director",
       "betweenHoleObstacleSpawnCount": 0,
       "betweenHoleNormalObstacleSpawnCount": 0,
       "betweenHoleOncomingSpawnCount": 0,
-      "betweenHoleObstacleRetryCount": 0,
+      "betweenHoleObstacleRetryCount": 5,
       "consecutiveHoleViolationCount": 0,
       "elapsedMs": 5000
     },
@@ -543,7 +543,7 @@
         ],
         [
           "加点アイテム出現数",
-          "5個"
+          "18個"
         ],
         [
           "加点アイテム取得数",
@@ -575,11 +575,11 @@
         ],
         [
           "最大穴間隔",
-          "0.225km"
+          "0.162km"
         ],
         [
           "平均穴間隔",
-          "0.225km"
+          "0.162km"
         ],
         [
           "障害物",
@@ -587,11 +587,11 @@
         ],
         [
           "最大障害物間隔",
-          "0.161km"
+          "0.166km"
         ],
         [
           "平均障害物間隔",
-          "0.115km"
+          "0.164km"
         ],
         [
           "対向障害物",
@@ -667,11 +667,11 @@
         ],
         [
           "穴間必須障害物出現数",
-          "1個"
+          "2個"
         ],
         [
           "穴間通常障害物出現数",
-          "1個"
+          "2個"
         ],
         [
           "穴間対向障害物出現数",
@@ -679,7 +679,7 @@
         ],
         [
           "穴間障害物生成失敗再試行数",
-          "183回"
+          "10回"
         ],
         [
           "穴だけ連続した回数",
@@ -687,7 +687,7 @@
         ],
         [
           "加点アイテム",
-          "5個"
+          "18個"
         ],
         [
           "無敵アイテム",
@@ -756,14 +756,14 @@
         ],
         [
           "version",
-          "kiriganaito-2026-07-11-v14-world-zones"
+          "kiriganaito-2026-07-11-v15-spawn-director"
         ]
       ],
-      "breakdownText": "記録の内訳\n\n実走行距離\n0.39km\nアイテム加算\n+0.00km\n基礎距離\n0.39km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.20km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.39km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n5個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n10.0秒\n終了理由\nリタイアしました。次はもう少し先へ。\n出現数\n\n穴\n2個\n穴出現数\n2個\n最大穴間隔\n0.225km\n平均穴間隔\n0.225km\n障害物\n3個\n最大障害物間隔\n0.161km\n平均障害物間隔\n0.115km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n1個\n穴間通常障害物出現数\n1個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n183回\n穴だけ連続した回数\n0回\n加点アイテム\n5個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n391\nmaxRunMeters\n391.49999999999596\nlastNonZeroRunMeters\n391.49999999999596\nscoreMeters\n391\nfinalScore\n391\nresultSnapshot.score\n391\nresultSnapshot.runMeters\n391\nresultScore.textContent\n0.39km\nranking payload p_score\n391\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v14-world-zones",
-      "betweenHoleObstacleSpawnCount": 1,
-      "betweenHoleNormalObstacleSpawnCount": 1,
+      "breakdownText": "記録の内訳\n\n実走行距離\n0.39km\nアイテム加算\n+0.00km\n基礎距離\n0.39km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.20km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.39km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n18個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n10.0秒\n終了理由\nリタイアしました。次はもう少し先へ。\n出現数\n\n穴\n2個\n穴出現数\n2個\n最大穴間隔\n0.162km\n平均穴間隔\n0.162km\n障害物\n3個\n最大障害物間隔\n0.166km\n平均障害物間隔\n0.164km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n2個\n穴間通常障害物出現数\n2個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n10回\n穴だけ連続した回数\n0回\n加点アイテム\n18個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n391\nmaxRunMeters\n391.49999999999596\nlastNonZeroRunMeters\n391.49999999999596\nscoreMeters\n391\nfinalScore\n391\nresultSnapshot.score\n391\nresultSnapshot.runMeters\n391\nresultScore.textContent\n0.39km\nranking payload p_score\n391\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v15-spawn-director",
+      "betweenHoleObstacleSpawnCount": 2,
+      "betweenHoleNormalObstacleSpawnCount": 2,
       "betweenHoleOncomingSpawnCount": 0,
-      "betweenHoleObstacleRetryCount": 183,
+      "betweenHoleObstacleRetryCount": 10,
       "consecutiveHoleViolationCount": 0,
       "elapsedMs": 10000
     },
@@ -828,7 +828,7 @@
         ],
         [
           "加点アイテム出現数",
-          "5個"
+          "10個"
         ],
         [
           "加点アイテム取得数",
@@ -964,7 +964,7 @@
         ],
         [
           "穴間障害物生成失敗再試行数",
-          "96回"
+          "5回"
         ],
         [
           "穴だけ連続した回数",
@@ -972,7 +972,7 @@
         ],
         [
           "加点アイテム",
-          "5個"
+          "10個"
         ],
         [
           "無敵アイテム",
@@ -1041,14 +1041,14 @@
         ],
         [
           "version",
-          "kiriganaito-2026-07-11-v14-world-zones"
+          "kiriganaito-2026-07-11-v15-spawn-director"
         ]
       ],
-      "breakdownText": "記録の内訳\n\n実走行距離\n0.20km\nアイテム加算\n+0.00km\n基礎距離\n0.20km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.10km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.20km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n5個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n5.0秒\n終了理由\n穴に落ちました。足元確認、大事です。\n出現数\n\n穴\n1個\n穴出現数\n1個\n最大穴間隔\n0.000km\n平均穴間隔\n0.000km\n障害物\n1個\n最大障害物間隔\n0.000km\n平均障害物間隔\n0.000km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n0個\n穴間通常障害物出現数\n0個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n96回\n穴だけ連続した回数\n0回\n加点アイテム\n5個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n196\nmaxRunMeters\n196\nlastNonZeroRunMeters\n195.75000000000085\nscoreMeters\n196\nfinalScore\n196\nresultSnapshot.score\n196\nresultSnapshot.runMeters\n196\nresultScore.textContent\n0.20km\nranking payload p_score\n196\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v14-world-zones",
+      "breakdownText": "記録の内訳\n\n実走行距離\n0.20km\nアイテム加算\n+0.00km\n基礎距離\n0.20km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.10km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.20km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n10個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n5.0秒\n終了理由\n穴に落ちました。足元確認、大事です。\n出現数\n\n穴\n1個\n穴出現数\n1個\n最大穴間隔\n0.000km\n平均穴間隔\n0.000km\n障害物\n1個\n最大障害物間隔\n0.000km\n平均障害物間隔\n0.000km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n0個\n穴間通常障害物出現数\n0個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n5回\n穴だけ連続した回数\n0回\n加点アイテム\n10個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n196\nmaxRunMeters\n196\nlastNonZeroRunMeters\n195.75000000000085\nscoreMeters\n196\nfinalScore\n196\nresultSnapshot.score\n196\nresultSnapshot.runMeters\n196\nresultScore.textContent\n0.20km\nranking payload p_score\n196\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v15-spawn-director",
       "betweenHoleObstacleSpawnCount": 0,
       "betweenHoleNormalObstacleSpawnCount": 0,
       "betweenHoleOncomingSpawnCount": 0,
-      "betweenHoleObstacleRetryCount": 96,
+      "betweenHoleObstacleRetryCount": 5,
       "consecutiveHoleViolationCount": 0,
       "elapsedMs": 5000
     },
@@ -1113,7 +1113,7 @@
         ],
         [
           "加点アイテム出現数",
-          "5個"
+          "17個"
         ],
         [
           "加点アイテム取得数",
@@ -1145,11 +1145,11 @@
         ],
         [
           "最大穴間隔",
-          "0.166km"
+          "0.161km"
         ],
         [
           "平均穴間隔",
-          "0.166km"
+          "0.161km"
         ],
         [
           "障害物",
@@ -1157,11 +1157,11 @@
         ],
         [
           "最大障害物間隔",
-          "0.166km"
+          "0.165km"
         ],
         [
           "平均障害物間隔",
-          "0.161km"
+          "0.163km"
         ],
         [
           "対向障害物",
@@ -1249,7 +1249,7 @@
         ],
         [
           "穴間障害物生成失敗再試行数",
-          "260回"
+          "10回"
         ],
         [
           "穴だけ連続した回数",
@@ -1257,7 +1257,7 @@
         ],
         [
           "加点アイテム",
-          "5個"
+          "17個"
         ],
         [
           "無敵アイテム",
@@ -1326,14 +1326,14 @@
         ],
         [
           "version",
-          "kiriganaito-2026-07-11-v14-world-zones"
+          "kiriganaito-2026-07-11-v15-spawn-director"
         ]
       ],
-      "breakdownText": "記録の内訳\n\n実走行距離\n0.39km\nアイテム加算\n+0.00km\n基礎距離\n0.39km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.20km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.39km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n5個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n10.0秒\n終了理由\n穴に落ちました。足元確認、大事です。\n出現数\n\n穴\n2個\n穴出現数\n2個\n最大穴間隔\n0.166km\n平均穴間隔\n0.166km\n障害物\n3個\n最大障害物間隔\n0.166km\n平均障害物間隔\n0.161km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n2個\n穴間通常障害物出現数\n2個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n260回\n穴だけ連続した回数\n0回\n加点アイテム\n5個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n391\nmaxRunMeters\n391.49999999999596\nlastNonZeroRunMeters\n391.49999999999596\nscoreMeters\n391\nfinalScore\n391\nresultSnapshot.score\n391\nresultSnapshot.runMeters\n391\nresultScore.textContent\n0.39km\nranking payload p_score\n391\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v14-world-zones",
+      "breakdownText": "記録の内訳\n\n実走行距離\n0.39km\nアイテム加算\n+0.00km\n基礎距離\n0.39km\n事故ペナルティ\n-0.00km\n取り逃がしペナルティ\n-0.00km\n総ペナルティ\n-0.00km\nペナルティ適用上限\n0.20km\n実適用ペナルティ\n-0.00km\nカットされたペナルティ\n0.00km\n最終スコア\n0.39km\nプレイ内容\n\n事故回数\n0回\n加点アイテム出現数\n17個\n加点アイテム取得数\n0個\n取得率\n0.0%\n走行時間\n10.0秒\n終了理由\n穴に落ちました。足元確認、大事です。\n出現数\n\n穴\n2個\n穴出現数\n2個\n最大穴間隔\n0.161km\n平均穴間隔\n0.161km\n障害物\n3個\n最大障害物間隔\n0.165km\n平均障害物間隔\n0.163km\n対向障害物\n0個\n対向障害物候補数\n0回\n対向障害物出現数\n0個\n対向障害物失敗再試行数\n0回\n2km以内対向障害物出現数\n0個\n2km以内対向障害物候補数\n0回\n2km以内対向障害物再試行数\n0回\n対向障害物近すぎ却下数\n0回\n対向障害物速度調整数\n0回\n対向障害物平均速度倍率\n0.00倍\n対向障害物最小速度倍率\n0.00倍\n対向障害物最大速度倍率\n0.00倍\nTTC不足による最終却下数\n0回\n対向障害物最小反応猶予\n0.90秒\n対向障害物平均反応猶予\n0.00秒\n対向障害物最短TTC\n0.00秒\n2km以内対向障害物最短TTC\n0.00秒\n避け不能対向障害物数\n0回\n穴間必須障害物出現数\n2個\n穴間通常障害物出現数\n2個\n穴間対向障害物出現数\n0個\n穴間障害物生成失敗再試行数\n10回\n穴だけ連続した回数\n0回\n加点アイテム\n17個\n無敵アイテム\n0個\n逃走中の障害物\n0個\n逃走中の穴\n0個\n逃走中の加点アイテム\n0個\n逃走中の対向障害物\n0個\n診断\n\nrunMeters\n391\nmaxRunMeters\n391.49999999999596\nlastNonZeroRunMeters\n391.49999999999596\nscoreMeters\n391\nfinalScore\n391\nresultSnapshot.score\n391\nresultSnapshot.runMeters\n391\nresultScore.textContent\n0.39km\nranking payload p_score\n391\nzeroReason\nnormal_non_zero\nversion\nkiriganaito-2026-07-11-v15-spawn-director",
       "betweenHoleObstacleSpawnCount": 2,
       "betweenHoleNormalObstacleSpawnCount": 2,
       "betweenHoleOncomingSpawnCount": 0,
-      "betweenHoleObstacleRetryCount": 260,
+      "betweenHoleObstacleRetryCount": 10,
       "consecutiveHoleViolationCount": 0,
       "elapsedMs": 10000
     },
@@ -1380,20 +1380,20 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "details": {
-      "pairs": 63,
+      "pairs": 37,
       "missing": 0,
-      "pre3Oncoming": 6,
-      "oncomingAfter3": 54,
+      "pre3Oncoming": 7,
+      "oncomingAfter3": 79,
       "counters": {
-        "betweenHoleObstacleSpawnCount": 64,
-        "betweenHoleNormalObstacleSpawnCount": 64,
-        "betweenHoleOncomingSpawnCount": 60,
-        "betweenHoleObstacleRetryCount": 6995,
+        "betweenHoleObstacleSpawnCount": 37,
+        "betweenHoleNormalObstacleSpawnCount": 37,
+        "betweenHoleOncomingSpawnCount": 78,
+        "betweenHoleObstacleRetryCount": 287,
         "consecutiveHoleViolationCount": 0
       },
-      "minHoleObstacle": 0.08507947500001656,
+      "minHoleObstacle": 0.08519692500000386,
       "isFiniteMinHoleObstacle": true,
-      "minObstacleHole": 0.00003544379176645407
+      "minObstacleHole": 0
     }
   },
   "earlyOncomingCheck": {
@@ -1416,18 +1416,18 @@
       "before08": 0,
       "within2": 2,
       "forcedCandidateMoved": false,
-      "retryShort": true,
+      "retryShort": false,
       "largeAfterOncoming": false,
       "oncomingAfterLarge": false,
-      "oncomingMinTtcSec": 1.034574947618426,
-      "earlyOncomingMinTtcSec": 1.034574947618426,
+      "oncomingMinTtcSec": 1.1599779715721747,
+      "earlyOncomingMinTtcSec": 1.1599779715721747,
       "unavoidableOncomingCount": 0,
       "oncomingTooCloseRejectCount": 0,
       "earlyOncomingSpawnCount": 2,
       "earlyOncomingCandidateCount": 0,
-      "earlyOncomingRetryCount": 5,
-      "breakdown": "記録の内訳:\n実走行距離:2.02km\nアイテム加算:+0.00km\n基礎距離:2.02km\n事故ペナルティ:-0.00km\n取り逃がしペナルティ:-0.00km\n総ペナルティ:-0.00km\nペナルティ適用上限:1.01km\n実適用ペナルティ:-0.00km\nカットされたペナルティ:0.00km\n最終スコア:2.02km\nプレイ内容:\n事故回数:0回\n加点アイテム出現数:8個\n加点アイテム取得数:0個\n取得率:0.0%\n走行時間:50.7秒\n終了理由:検査\n出現数:\n穴:10個\n穴出現数:10個\n最大穴間隔:0.291km\n平均穴間隔:0.197km\n障害物:16個\n最大障害物間隔:0.166km\n平均障害物間隔:0.129km\n対向障害物:2個\n対向障害物候補数:393回\n対向障害物出現数:2個\n対向障害物失敗再試行数:6回\n2km以内対向障害物出現数:2個\n2km以内対向障害物候補数:0回\n2km以内対向障害物再試行数:5回\n対向障害物近すぎ却下数:0回\n対向障害物速度調整数:0回\n対向障害物平均速度倍率:0.55倍\n対向障害物最小速度倍率:0.50倍\n対向障害物最大速度倍率:0.60倍\nTTC不足による最終却下数:0回\n対向障害物最小反応猶予:0.70秒\n対向障害物平均反応猶予:1.11秒\n対向障害物最短TTC:1.03秒\n2km以内対向障害物最短TTC:1.03秒\n避け不能対向障害物数:0回\n穴間必須障害物出現数:10個\n穴間通常障害物出現数:10個\n穴間対向障害物出現数:2個\n穴間障害物生成失敗再試行数:1275回\n穴だけ連続した回数:0回\n加点アイテム:8個\n無敵アイテム:1個\n逃走中の障害物:0個\n逃走中の穴:0個\n逃走中の加点アイテム:0個\n逃走中の対向障害物:0個\n\n診断:\nrunMeters:2020\nmaxRunMeters:2020.0062375001128\nlastNonZeroRunMeters:2020.0062375001128\nscoreMeters:2020\nfinalScore:2020\nresultSnapshot.score:2020\nresultSnapshot.runMeters:2020\nresultScore.textContent:2.02km\nranking payload p_score:2020\nzeroReason:normal_non_zero\nversion:kiriganaito-2026-07-11-v14-world-zones",
-      "oncomingCandidateCount": 393,
+      "earlyOncomingRetryCount": 0,
+      "breakdown": "記録の内訳:\n実走行距離:2.02km\nアイテム加算:+0.00km\n基礎距離:2.02km\n事故ペナルティ:-0.00km\n取り逃がしペナルティ:-0.30km\n総ペナルティ:-0.30km\nペナルティ適用上限:1.01km\n実適用ペナルティ:-0.30km\nカットされたペナルティ:0.00km\n最終スコア:1.72km\nプレイ内容:\n事故回数:0回\n加点アイテム出現数:48個\n加点アイテム取得数:0個\n取得率:0.0%\n走行時間:50.7秒\n終了理由:検査\n出現数:\n穴:7個\n穴出現数:7個\n最大穴間隔:0.493km\n平均穴間隔:0.284km\n障害物:20個\n最大障害物間隔:0.164km\n平均障害物間隔:0.102km\n対向障害物:2個\n対向障害物候補数:488回\n対向障害物出現数:2個\n対向障害物失敗再試行数:10回\n2km以内対向障害物出現数:2個\n2km以内対向障害物候補数:0回\n2km以内対向障害物再試行数:0回\n対向障害物近すぎ却下数:0回\n対向障害物速度調整数:0回\n対向障害物平均速度倍率:0.55倍\n対向障害物最小速度倍率:0.50倍\n対向障害物最大速度倍率:0.60倍\nTTC不足による最終却下数:0回\n対向障害物最小反応猶予:0.70秒\n対向障害物平均反応猶予:1.17秒\n対向障害物最短TTC:1.16秒\n2km以内対向障害物最短TTC:1.16秒\n避け不能対向障害物数:0回\n穴間必須障害物出現数:7個\n穴間通常障害物出現数:7個\n穴間対向障害物出現数:2個\n穴間障害物生成失敗再試行数:39回\n穴だけ連続した回数:0回\n加点アイテム:48個\n無敵アイテム:1個\n逃走中の障害物:0個\n逃走中の穴:0個\n逃走中の加点アイテム:0個\n逃走中の対向障害物:0個\n\n診断:\nrunMeters:2020\nmaxRunMeters:2020.0062375001128\nlastNonZeroRunMeters:2020.0062375001128\nscoreMeters:1720\nfinalScore:1720\nresultSnapshot.score:1720\nresultSnapshot.runMeters:2020\nresultScore.textContent:1.72km\nranking payload p_score:1720\nzeroReason:normal_non_zero\nversion:kiriganaito-2026-07-11-v15-spawn-director",
+      "oncomingCandidateCount": 488,
       "oncomingSpawnCount": 2
     }
   },
@@ -1448,17 +1448,17 @@
     "details": {
       "runMeters": 150000.39641282664,
       "before08": 0,
-      "oncomingSpawnCount": 613,
-      "betweenHoleOncomingSpawnCount": 613,
-      "earlyOncomingSpawnCount": 2,
-      "oncomingMinTtcSec": 0.6248405163142073,
+      "oncomingSpawnCount": 795,
+      "betweenHoleOncomingSpawnCount": 755,
+      "earlyOncomingSpawnCount": 3,
+      "oncomingMinTtcSec": 0.8481919849935264,
       "earlyOncomingMinTtcSec": 1.1599779715721747,
       "unavoidableOncomingCount": 0,
-      "oncomingCandidateCount": 47027,
-      "oncomingSpeedAdjustCount": 231,
+      "oncomingCandidateCount": 62209,
+      "oncomingSpeedAdjustCount": 0,
       "oncomingTtcFinalRejectCount": 0,
       "oncomingTooCloseRejectCount": 0,
-      "oncomingSpeedScaleSamples": 613
+      "oncomingSpeedScaleSamples": 795
     }
   },
   "worldMetadataCheck": {
@@ -1476,10 +1476,10 @@
       "errors": [],
       "allHave": true,
       "hole": {
-        "x": -46.394134026269896,
-        "prevX": -46.394134026269896,
+        "x": -43.174873921749764,
+        "prevX": -43.174873921749764,
         "y": 253.2,
-        "w": 30.394134026269892,
+        "w": 27.174873921749768,
         "h": 114.80000000000001,
         "kind": "SMALL",
         "zone": "hole",
@@ -1506,8 +1506,8 @@
       "oncoming": {
         "x": -112,
         "y": 227.2,
-        "emoji": "🚶",
-        "speed": 0.68,
+        "emoji": "🏃🏻",
+        "speed": 1.36,
         "direction": 1,
         "w": 32,
         "h": 32,
@@ -1521,7 +1521,7 @@
       "rewards": [
         {
           "x": -36,
-          "y": 214.57316806659236,
+          "y": 214.66937514091777,
           "emoji": "💰",
           "kind": "score",
           "value": 100,
@@ -1542,7 +1542,7 @@
         },
         {
           "x": -36,
-          "y": 174.60115368814547,
+          "y": 171.14480253822725,
           "emoji": "🔩",
           "kind": "score",
           "value": 30,
@@ -1563,7 +1563,7 @@
         },
         {
           "x": -36,
-          "y": 145.52259065050944,
+          "y": 155.84613026216016,
           "emoji": "⚙️",
           "kind": "score",
           "value": 70,
@@ -1633,12 +1633,12 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "RANK",
       "p_score": 1234,
-      "p_client_version": "kiriganaito-2026-07-11-v14-world-zones"
+      "p_client_version": "kiriganaito-2026-07-11-v15-spawn-director"
     },
     "pScoreInteger": true,
     "usesSubmitRpc": true,
     "noDirectInsert": true,
-    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-07-11-v14-world-zones\"}]",
+    "pendingQueue": "[{\"gameSlug\":\"kiriganaito\",\"displayName\":\"RANK\",\"score\":1234,\"clientVersion\":\"kiriganaito-2026-07-11-v15-spawn-director\"}]",
     "pendingKey": "kiriganaito_pending_scores_v1",
     "retryButtonVisible": true,
     "realSupabaseSubmission": false,
@@ -1649,7 +1649,7 @@
       },
       {
         "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/submit_score",
-        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-07-11-v14-world-zones\"}"
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_display_name\":\"RANK\",\"p_score\":1234,\"p_client_version\":\"kiriganaito-2026-07-11-v15-spawn-director\"}"
       }
     ]
   },
