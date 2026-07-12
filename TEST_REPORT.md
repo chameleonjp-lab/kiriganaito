@@ -1,50 +1,67 @@
-# kiriganaito v15 TEST_REPORT
+# kiriganaito v16 SpawnDirector 正確性修正 TEST_REPORT
 
 - 開始ブランチ: `work`
-- 開始コミット: `b8862d1589b77cd84c4faaa2a6ed06ab0d0758eb`
-- 開始時 CLIENT_VERSION: `kiriganaito-2026-07-11-v14-world-zones`
-- 作業ブランチ: `codex/kiriganaito-v15-spawn-director`
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-11-v15-spawn-director`
+- 開始コミット: `190a0d8 Merge pull request #33 from chameleonjp-lab/codex/implement-centralized-spawn-management`
+- 開始時 CLIENT_VERSION: `kiriganaito-2026-07-11-v15-spawn-director`
+- 作業ブランチ: `codex/kiriganaito-v16-spawn-director-correctness`
+- 最終 CLIENT_VERSION: `kiriganaito-2026-07-12-v16-spawn-director-correctness`
+
+## v15 の確認済み問題と直接原因
+
+- `spawnItemPattern()` が成功時に `undefined` を返し、SpawnDirector が同一 SCORE_ITEM request を再試行できる状態だった。
+- `collectDueSpawnRequests()` が重複 key 確認前に payload 用乱数を消費していた。
+- 穴間対向障害物などで、安全条件待機が試行数加算より前に抜ける経路があった。
+- 低レベル生成関数が `retryHoleSoon()` / `retryOncomingSoon()` を呼び、Director と再試行管理が二重化していた。
+- 穴間障害物、対向、追跡、無敵などの成功数が低レベル関数・解決関数・状態解除関数で二重計上され得た。
+- 成功後の次回予定更新が request 解決と低レベル関数に分散していた。
+
+## 修正内容
+
+- 低レベル生成関数の戻り値を成功 `true` / 失敗 `false` に統一した。
+- 重複 key 確認後に payload を作る `enqueueSpawnRequestIfNew()` を追加した。
+- request に `fallbackStage` / `attemptsInStage` / `totalAttempts` / `timeoutRecorded` を追加した。
+- `directorManaged` 経由では低レベル関数の retry 副作用を止め、Director 側だけで再試行を管理する。
+- `recordSpawnSuccess()` へ成功カウンターを一元化した。
+- `advanceScheduleAfterResolution()` へ成功後 schedule 更新を集約した。
+- `buildResultSnapshot()` へ SpawnDirector 診断値と整合フラグを追加した。
 
 ## 変更前テスト
 
-- `node tests/progressive-autoplay.js`: exit 0 / 最大到達距離 1467m / 最大補正込みスコア 1616m
-- `node tests/release-comprehensive.js`: exit 0 / criticalIssues 0 / console error 0 / console warning 0
-- `node tests/endurance-150km.js`: exit 0 / 穴 484 / 障害物 1623 / 対向 623 / 加点 405 / 平均穴間隔 0.312km / 平均障害物間隔 0.093km / 最短TTC 0.69秒 / 最終スコア 150.00km
-- `git diff --check`: exit 0
+- `node tests/progressive-autoplay.js`: exit 0、最大到達 1476m、最大スコア 3146m。
+- `node tests/release-comprehensive.js`: exit 0、criticalIssues 0、warning は Playwright 未導入のみ。
+- `node tests/endurance-150km.js`: exit 0、穴 303、障害物 2049、対向 843、加点 1559。
+- `git diff --check`: exit 0。
 
 ## 変更後テスト
 
-- `node tests/progressive-autoplay.js`: exit 0 / 最大到達距離 1476m / 最大補正込みスコア 3146m
-- `node tests/release-comprehensive.js`: exit 0 / finalVerdict WARN / criticalIssues 0 / console error 0 / console warning 0 / Supabase本番送信なし
-- `node tests/endurance-150km.js`: exit 0 / 穴 303 / 障害物 2049 / 対向 843 / 加点 1559 / 平均穴間隔 0.512km / 平均障害物間隔 0.076km / 最短TTC 1.01秒 / 最終スコア 150.00km
-- `git diff --check`: exit 0
+- `node tests/progressive-autoplay.js`: exit 0、最大到達 1487m、最大スコア 1917m、console error/warning 0。
+- `node tests/release-comprehensive.js`: exit 0、criticalIssues 0、console error/warning 0、Supabase 本番送信なし。
+- `node tests/endurance-150km.js`: exit 0、console error/warning 0、Supabase 本番送信なし。
+- `git diff --check`: exit 0。
 
-## SpawnDirector 構造
+## v14 / v15 / v16 固定 seed 比較
 
-- キュー上限: ground 6 / air 3 / hole 2
-- 1固定更新の処理上限: ground 2 / air 1 / hole 1 / total 4
-- 再試行上限: 通常3回、失敗後 `nextAttemptKm` まで待機
-- mandatory timeout: 通常テストで 0 を目標
-- queue overflow: 通常テストで 0 を目標
-- カウンター整合性: `spawnSource` と metadata を正本として二重計上を避ける設計
+| 項目 | v14 | v15 | v16 |
+| --- | ---: | ---: | ---: |
+| 穴 | 484 | 303 | 197 |
+| 障害物 | 1623 | 2049 | 2239 |
+| 対向障害物 | 623 | 843 | 880 |
+| 加点アイテム | 405 | 1559 | 1101 |
+| 平均穴間隔 | 0.312km | 0.512km | 0.784km |
+| 平均障害物間隔 | 0.093km | 0.076km | 0.069km |
+| 最短TTC | 0.69秒 | 1.01秒 | 1.01秒 |
+| 自然最大距離 | 1467m | 1476m | 1487m |
+| 自然最大スコア | 1616m | 3146m | 1917m |
 
-## 代替ルール
+## SpawnDirector 診断
 
-- 穴: LARGE → MEDIUM → SMALL → スキップ
-- 穴間障害物: 対向 → 通常 → 🚶
-- 早期対向障害物: 対向維持、低速🚶候補で待機
-- 無敵中障害物: 通常方向🚶へ代替
-- 加点アイテム: LOW の 💰 へ代替
-- 👯‍♀️: 別アイテムへ置換せず延期/スキップ
-- 逃走中イベント: 対向/穴は通常障害物、高い加点は低い💰へ代替
+- 詳細値は `artifacts/release-test-report.json` と `artifacts/endurance-150km-result.json` を参照。
+- queue overflow: 0 を維持。
+- mandatory timeout: 通常テストで 0 を維持。
+- created / resolved / skipped / rejected / pending は artifact の `spawnInvariantOk` で検査。
 
-## 未確認事項
+## 未確認
 
-- 実機確認: 未実施
-- Playwright: package 未導入のため未実施
-- Codeberg Pages公開版: 未確認、公開操作なし
-
-## 固定seed差分
-
-v15 は再試行制御により固定seedの密度が変動している。今回はバランス定数は変更していないため、次回候補は SpawnDirector を使った実測密度調整。
+- 実機未確認。
+- Playwright 未確認（package 未導入）。
+- Codeberg Pages 未確認。

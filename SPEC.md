@@ -131,3 +131,18 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - 代替時も穴・障害物・対向障害物の安全条件は緩和しない。
 - 成功カウンターは `spawnSource` と生成物 metadata を正本として中央集計する方針とし、生成失敗や再試行は出現数へ加算しない。
 - 今回は密度、出現確率、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase 仕様は変更対象外。
+
+## v16 SpawnDirector 正確性契約（現行）
+
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-12-v16-spawn-director-correctness`。
+- 1 request は最大 1 entity だけを生成する。
+- 低レベル生成関数（穴、障害物、通常アイテム、加点アイテム）の成功は `true`、失敗は `false` を返す。
+- SpawnDirector は重複 key を確認してから payload を作成する。pending 中の同一 key では乱数、candidate、created、schedule 更新を進めない。
+- request 作成時に payload と乱数結果を固定し、再試行では乱数を引き直さない。
+- 1 段階の通常試行は最大 3 回で、request 全体にも固定の `totalAttempts` 上限を持つ。
+- 代替は `fallbackStage` / `attemptsInStage` / `totalAttempts` で管理する。
+- 成功カウンターは `recordSpawnSuccess()` だけで更新する。
+- candidate カウンターは新規 enqueue 成功時だけ増やす。
+- `created` / `rejected` / `skipped` を分け、`created = resolved + skipped + pending` の整合式に `rejected` は含めない。
+- mandatory timeout は 1 request につき 1 回だけ記録する。
+- v16 では密度定数、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase は変更しない。

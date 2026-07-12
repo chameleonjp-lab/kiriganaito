@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-11-v15-spawn-director",
+        CLIENT_VERSION = "kiriganaito-2026-07-12-v16-spawn-director-correctness",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -763,6 +763,7 @@
           spawnRequestResolvedCount: 0,
           spawnRequestFallbackCount: 0,
           spawnRequestSkippedCount: 0,
+          spawnRequestRejectedCount: 0,
           spawnAttemptCount: 0,
           spawnMaxAttemptsObserved: 0,
           spawnQueueOverflowCount: 0,
@@ -1160,9 +1161,28 @@
         if (!spawn.needObstacleBeforeNextHole) return;
         spawn.needObstacleBeforeNextHole = false;
         spawn.lastHoleResolvedByObstacleAt = km;
-        run.betweenHoleObstacleSpawnCount = safeInt(run.betweenHoleObstacleSpawnCount) + 1;
-        if (dir === 1) run.betweenHoleOncomingSpawnCount = safeInt(run.betweenHoleOncomingSpawnCount) + 1;
-        else run.betweenHoleNormalObstacleSpawnCount = safeInt(run.betweenHoleNormalObstacleSpawnCount) + 1;
+      }
+      function recordSpawnSuccess(entity, request, km) {
+        if (!entity) return;
+        const source = (request && request.spawnSource) || entity.spawnSource || SPAWN_SOURCE.NORMAL;
+        if (entity.zone === WORLD_ZONE.HOLE) { run.holeSpawnCount++; if (source === SPAWN_SOURCE.CHASE) run.chaseHoleSpawnCount++; }
+        if (entity.objectRole === OBJECT_ROLE.HAZARD) {
+          run.obstacleSpawnCount++;
+          if (source === SPAWN_SOURCE.CHASE) run.chaseObstacleSpawnCount++;
+          if (source === SPAWN_SOURCE.INVINCIBLE) { run.invincibleObstacleSpawnCount++; run.invincibleObstacleSpawned++; }
+          if (source === SPAWN_SOURCE.BETWEEN_HOLES) {
+            run.betweenHoleObstacleSpawnCount = safeInt(run.betweenHoleObstacleSpawnCount) + 1;
+            if (entity.movementType === MOVEMENT_TYPE.ONCOMING) run.betweenHoleOncomingSpawnCount = safeInt(run.betweenHoleOncomingSpawnCount) + 1;
+            else run.betweenHoleNormalObstacleSpawnCount = safeInt(run.betweenHoleNormalObstacleSpawnCount) + 1;
+          }
+        }
+        if (entity.movementType === MOVEMENT_TYPE.ONCOMING) {
+          run.oncomingSpawnCount++;
+          if (source === SPAWN_SOURCE.CHASE) run.chaseOncomingSpawnCount++;
+          if (km >= 0.8 && km < 2) { run.earlyOncomingSpawnCount = safeInt(run.earlyOncomingSpawnCount) + 1; run.earlyOncomingSpawned = true; }
+        }
+        if (entity.objectRole === OBJECT_ROLE.REWARD) { run.scoreItemSpawnCount++; run.itemSpawnCount++; if (source === SPAWN_SOURCE.CHASE) run.chaseScoreItemSpawnCount++; }
+        if (entity.objectRole === OBJECT_ROLE.POWERUP) { run.invincibleItemSpawnCount++; run.dancerSpawnCount++; run.itemSpawnCount++; }
       }
       function spawnRequiredObstacleBetweenHoles(km, d) {
         const allowOncoming = km >= 0.8;
@@ -1204,7 +1224,7 @@
       }
       function spawnRequestQueue(zone) { return spawn.requests && spawn.requests[zone] ? spawn.requests[zone] : []; }
       function pendingSpawnRequestCount() {
-        return spawnRequestQueue(WORLD_ZONE.GROUND).length + spawnRequestQueue(WORLD_ZONE.AIR).length + spawnRequestQueue(WORLD_ZONE.HOLE).length;
+        return [WORLD_ZONE.GROUND,WORLD_ZONE.AIR,WORLD_ZONE.HOLE].reduce((n,z)=>n+spawnRequestQueue(z).filter(r=>r.status!==SPAWN_REQUEST_STATUS.RESOLVED&&r.status!==SPAWN_REQUEST_STATUS.SKIPPED).length,0);
       }
       function hasSpawnRequestKey(key) {
         const zones = [WORLD_ZONE.GROUND, WORLD_ZONE.AIR, WORLD_ZONE.HOLE];
@@ -1226,7 +1246,7 @@
             if (p > worstPriority) { worstPriority = p; worst = i; }
           }
           const newPriority = SPAWN_SOURCE_PRIORITY[req.spawnSource] || 99;
-          if (worst < 0 || worstPriority <= newPriority) { run.spawnRequestSkippedCount++; return false; }
+          if (worst < 0 || worstPriority <= newPriority) { run.spawnRequestRejectedCount++; return false; }
           q.splice(worst, 1); run.spawnRequestSkippedCount++;
         }
         req.id = spawn.directorNextId++;
@@ -1235,12 +1255,23 @@
         req.nextAttemptKm = req.dueKm;
         req.status = SPAWN_REQUEST_STATUS.PENDING;
         req.fallbackUsed = false;
+        req.fallbackStage = 0;
+        req.attemptsInStage = 0;
+        req.totalAttempts = 0;
+        req.timeoutRecorded = false;
         q.push(req);
         run.spawnRequestCreatedCount++;
         return true;
       }
       function makeSpawnRequest(zone, kind, source, dueKm, key, payload, fallbackKind) {
-        return { key, zone, kind, spawnSource: source, dueKm, nextAttemptKm: dueKm, attempts: 0, maxAttempts: SPAWN_DIRECTOR_LIMITS.maxAttempts, priority: SPAWN_SOURCE_PRIORITY[source] || 99, payload: payload || {}, fallbackKind, fallbackUsed: false, status: SPAWN_REQUEST_STATUS.PENDING };
+        return { key, zone, kind, spawnSource: source, dueKm, nextAttemptKm: dueKm, attempts: 0, attemptsInStage: 0, totalAttempts: 0, maxAttempts: SPAWN_DIRECTOR_LIMITS.maxAttempts, maxTotalAttempts: source === SPAWN_SOURCE.EARLY_ONCOMING ? 6 : (kind === SPAWN_REQUEST_KIND.POWERUP ? 3 : 9), priority: SPAWN_SOURCE_PRIORITY[source] || 99, payload: payload || {}, fallbackKind, fallbackUsed: false, fallbackStage: 0, timeoutRecorded: false, status: SPAWN_REQUEST_STATUS.PENDING };
+      }
+      function enqueueSpawnRequestIfNew(zone, kind, source, dueKm, key, payloadFactory, fallbackKind, onCreated) {
+        if (hasSpawnRequestKey(key)) return false;
+        const payload = typeof payloadFactory === "function" ? payloadFactory() : (payloadFactory || {});
+        const ok = enqueueSpawnRequest(makeSpawnRequest(zone, kind, source, dueKm, key, payload, fallbackKind));
+        if (ok && typeof onCreated === "function") onCreated();
+        return ok;
       }
       function collectDueSpawnRequests(km, d) {
         const chase = run.chase > 0;
@@ -1251,49 +1282,47 @@
         const earlyOncomingDue = km >= 1.5 && km >= run.earlyOncomingForceAt && !run.earlyOncomingSpawned;
         const oncomingDue = km >= spawn.nextOncomingAt && km >= 0.8;
         const forceEarlyOncoming = (earlyOncomingDue || (km >= 2 && !run.earlyOncomingSpawned));
-        if (oncomingDue || forceEarlyOncoming) run.oncomingCandidateCount++;
-        if (forceEarlyOncoming) run.earlyOncomingCandidateCount = safeInt(run.earlyOncomingCandidateCount) + 1;
         if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && km >= spawn.nextObstacleAt) {
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.INVINCIBLE, km, "invincible:" + run.invincibleObstacleSpawned, { dir: -1, emoji: OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], x: -44 }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE));
+          const key = "invincible:" + run.invincibleObstacleSpawned;
+          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.INVINCIBLE, km, key, () => ({ dir: -1, emoji: OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
         }
         if (spawn.needObstacleBeforeNextHole && chaseReady) {
-          const allowOncoming = km >= 0.8;
-          const useOncoming = allowOncoming && ((km >= 1.5 && safeInt(run.betweenHoleOncomingSpawnCount) === 0) || Math.random() < betweenHoleOncomingRate(km));
-          if (useOncoming) run.oncomingCandidateCount++;
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, useOncoming ? SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE : SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.BETWEEN_HOLES, km, "between-hole:" + spawn.lastHoleAt.toFixed(4), { dir: useOncoming ? 1 : -1, emoji: useOncoming ? "🚶" : (forcedBetweenHoleEmoji(km) || "🚶"), x: useOncoming ? getOncomingSpawnX(km) : -44 }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE));
+          const key = "between-hole:" + spawn.lastHoleAt.toFixed(4);
+          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, SPAWN_SOURCE.BETWEEN_HOLES, km, key, () => {
+            const allowOncoming = km >= 0.8;
+            const useOncoming = allowOncoming && ((km >= 1.5 && safeInt(run.betweenHoleOncomingSpawnCount) === 0) || Math.random() < betweenHoleOncomingRate(km));
+            return { dir: useOncoming ? 1 : -1, emoji: useOncoming ? "🚶" : (forcedBetweenHoleEmoji(km) || "🚶"), x: useOncoming ? getOncomingSpawnX(km) : -44 };
+          }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, () => { if (spawnRequestQueue(WORLD_ZONE.GROUND).some(r => r.key === key && r.payload && r.payload.dir === 1)) run.oncomingCandidateCount++; });
         }
         if (chase && chaseReady && run.elapsed >= (spawn.nextChaseEventAt || 999)) {
-          const roll = Math.random();
-          if (roll < 0.34) enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.HOLE, SPAWN_REQUEST_KIND.HOLE, SPAWN_SOURCE.CHASE, km, "chase:" + spawn.nextChaseEventAt.toFixed(2), { kind: "SMALL" }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE));
-          else if (roll < 0.68) { const chaseDir = km >= 2 && Math.random() < 0.45 ? 1 : -1; enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, chaseDir === 1 ? SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE : SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.CHASE, km, "chase:" + spawn.nextChaseEventAt.toFixed(2), { dir: chaseDir, emoji: "🚶", x: chaseDir === 1 ? getOncomingSpawnX(km) : -44 }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE)); }
-          else enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.AIR, SPAWN_REQUEST_KIND.SCORE_ITEM, SPAWN_SOURCE.CHASE, km, "chase:" + spawn.nextChaseEventAt.toFixed(2), { lowFallback: true }, SPAWN_REQUEST_KIND.SCORE_ITEM));
-          spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
+          const key = "chase:" + spawn.nextChaseEventAt.toFixed(2);
+          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.CHASE, km, key, () => ({ dir: -1, emoji: "🚶", x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE, () => { spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8); });
         }
         if (dueScoreItem) {
-          if (!canSpawnItem(km) || items.length >= MAX_ITEMS) { scheduleNext("item", km, d); }
-          else {
-          const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length];
-          const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0];
-          const r = Math.random(); const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️"; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0);
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.AIR, SPAWN_REQUEST_KIND.SCORE_ITEM, SPAWN_SOURCE.NORMAL, km, "score:" + spawn.nextScoreItemAt.toFixed(4), { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge }, SPAWN_REQUEST_KIND.SCORE_ITEM));
-          scheduleNext("item", km, d);
-          }
+          const key = "score:" + spawn.nextScoreItemAt.toFixed(4);
+          if (canSpawnItem(km) && items.length < MAX_ITEMS) { const itemQueued = enqueueSpawnRequestIfNew(WORLD_ZONE.AIR, SPAWN_REQUEST_KIND.SCORE_ITEM, SPAWN_SOURCE.NORMAL, km, key, () => {
+            const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length];
+            const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0];
+            const r = Math.random(); const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️"; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0);
+            return { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge };
+          }, SPAWN_REQUEST_KIND.SCORE_ITEM); if (itemQueued) scheduleNext("item", km, d); }
         }
         if (dueHole && !spawn.needObstacleBeforeNextHole && chaseReady) {
-          const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]);
-          const type = HOLE_TYPES[kind === "LARGE" && km < 5 ? "MEDIUM" : kind] || HOLE_TYPES.MEDIUM;
-          const w = rand(type.min, type.max);
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.HOLE, SPAWN_REQUEST_KIND.HOLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, "hole:" + spawn.nextHoleAt.toFixed(4), { kind, w }, SPAWN_REQUEST_KIND.HOLE));
-        } else if (dueHole && spawn.needObstacleBeforeNextHole) {
-          spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + 0.012);
-        }
+          const key = "hole:" + spawn.nextHoleAt.toFixed(4);
+          enqueueSpawnRequestIfNew(WORLD_ZONE.HOLE, SPAWN_REQUEST_KIND.HOLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, key, () => { const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]); const type = HOLE_TYPES[kind === "LARGE" && km < 5 ? "MEDIUM" : kind] || HOLE_TYPES.MEDIUM; return { kind, w: rand(type.min, type.max) }; }, SPAWN_REQUEST_KIND.HOLE);
+        } else if (dueHole && spawn.needObstacleBeforeNextHole) spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + 0.012);
         if (dueObstacle && chaseReady) {
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, "obstacle:" + spawn.nextObstacleAt.toFixed(4), { dir: -1, emoji: chase ? "🚶" : null, x: -44 }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE));
+          const key = "obstacle:" + spawn.nextObstacleAt.toFixed(4);
+          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, key, () => ({ dir: -1, emoji: chase ? "🚶" : null, x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
         }
         if (oncomingDue || forceEarlyOncoming) {
-          enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, forceEarlyOncoming ? SPAWN_SOURCE.EARLY_ONCOMING : SPAWN_SOURCE.NORMAL, km, (forceEarlyOncoming ? "early:" : "oncoming:") + (forceEarlyOncoming ? run.earlyOncomingForceAt : spawn.nextOncomingAt).toFixed(4), { dir: 1, emoji: "🚶", x: getOncomingSpawnX(km) }, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE));
+          const key = (forceEarlyOncoming ? "early:" : "oncoming:") + (forceEarlyOncoming ? run.earlyOncomingForceAt : spawn.nextOncomingAt).toFixed(4);
+          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, forceEarlyOncoming ? SPAWN_SOURCE.EARLY_ONCOMING : SPAWN_SOURCE.NORMAL, km, key, () => ({ dir: 1, emoji: "🚶", x: getOncomingSpawnX(km) }), SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, () => { run.oncomingCandidateCount++; if (forceEarlyOncoming) run.earlyOncomingCandidateCount = safeInt(run.earlyOncomingCandidateCount) + 1; });
         }
-        if (km >= run.nextDancerAt && Math.random() < 0.006) enqueueSpawnRequest(makeSpawnRequest(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.POWERUP, SPAWN_SOURCE.NORMAL, km, "dancer:" + run.nextDancerAt.toFixed(4), { type: "👯‍♀️", high: false }, SPAWN_REQUEST_KIND.POWERUP));
+        if (km >= run.nextDancerAt) {
+          const key = "dancer:" + run.nextDancerAt.toFixed(4);
+          if (!hasSpawnRequestKey(key) && Math.random() < 0.006) enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.POWERUP, SPAWN_SOURCE.NORMAL, km, key, { type: "👯‍♀️", high: false, lane: "mid", x: -36 }, SPAWN_REQUEST_KIND.POWERUP);
+        }
       }
       function selectNextSpawnRequest(zone, km) {
         const q = spawnRequestQueue(zone); let best = -1;
@@ -1303,39 +1332,90 @@
         }
         return best;
       }
+      function recordSpawnResolution(req) {
+        run.spawnRequestResolvedCount++;
+        if (req.zone === WORLD_ZONE.GROUND) run.spawnGroundResolvedCount++; else if (req.zone === WORLD_ZONE.AIR) run.spawnAirResolvedCount++; else if (req.zone === WORLD_ZONE.HOLE) run.spawnHoleResolvedCount++;
+        const src = req.spawnSource;
+        if (src === SPAWN_SOURCE.NORMAL) run.spawnNormalResolvedCount++; else if (src === SPAWN_SOURCE.BETWEEN_HOLES) run.spawnBetweenHolesResolvedCount++; else if (src === SPAWN_SOURCE.CHASE) run.spawnChaseResolvedCount++; else if (src === SPAWN_SOURCE.INVINCIBLE) run.spawnInvincibleResolvedCount++; else if (src === SPAWN_SOURCE.EARLY_ONCOMING) run.spawnEarlyOncomingResolvedCount++; else if (src === SPAWN_SOURCE.PATTERN) run.spawnPatternResolvedCount++;
+      }
+      function advanceScheduleAfterResolution(req, entity, km, d) {
+        if (req._scheduleAdvanced) return;
+        req._scheduleAdvanced = true;
+        if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("obstacle", km, d);
+        if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("oncoming", km, d);
+        if (req.spawnSource === SPAWN_SOURCE.CHASE) spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
+        if (req.kind === SPAWN_REQUEST_KIND.POWERUP) run.nextDancerAt = km + 1.5;
+      }
+      function markSpawnAttempt(req) {
+        run.spawnAttemptCount += 1;
+        req.totalAttempts = safeInt(req.totalAttempts) + 1;
+        req.attempts = safeInt(req.attempts) + 1;
+        req.attemptsInStage = safeInt(req.attemptsInStage) + 1;
+        run.spawnMaxAttemptsObserved = Math.max(safeInt(run.spawnMaxAttemptsObserved), req.totalAttempts);
+      }
+      function advanceFallbackStage(req, km) {
+        req.fallbackStage = safeInt(req.fallbackStage) + 1;
+        req.attemptsInStage = 0;
+        req.attempts = 0;
+        req.status = SPAWN_REQUEST_STATUS.FALLBACK;
+        run.spawnRequestFallbackCount++;
+        if (req.kind === SPAWN_REQUEST_KIND.HOLE) {
+          if (req.fallbackStage === 1) req.payload.kind = req.payload.kind === "LARGE" ? "MEDIUM" : "SMALL";
+          else if (req.fallbackStage === 2) req.payload.kind = "SMALL";
+          else return false;
+        } else if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) {
+          if (req.fallbackStage === 1 && req.payload.dir === 1) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; }
+          else if (req.fallbackStage === 1) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = req.payload.emoji || "🚶"; req.payload.x = -44; }
+          else if (req.fallbackStage === 2) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; }
+          else { req.nextAttemptKm = km + 0.03; return true; }
+        } else if (req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING) {
+          if (req.fallbackStage <= 2) { req.kind = SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE; req.payload.dir = 1; req.payload.emoji = "🚶"; req.payload.x = getOncomingSpawnX(km); }
+          else return false;
+        } else if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE) {
+          if (req.fallbackStage === 1) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; }
+          else return false;
+        } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) {
+          if (req.fallbackStage === 1) req.payload = { lane: "low", high: false, type: "💰", x: -36, challenge: false };
+          else return false;
+        } else if (req.kind === SPAWN_REQUEST_KIND.POWERUP) {
+          return false;
+        }
+        req.nextAttemptKm = km + SPAWN_DIRECTOR_LIMITS.retryKm;
+        return true;
+      }
       function resolveSpawnRequest(req, km, d) {
+        if (req.status === SPAWN_REQUEST_STATUS.RESOLVED || req.status === SPAWN_REQUEST_STATUS.SKIPPED) return true;
         if (req.zone === WORLD_ZONE.HOLE && spawn.needObstacleBeforeNextHole) return false;
-        if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE && !canSpawnRequiredObstacle(km, 1)) { req.status = SPAWN_REQUEST_STATUS.WAITING; req.nextAttemptKm = km + SPAWN_DIRECTOR_LIMITS.retryKm; run.betweenHoleObstacleRetryCount = safeInt(run.betweenHoleObstacleRetryCount) + 1; return false; }
-        run.spawnAttemptCount++; req.attempts++; run.spawnMaxAttemptsObserved = Math.max(safeInt(run.spawnMaxAttemptsObserved), req.attempts);
-        let ok = false;
-        if (req.kind === SPAWN_REQUEST_KIND.HOLE) ok = spawnHolePattern(km, d, { kind: req.payload.kind, w: req.payload.w, spawnSource: req.spawnSource });
+        markSpawnAttempt(req);
+        let ok = false, entity = null;
+        const beforeH = holes.length, beforeO = obstacles.length, beforeI = items.length;
+        if (req.kind === SPAWN_REQUEST_KIND.HOLE) ok = spawnHolePattern(km, d, { kind: req.payload.kind, w: req.payload.w, x: req.payload.x, spawnSource: req.spawnSource, directorManaged: true });
         else if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE) {
           if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && req.payload.dir === 1 && km - spawn.lastHoleAt > Math.max(SPAWN.REQUIRED_ONCOMING_AFTER_HOLE, spawn.lastHoleKind === "LARGE" ? 0.28 : 0)) { spawn.lastOncomingAt = Math.min(spawn.lastOncomingAt, km - SPAWN.ONCOMING_GAP - 0.001); spawn.lastObstacleAt = Math.min(spawn.lastObstacleAt, km - getOncomingAfterObstacleSafeGap(km) - 0.001); }
-          ok = spawnObstaclePattern(km, d, req.payload.dir, req.payload.emoji, req.payload.x, req.spawnSource);
-        }
-        else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) ok = canSpawnItem(km) && spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource }));
-        else if (req.kind === SPAWN_REQUEST_KIND.POWERUP) ok = spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource }));
-        if (ok) { req.status = SPAWN_REQUEST_STATUS.RESOLVED; run.spawnRequestResolvedCount++; if (req.zone === WORLD_ZONE.GROUND) run.spawnGroundResolvedCount++; else if (req.zone === WORLD_ZONE.AIR) run.spawnAirResolvedCount++; else if (req.zone === WORLD_ZONE.HOLE) run.spawnHoleResolvedCount++; const src = req.spawnSource; if (src === SPAWN_SOURCE.NORMAL) run.spawnNormalResolvedCount++; else if (src === SPAWN_SOURCE.BETWEEN_HOLES) run.spawnBetweenHolesResolvedCount++; else if (src === SPAWN_SOURCE.CHASE) run.spawnChaseResolvedCount++; else if (src === SPAWN_SOURCE.INVINCIBLE) run.spawnInvincibleResolvedCount++; else if (src === SPAWN_SOURCE.EARLY_ONCOMING) run.spawnEarlyOncomingResolvedCount++; else if (src === SPAWN_SOURCE.PATTERN) run.spawnPatternResolvedCount++; return true; }
-        if (req.attempts >= req.maxAttempts) {
-          if (!req.fallbackUsed) {
-            req.fallbackUsed = true; req.status = SPAWN_REQUEST_STATUS.FALLBACK; run.spawnRequestFallbackCount++;
-            if (req.kind === SPAWN_REQUEST_KIND.HOLE) { req.payload.kind = req.payload.kind === "LARGE" ? "MEDIUM" : req.payload.kind === "MEDIUM" ? "SMALL" : "SMALL"; req.attempts = 0; }
-            else if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE && req.spawnSource !== SPAWN_SOURCE.EARLY_ONCOMING) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; req.attempts = 0; }
-            else if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE) { req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; req.attempts = 0; }
-            else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) { req.payload = { lane: "low", high: false, type: "💰", x: -36, challenge: false }; req.attempts = 0; }
-            else if (req.kind === SPAWN_REQUEST_KIND.POWERUP) { req.nextAttemptKm = km + 0.03; return false; }
-          } else {
-            if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES || req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING || req.spawnSource === SPAWN_SOURCE.INVINCIBLE) {
-              if (km - req.dueKm > SPAWN_DIRECTOR_LIMITS.mandatoryWaitKm) run.spawnMandatoryTimeoutCount++;
-              req.nextAttemptKm = km + 0.03; return false;
-            }
-            req.status = SPAWN_REQUEST_STATUS.SKIPPED; run.spawnRequestSkippedCount++; return true;
-          }
+          ok = spawnObstaclePattern(km, d, req.payload.dir, req.payload.emoji, req.payload.x, req.spawnSource, true);
+        } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) ok = canSpawnItem(km) && spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
+        else if (req.kind === SPAWN_REQUEST_KIND.POWERUP) ok = spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
+        if (ok) {
+          entity = holes.length > beforeH ? holes[holes.length - 1] : obstacles.length > beforeO ? obstacles[obstacles.length - 1] : items.length > beforeI ? items[items.length - 1] : null;
+          recordSpawnSuccess(entity, req, km);
+          recordSpawnResolution(req);
+          advanceScheduleAfterResolution(req, entity, km, d);
+          req.status = SPAWN_REQUEST_STATUS.RESOLVED;
+          return true;
         }
         if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) run.betweenHoleObstacleRetryCount = safeInt(run.betweenHoleObstacleRetryCount) + 1;
         if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE) { run.oncomingRetryCount = safeInt(run.oncomingRetryCount) + 1; if (req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING) run.earlyOncomingRetryCount = safeInt(run.earlyOncomingRetryCount) + 1; }
+        const maxTotal = req.maxTotalAttempts || 9;
+        if (req.attemptsInStage >= SPAWN_DIRECTOR_LIMITS.maxAttempts) {
+          if (!advanceFallbackStage(req, km) || req.totalAttempts >= maxTotal) {
+            if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES || req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING || req.spawnSource === SPAWN_SOURCE.INVINCIBLE) {
+              if (km - req.dueKm > SPAWN_DIRECTOR_LIMITS.mandatoryWaitKm && !req.timeoutRecorded) { req.timeoutRecorded = true; run.spawnMandatoryTimeoutCount++; }
+              if (req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING && !run.earlyOncomingSpawned && req.totalAttempts < maxTotal) { req.nextAttemptKm = km + 0.03; return false; }
+            }
+            req.status = SPAWN_REQUEST_STATUS.SKIPPED; run.spawnRequestSkippedCount++; if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) resolveBetweenHoleObstacle(km, req.payload && req.payload.dir); advanceScheduleAfterResolution(req, null, km, d); return true;
+          }
+        } else req.nextAttemptKm = km + SPAWN_DIRECTOR_LIMITS.retryKm;
         req.status = SPAWN_REQUEST_STATUS.WAITING;
-        req.nextAttemptKm = km + SPAWN_DIRECTOR_LIMITS.retryKm;
         return false;
       }
       function resolveDueSpawnRequests(km, d) {
@@ -1452,15 +1532,15 @@
         const w = opt.w || rand(type.min, type.max);
         const x = opt.x ?? -w - 16;
         if (!canSpawnHole(km, kind, x, w)) {
-          retryHoleSoon(km);
+          if (!opt.directorManaged) retryHoleSoon(km);
           return false;
         }
         if (spawn.needObstacleBeforeNextHole) run.consecutiveHoleViolationCount = safeInt(run.consecutiveHoleViolationCount) + 1;
-        holes.push({ x, prevX: x, y: groundY - 6, w, h: H - groundY + 14, kind, zone: WORLD_ZONE.HOLE, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.TERRAIN, heightBand: HEIGHT_BAND.GROUND, spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL });
-        run.holeSpawnCount++;
+        const entity = { x, prevX: x, y: groundY - 6, w, h: H - groundY + 14, kind, zone: WORLD_ZONE.HOLE, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.TERRAIN, heightBand: HEIGHT_BAND.GROUND, spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL };
+        holes.push(entity);
+        if (!opt.directorManaged) recordSpawnSuccess(entity, { spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL }, km);
         if (run.lastHoleSpawnKm >= 0) { const gapKm = km - run.lastHoleSpawnKm; run.totalHoleGapKm = (run.totalHoleGapKm || 0) + gapKm; run.holeGapSamples = (run.holeGapSamples || 0) + 1; run.maxHoleGapKm = Math.max(run.maxHoleGapKm || 0, gapKm); }
         run.lastHoleSpawnKm = km;
-        if (run.chase > 0) run.chaseHoleSpawnCount++;
         spawn.lastHoleAt = km;
         spawn.lastHoleKind = kind;
         spawn.needObstacleBeforeNextHole = true;
@@ -1474,7 +1554,7 @@
         }
         return true;
       }
-      function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44, spawnSource = SPAWN_SOURCE.NORMAL) {
+      function spawnObstaclePattern(km, d, dir, forcedEmoji = null, x = -44, spawnSource = SPAWN_SOURCE.NORMAL, directorManaged = false) {
         if (dir === 1 && km < 0.8) dir = -1;
         if (!canSpawnObstacle(km, dir)) return false;
         const maxType = Math.max(1, Math.min(d.types, OBS_TYPES.length));
@@ -1482,16 +1562,15 @@
         if (dir === 1 && km < 1.5) typeLimit = Math.min(typeLimit, 1);
         else if (dir === 1 && km < 2.0) typeLimit = Math.min(typeLimit, 3);
         else if (dir === 1 && km < 3.0) typeLimit = Math.min(typeLimit, 4);
-        let t = OBS_TYPES[(Math.random() * typeLimit) | 0];
-        if (forcedEmoji) t = OBS_TYPES.find((v) => v[0] === forcedEmoji) || t;
+        let t = forcedEmoji ? (OBS_TYPES.find((v) => v[0] === forcedEmoji) || OBS_TYPES[0]) : OBS_TYPES[(Math.random() * typeLimit) | 0];
         if (dir === 1) {
           x = x == null ? getOncomingSpawnX(km) : Math.min(x, getOncomingSpawnX(km));
-          if (!canSpawnAvoidableOncoming(km, x, t)) { retryOncomingSoon(km); return false; }
+          if (!canSpawnAvoidableOncoming(km, x, t)) { if (!directorManaged) retryOncomingSoon(km); return false; }
           const adjusted = adjustOncomingSpeedForTtc(km, x, t[1]);
           if (!adjusted.ok) {
             run.oncomingTooCloseRejectCount = safeInt(run.oncomingTooCloseRejectCount) + 1;
             run.oncomingTtcFinalRejectCount = safeInt(run.oncomingTtcFinalRejectCount) + 1;
-            retryOncomingSoon(km);
+            if (!directorManaged) retryOncomingSoon(km);
             return false;
           }
           if (adjusted.adjusted) run.oncomingSpeedAdjustCount = safeInt(run.oncomingSpeedAdjustCount) + 1;
@@ -1501,7 +1580,7 @@
           run.oncomingSpeedScaleMax = Math.max(safeNumber(run.oncomingSpeedScaleMax), safeNumber(adjusted.speedScale));
           t = [t[0], adjusted.speed];
         }
-        obstacles.push({
+        const entity = {
           x,
           y: groundY - 32,
           emoji: t[0],
@@ -1515,13 +1594,13 @@
           objectRole: OBJECT_ROLE.HAZARD,
           heightBand: HEIGHT_BAND.GROUND,
           spawnSource,
-        });
+        };
+        obstacles.push(entity);
         spawn.lastObstacleAt = km;
         spawn.lastDangerAt = km;
-        run.obstacleSpawnCount++;
+        if (!directorManaged) recordSpawnSuccess(entity, { spawnSource }, km);
         if (run.lastObstacleSpawnKm >= 0) { const gapKm = km - run.lastObstacleSpawnKm; run.totalObstacleGapKm = (run.totalObstacleGapKm || 0) + gapKm; run.obstacleGapSamples = (run.obstacleGapSamples || 0) + 1; run.maxObstacleGapKm = Math.max(run.maxObstacleGapKm || 0, gapKm); }
         run.lastObstacleSpawnKm = km;
-        if (run.chase > 0) run.chaseObstacleSpawnCount++;
         resolveBetweenHoleObstacle(km, dir);
         if (dir === 1) {
           const ttc = estimateOncomingTtcSec(x, t[1], km);
@@ -1531,10 +1610,7 @@
           run.oncomingTotalTtcSec = safeNumber(run.oncomingTotalTtcSec) + ttc;
           run.oncomingTtcSamples = safeInt(run.oncomingTtcSamples) + 1;
           if (km < 2) run.earlyOncomingMinTtcSec = Math.min(safeNumber(run.earlyOncomingMinTtcSec, Infinity), ttc);
-          run.oncomingSpawnCount++;
-          if (spawnSource === SPAWN_SOURCE.BETWEEN_HOLES || (!spawn.needObstacleBeforeNextHole && km > spawn.lastHoleAt && km < spawn.nextHoleAt && Math.abs(km - spawn.lastHoleResolvedByObstacleAt) > 0.001)) run.betweenHoleOncomingSpawnCount = safeInt(run.betweenHoleOncomingSpawnCount) + 1;
-          markEarlyOncomingSpawn(km);
-          if (run.chase > 0) run.chaseOncomingSpawnCount++;
+          if (!directorManaged && spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && Math.abs(km - spawn.lastHoleResolvedByObstacleAt) > 0.001) {}
           spawn.lastOncomingAt = km;
           spawn.nextOncomingAt = km + nextOncomingInterval(km);
           if (spawn.lastHoleKind === "LARGE") spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + 0.070);
@@ -1542,13 +1618,16 @@
         return true;
       }
       function spawnItemPattern(km, d, opt = {}) {
-        let availableItems = run.chase > 0
-          ? ITEM_TYPES.filter((v) => v.kind !== "invincible" && (!v.missPenalty || Math.random() < 0.18))
-          : ITEM_TYPES.filter((v) => v.kind !== "invincible" || km >= run.nextDancerAt);
-        if (!availableItems.length) availableItems = ITEM_TYPES.filter((v) => !v.missPenalty);
-        const scorePool = [ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[1], ITEM_TYPES[2]];
-        let t = run.chase > 0 || Math.random() < 0.96 ? scorePool[(Math.random() * scorePool.length) | 0] : availableItems[(Math.random() * availableItems.length) | 0];
-        if (opt.type) t = ITEM_TYPES.find((v) => v.emoji === opt.type) || t;
+        let t;
+        if (opt.type) t = ITEM_TYPES.find((v) => v.emoji === opt.type) || ITEM_TYPES[0];
+        else {
+          let availableItems = run.chase > 0
+            ? ITEM_TYPES.filter((v) => v.kind !== "invincible" && (!v.missPenalty || Math.random() < 0.18))
+            : ITEM_TYPES.filter((v) => v.kind !== "invincible" || km >= run.nextDancerAt);
+          if (!availableItems.length) availableItems = ITEM_TYPES.filter((v) => !v.missPenalty);
+          const scorePool = [ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[1], ITEM_TYPES[2]];
+          t = run.chase > 0 || Math.random() < 0.96 ? scorePool[(Math.random() * scorePool.length) | 0] : availableItems[(Math.random() * availableItems.length) | 0];
+        }
         if (t.kind === "invincible" && !opt.type && (km < run.nextDancerAt || Math.random() < 0.96)) t = ITEM_TYPES[0];
         if (run.chase > 0 && t.missPenalty && !opt.type && Math.random() < 0.82) {
           t = ITEM_TYPES[Math.random() < 0.875 ? 0 : 3];
@@ -1559,20 +1638,12 @@
         const lane = opt.lane || (risky ? "high" : (Math.random()<0.5 ? "low" : "mid"));
         const heightBand = isDancer ? HEIGHT_BAND.GROUND : getHeightBandForLane(lane);
         const laneHeight = lane === "low" ? 38 : lane === "mid" ? ITEM_HEIGHT_SAFE : ITEM_HEIGHT_HIGH;
-        const itemY = isDancer ? groundY - 34 : groundY - laneHeight - Math.random() * (lane === "low" ? 8 : ITEM_HEIGHT_RANDOM);
+        const itemY = opt.y ?? (isDancer ? groundY - 34 : groundY - laneHeight - (opt.verticalOffset ?? Math.random() * (lane === "low" ? 8 : ITEM_HEIGHT_RANDOM)));
         if (!isDancer && lane === run.lastItemLane && (opt.timingType || "plain") === run.lastItemTimingType) run.sameItemRhythmCount++; else run.sameItemRhythmCount = 0;
         if (!isDancer) { run.lastItemLane = lane; run.lastItemTimingType = opt.timingType || "plain"; }
-        run.itemSpawnCount++;
-        if (isDancer) {
-          run.dancerSpawnCount++;
-          run.invincibleItemSpawnCount++;
-          run.nextDancerAt = km + 1.5;
-        } else {
-          run.scoreItemSpawnCount++;
-          if (run.chase > 0) run.chaseScoreItemSpawnCount++;
-          if (t.missPenalty > 0 && opt.challenge) { run.challengeItemSpawnCount++; run.missTargetItemCount++; }
-        }
-        items.push({
+        if (isDancer && !opt.directorManaged) run.nextDancerAt = km + 1.5;
+        if (!isDancer && t.missPenalty > 0 && opt.challenge) { run.challengeItemSpawnCount++; run.missTargetItemCount++; }
+        const entity = {
           x: opt.x ?? -36,
           y: itemY,
           emoji: t.emoji,
@@ -1592,7 +1663,10 @@
           objectRole: isDancer ? OBJECT_ROLE.POWERUP : OBJECT_ROLE.REWARD,
           heightBand,
           spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL,
-        });
+        };
+        items.push(entity);
+        if (!opt.directorManaged) recordSpawnSuccess(entity, { spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL }, km);
+        return true;
       }
       function updateThings(move, dt) {
         for (let i = holes.length - 1; i >= 0; i--) {
@@ -2246,6 +2320,26 @@
           sameItemRhythmCount: run.sameItemRhythmCount || 0,
           maxSpeedMultiplier: run.maxSpeedMultiplier || 1,
           elapsed: run.elapsed,
+          spawnRequestCreatedCount: safeInt(run.spawnRequestCreatedCount),
+          spawnRequestResolvedCount: safeInt(run.spawnRequestResolvedCount),
+          spawnRequestFallbackCount: safeInt(run.spawnRequestFallbackCount),
+          spawnRequestSkippedCount: safeInt(run.spawnRequestSkippedCount),
+          spawnRequestRejectedCount: safeInt(run.spawnRequestRejectedCount),
+          spawnAttemptCount: safeInt(run.spawnAttemptCount),
+          spawnMaxAttemptsObserved: safeInt(run.spawnMaxAttemptsObserved),
+          spawnQueueOverflowCount: safeInt(run.spawnQueueOverflowCount),
+          spawnMandatoryTimeoutCount: safeInt(run.spawnMandatoryTimeoutCount),
+          spawnGroundResolvedCount: safeInt(run.spawnGroundResolvedCount),
+          spawnAirResolvedCount: safeInt(run.spawnAirResolvedCount),
+          spawnHoleResolvedCount: safeInt(run.spawnHoleResolvedCount),
+          spawnNormalResolvedCount: safeInt(run.spawnNormalResolvedCount),
+          spawnBetweenHolesResolvedCount: safeInt(run.spawnBetweenHolesResolvedCount),
+          spawnChaseResolvedCount: safeInt(run.spawnChaseResolvedCount),
+          spawnInvincibleResolvedCount: safeInt(run.spawnInvincibleResolvedCount),
+          spawnEarlyOncomingResolvedCount: safeInt(run.spawnEarlyOncomingResolvedCount),
+          spawnPatternResolvedCount: safeInt(run.spawnPatternResolvedCount),
+          spawnPendingCount: pendingSpawnRequestCount(),
+          spawnInvariantOk: safeInt(run.spawnRequestCreatedCount) === safeInt(run.spawnRequestResolvedCount) + safeInt(run.spawnRequestSkippedCount) + pendingSpawnRequestCount() && safeInt(run.spawnRequestResolvedCount) === safeInt(run.spawnGroundResolvedCount) + safeInt(run.spawnAirResolvedCount) + safeInt(run.spawnHoleResolvedCount) && safeInt(run.spawnRequestResolvedCount) === safeInt(run.spawnNormalResolvedCount) + safeInt(run.spawnBetweenHolesResolvedCount) + safeInt(run.spawnChaseResolvedCount) + safeInt(run.spawnInvincibleResolvedCount) + safeInt(run.spawnEarlyOncomingResolvedCount) + safeInt(run.spawnPatternResolvedCount),
         };
         snapshot.zeroReason = snapshot.score > 0 ? (snapshot.cutPenaltyMeters > 0 ? "penalty_capped" : "normal_non_zero") : snapshot.runMeters > 0 ? "bug_render_stale" : run.elapsed > 1 ? "bug_zero_run" : "bug_render_stale";
         return snapshot;
