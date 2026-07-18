@@ -1,0 +1,65 @@
+name: Apply P2 density implementation on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/_apply-p2-density-pr.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Apply implementation
+        run: python tools/apply-p2-density.py
+
+      - name: Run P1 effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: Run P2 30-seed density gate
+        run: node tests/p2-density-regression.js
+
+      - name: Run progressive autoplay
+        run: node tests/progressive-autoplay.js
+
+      - name: Run release comprehensive
+        run: node tests/release-comprehensive.js
+
+      - name: Run endurance 150km
+        run: node tests/endurance-150km.js
+
+      - name: Commit verified implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/_apply-p2-density.yml \
+            .github/workflows/_apply-p2-density-pr.yml \
+            tools/apply-p2-density.py
+          git add index.html SPEC.md TEST_REPORT.md tests/effective-presentation-metrics.js \
+            artifacts/p1-effective-presentation-metrics.json \
+            artifacts/p2-effective-presentation-30-seeds.json \
+            artifacts/p2-density-regression.json \
+            artifacts/progressive-autoplay-report.json \
+            artifacts/progressive-autoplay-summary.txt \
+            artifacts/release-test-report.json \
+            artifacts/release-test-summary.txt \
+            artifacts/endurance-150km-result.json
+          git commit -m "feat: rebalance effective spawn density for P2"
+          git push origin HEAD:${{ github.head_ref }}
