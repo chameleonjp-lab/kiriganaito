@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "index.html"
+      - "TEST_REPORT.md"
+      - "P3_DECISION_PATTERN_CONTRACT.md"
       - "tests/effective-presentation-metrics.js"
       - "P1_EFFECTIVE_PRESENTATION_METRICS.md"
       - ".github/workflows/p1-effective-presentation.yml"
