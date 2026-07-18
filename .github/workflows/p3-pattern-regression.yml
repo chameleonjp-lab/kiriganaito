@@ -10,6 +10,7 @@ on:
       - "tests/effective-presentation-metrics.js"
       - "tests/p2-density-regression.js"
       - "tests/p3-pattern-regression.js"
+      - "tests/release-comprehensive.js"
       - ".github/workflows/p3-pattern-regression.yml"
   workflow_dispatch:
 
@@ -32,11 +33,11 @@ jobs:
       - name: Progressive autoplay
         run: node tests/progressive-autoplay.js
 
-      - name: Release comprehensive
-        run: node tests/release-comprehensive.js
-
       - name: Endurance 150km
         run: node tests/endurance-150km.js
+
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
 
       - name: P1 effective presentation
         run: node tests/effective-presentation-metrics.js
