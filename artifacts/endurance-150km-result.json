@@ -1,32 +1,32 @@
 {
-  "generatedAt": "2026-07-12T08:01:29.869Z",
+  "generatedAt": "2026-07-18T07:29:01.992Z",
   "targetMeters": 150000,
   "seed": 150001,
   "result": {
     "autopilot": {
       "mode": "PLAYING",
-      "runMeters": 154450,
+      "runMeters": 153050,
       "scoreMeters": 150000,
       "reason": "",
       "accidents": 0,
       "maxDanger": 0,
       "maxObs": 2,
-      "maxItems": 5,
+      "maxItems": 3,
       "maxHoles": 1,
-      "maxParticles": 13,
+      "maxParticles": 12,
       "sawDancer": true,
       "dancerInv": false,
-      "sawBike": true,
-      "bikeCleared": true
+      "sawBike": false,
+      "bikeCleared": false
     },
     "mode": "RESULT",
-    "runMeters": 154450,
+    "runMeters": 153050,
     "scoreMeters": 150000,
     "reason": "150km自然走行検証完了",
     "accidents": 0,
     "maxDanger": 0,
-    "elapsedMs": 2955433,
-    "hudRun": "154.45km",
+    "elapsedMs": 2928950,
+    "hudRun": "153.05km",
     "hudScore": "150.00km",
     "resultScore": "150.00km",
     "resultReason": "終了理由：150km自然走行検証完了",
@@ -38,7 +38,7 @@
       ],
       [
         "実走行距離",
-        "154.45km"
+        "153.05km"
       ],
       [
         "アイテム加算",
@@ -46,7 +46,7 @@
       ],
       [
         "基礎距離",
-        "154.45km"
+        "153.05km"
       ],
       [
         "事故ペナルティ",
@@ -54,19 +54,19 @@
       ],
       [
         "取り逃がしペナルティ",
-        "-4.45km"
+        "-3.05km"
       ],
       [
         "総ペナルティ",
-        "-4.45km"
+        "-3.05km"
       ],
       [
         "ペナルティ適用上限",
-        "77.22km"
+        "76.53km"
       ],
       [
         "実適用ペナルティ",
-        "-4.45km"
+        "-3.05km"
       ],
       [
         "カットされたペナルティ",
@@ -86,7 +86,7 @@
       ],
       [
         "加点アイテム出現数",
-        "1101個"
+        "1150個"
       ],
       [
         "加点アイテム取得数",
@@ -98,7 +98,7 @@
       ],
       [
         "走行時間",
-        "2955.4秒"
+        "2928.9秒"
       ],
       [
         "終了理由",
@@ -110,59 +110,59 @@
       ],
       [
         "穴",
-        "197個"
+        "849個"
       ],
       [
         "穴出現数",
-        "197個"
+        "849個"
       ],
       [
         "最大穴間隔",
-        "2.459km"
+        "0.230km"
       ],
       [
         "平均穴間隔",
-        "0.784km"
+        "0.180km"
       ],
       [
         "障害物",
-        "2239個"
+        "1151個"
       ],
       [
         "最大障害物間隔",
-        "0.166km"
+        "0.167km"
       ],
       [
         "平均障害物間隔",
-        "0.069km"
+        "0.133km"
       ],
       [
         "対向障害物",
-        "880個"
+        "301個"
       ],
       [
         "対向障害物候補数",
-        "1507回"
+        "1142回"
       ],
       [
         "対向障害物出現数",
-        "880個"
+        "301個"
       ],
       [
         "対向障害物失敗再試行数",
-        "2388回"
+        "3742回"
       ],
       [
         "2km以内対向障害物出現数",
-        "3個"
+        "1個"
       ],
       [
         "2km以内対向障害物候補数",
-        "0回"
+        "2回"
       ],
       [
         "2km以内対向障害物再試行数",
-        "0回"
+        "10回"
       ],
       [
         "対向障害物近すぎ却下数",
@@ -178,7 +178,7 @@
       ],
       [
         "対向障害物最小速度倍率",
-        "0.50倍"
+        "0.60倍"
       ],
       [
         "対向障害物最大速度倍率",
@@ -210,11 +210,11 @@
       ],
       [
         "穴間必須障害物出現数",
-        "176個"
+        "849個"
       ],
       [
         "穴間通常障害物出現数",
-        "176個"
+        "849個"
       ],
       [
         "穴間対向障害物出現数",
@@ -222,7 +222,7 @@
       ],
       [
         "穴間障害物生成失敗再試行数",
-        "1421回"
+        "5948回"
       ],
       [
         "穴だけ連続した回数",
@@ -230,11 +230,11 @@
       ],
       [
         "加点アイテム",
-        "1101個"
+        "1150個"
       ],
       [
         "無敵アイテム",
-        "92個"
+        "94個"
       ],
       [
         "逃走中の障害物",
@@ -259,15 +259,15 @@
       ],
       [
         "runMeters",
-        "154450"
+        "153050"
       ],
       [
         "maxRunMeters",
-        "154450"
+        "153050"
       ],
       [
         "lastNonZeroRunMeters",
-        "154449.69603783957"
+        "153049.9856628355"
       ],
       [
         "scoreMeters",
@@ -283,7 +283,7 @@
       ],
       [
         "resultSnapshot.runMeters",
-        "154450"
+        "153050"
       ],
       [
         "resultScore.textContent",
@@ -299,22 +299,22 @@
       ],
       [
         "version",
-        "kiriganaito-2026-07-12-v16-spawn-director-correctness"
+        "kiriganaito-2026-07-18-v18-effective-density"
       ]
     ],
     "maxObs": 2,
-    "maxItems": 5,
+    "maxItems": 3,
     "maxHoles": 1,
-    "maxParticles": 13,
+    "maxParticles": 12,
     "sawDancer": true,
     "dancerInv": false,
-    "sawBike": true,
-    "bikeCleared": true,
+    "sawBike": false,
+    "bikeCleared": false,
     "mockSubmitPayload": {
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
       "p_score": 150000,
-      "p_client_version": "kiriganaito-2026-07-12-v16-spawn-director-correctness"
+      "p_client_version": "kiriganaito-2026-07-18-v18-effective-density"
     },
     "debug": ""
   },

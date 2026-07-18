@@ -146,3 +146,15 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - `created` / `rejected` / `skipped` を分け、`created = resolved + skipped + pending` の整合式に `rejected` は含めない。
 - mandatory timeout は 1 request につき 1 回だけ記録する。
 - v16 では密度定数、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase は変更しない。
+
+
+## v18 P2 実効出現密度契約（現行）
+
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-18-v18-effective-density`。
+- 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
+- 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
+- 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
+- 通常対向障害物が予定から0.10km以上遅れた場合は、通常地上障害物だけを一時保留する。
+- `between_holes`、`early_oncoming`、`invincible` は通常予約より優先する。
+- 穴幅、障害物速度、TTC最低条件、ジャンプ、当たり判定、点数、UI、ランキング、Supabaseは変更しない。
+- P1の実効出現計測を継続し、30固定seedのP2密度ゲートで偏りを検査する。

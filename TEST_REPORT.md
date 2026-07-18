@@ -65,3 +65,12 @@
 - 実機未確認。
 - Playwright 未確認（package 未導入）。
 - Codeberg Pages 未確認。
+
+
+## v18 P2 実効出現密度再調整
+
+- 基準: P1固定seedでは穴16個/15km、最大穴間隔1.312km、加点アイテム最大間隔1.332km。
+- 対応: 穴、穴間必須障害物、期限超過アイテム、期限超過対向障害物の予約優先順位を追加。
+- 安全値は変更せず、通常地上予定を一時保留して既存安全距離を成立させる。
+- `tests/p2-density-regression.js` に30固定seedの合格条件を追加。
+- 自動検査結果は `artifacts/p2-density-regression.json` に記録する。
