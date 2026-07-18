@@ -32,49 +32,89 @@ function makeElement(id) {
     children: [],
     style: {},
     onclick: null,
-    get childNodes() { return this.children; },
-    classList: {
-      add(name) { classNames.add(name); element.className = [...classNames].join(" "); },
-      remove(name) { classNames.delete(name); element.className = [...classNames].join(" "); },
-      toggle(name) { if (classNames.has(name)) classNames.delete(name); else classNames.add(name); element.className = [...classNames].join(" "); },
-      contains(name) { return classNames.has(name); },
+    get childNodes() {
+      return this.children;
     },
-    append(...nodes) { this.children.push(...nodes); },
-    appendChild(node) { this.children.push(node); return node; },
-    replaceChildren(...nodes) { this.children.splice(0, this.children.length, ...nodes); },
-    addEventListener(name, handler) { this[`on${name}`] = handler; },
+    classList: {
+      add(name) {
+        classNames.add(name);
+        element.className = [...classNames].join(" ");
+      },
+      remove(name) {
+        classNames.delete(name);
+        element.className = [...classNames].join(" ");
+      },
+      toggle(name) {
+        if (classNames.has(name)) classNames.delete(name);
+        else classNames.add(name);
+        element.className = [...classNames].join(" ");
+      },
+      contains(name) {
+        return classNames.has(name);
+      },
+    },
+    append(...nodes) {
+      this.children.push(...nodes);
+    },
+    appendChild(node) {
+      this.children.push(node);
+      return node;
+    },
+    replaceChildren(...nodes) {
+      this.children.splice(0, this.children.length, ...nodes);
+    },
+    addEventListener(name, handler) {
+      this[`on${name}`] = handler;
+    },
     setAttribute() {},
-    getBoundingClientRect() { return { width: 320, height: 360 }; },
+    getBoundingClientRect() {
+      return { width: 320, height: 360 };
+    },
   };
   Object.defineProperty(element, "innerHTML", {
-    get() { return this.children.map((child) => child.textContent || "").join(""); },
-    set(value) { this.children.splice(0); this.textContent = String(value); },
+    get() {
+      return this.children.map((child) => child.textContent || "").join("");
+    },
+    set(value) {
+      this.children.splice(0);
+      this.textContent = String(value);
+    },
   });
   return element;
 }
 
 function createSandbox(seed) {
   const ids = [
-    "home", "rules", "name", "game", "result", "error", "gameCanvas", "startBtn", "jumpBtn", "retireBtn",
-    "homeRanking", "resultRanking", "homeStats", "resultStats", "homeToast", "playerName", "nameError",
-    "hudRun", "hudScore", "hudTime", "hudChase", "hudDanger", "hudChaseBox", "hudDangerBox", "playStatus",
-    "resultReason", "resultComment", "resultScore", "resultBreakdown", "rankingStatus", "rankingRetryBtn",
-    "clientVersionNote", "homeVersionNote", "resultVersionTop", "debug", "errorText", "homeBtn", "errorHomeBtn",
-    "nameBtn", "rulesBtn", "rulesBackBtn", "readyBtn", "shareBtn", "againBtn", "resultHomeBtn",
-    "otherGamesResult", "changeNameBtn", "homeShareBtn", "nameStartBtn", "nameBackBtn", "resultShareBtn",
+    "home", "rules", "name", "game", "result", "error", "gameCanvas",
+    "startBtn", "jumpBtn", "retireBtn", "homeRanking", "resultRanking",
+    "homeStats", "resultStats", "homeToast", "playerName", "nameError",
+    "hudRun", "hudScore", "hudTime", "hudChase", "hudDanger",
+    "hudChaseBox", "hudDangerBox", "playStatus", "resultReason",
+    "resultComment", "resultScore", "resultBreakdown", "rankingStatus",
+    "rankingRetryBtn", "clientVersionNote", "homeVersionNote",
+    "resultVersionTop", "debug", "errorText", "homeBtn", "errorHomeBtn",
+    "nameBtn", "rulesBtn", "rulesBackBtn", "readyBtn", "shareBtn",
+    "againBtn", "resultHomeBtn", "otherGamesResult", "changeNameBtn",
+    "homeShareBtn", "nameStartBtn", "nameBackBtn", "resultShareBtn",
     "retryBtn", "otherGamesHome",
   ];
   const elements = new Map(ids.map((id) => [id, makeElement(id)]));
   const drawCalls = [];
-  elements.get("gameCanvas").getContext = () => new Proxy({
-    createLinearGradient() { return { addColorStop() {} }; },
-    createRadialGradient() { return { addColorStop() {} }; },
-    measureText(text) { return { width: String(text).length * 10 }; },
-    fillText(text, x, y) { drawCalls.push({ text: String(text), x, y }); },
-  }, {
-    get(target, property) { if (property in target) return target[property]; return () => {}; },
-    set() { return true; },
-  });
+  elements.get("gameCanvas").getContext = () => new Proxy(
+    {
+      createLinearGradient() { return { addColorStop() {} }; },
+      createRadialGradient() { return { addColorStop() {} }; },
+      measureText(text) { return { width: String(text).length * 10 }; },
+      fillText(text, x, y) { drawCalls.push({ text: String(text), x, y }); },
+    },
+    {
+      get(target, property) {
+        if (property in target) return target[property];
+        return () => {};
+      },
+      set() { return true; },
+    },
+  );
 
   const storage = new Map();
   const networkRequests = [];
@@ -85,8 +125,26 @@ function createSandbox(seed) {
   math.random = seededRandom(seed);
 
   const sandbox = {
-    Math: math, Date, JSON, Object, Array, Number, String, Boolean, Set, Map, WeakSet, WeakMap, Promise,
-    parseInt, parseFloat, isFinite, TextEncoder, TextDecoder, URL, URLSearchParams,
+    Math: math,
+    Date,
+    JSON,
+    Object,
+    Array,
+    Number,
+    String,
+    Boolean,
+    Set,
+    Map,
+    WeakSet,
+    WeakMap,
+    Promise,
+    parseInt,
+    parseFloat,
+    isFinite,
+    TextEncoder,
+    TextDecoder,
+    URL,
+    URLSearchParams,
     Blob: global.Blob,
     navigator: {},
     location: { href: "https://example.invalid/kiriganaito/", search: "" },
@@ -116,13 +174,23 @@ function createSandbox(seed) {
   sandbox.window = sandbox;
   sandbox.globalThis = sandbox;
   sandbox.document = {
-    getElementById(id) { if (!elements.has(id)) elements.set(id, makeElement(id)); return elements.get(id); },
+    getElementById(id) {
+      if (!elements.has(id)) elements.set(id, makeElement(id));
+      return elements.get(id);
+    },
     createElement(tag) { return makeElement(tag); },
     addEventListener() {},
     documentElement: { scrollWidth: 320, clientWidth: 320 },
     body: { scrollWidth: 320, clientWidth: 320 },
   };
-  sandbox.__testState = { elements, drawCalls, storage, networkRequests, consoleErrors, consoleWarnings };
+  sandbox.__testState = {
+    elements,
+    drawCalls,
+    storage,
+    networkRequests,
+    consoleErrors,
+    consoleWarnings,
+  };
   return sandbox;
 }
 
@@ -145,7 +213,16 @@ function runSeed(script, seed) {
   const sourceCounts = {};
   const categorySourceCounts = {};
   for (const name of categoryNames) {
-    metrics[name] = { count: 0, lastKm: null, lastSec: null, totalGapKm: 0, maxGapKm: 0, totalGapSec: 0, maxGapSec: 0, gapSamples: 0 };
+    metrics[name] = {
+      count: 0,
+      lastKm: null,
+      lastSec: null,
+      totalGapKm: 0,
+      maxGapKm: 0,
+      totalGapSec: 0,
+      maxGapSec: 0,
+      gapSamples: 0,
+    };
     categorySourceCounts[name] = {};
     for (const source of sourceNames) categorySourceCounts[name][source] = 0;
   }
@@ -169,7 +246,10 @@ function runSeed(script, seed) {
   }
 
   function recordPresented(type, entity) {
-    if (entity.presented) { duplicatePresentationCount += 1; return; }
+    if (entity.presented) {
+      duplicatePresentationCount += 1;
+      return;
+    }
     entity.presented = true;
     entity.presentedKm = run.runMeters / 1000;
     entity.presentedSec = run.elapsed;
@@ -186,9 +266,15 @@ function runSeed(script, seed) {
     }
     metric.lastKm = entity.presentedKm;
     metric.lastSec = entity.presentedSec;
+
     const source = sourceNames.includes(entity.spawnSource) ? entity.spawnSource : null;
-    if (source) { sourceCounts[source] += 1; categorySourceCounts[type][source] += 1; }
-    else invalidSourceCount += 1;
+    if (source) {
+      sourceCounts[source] += 1;
+      categorySourceCounts[type][source] += 1;
+    } else {
+      invalidSourceCount += 1;
+    }
+
     presentedTotal += 1;
     if (measurementStarted) {
       maxBlankKmAfter500m = Math.max(maxBlankKmAfter500m, entity.presentedKm - lastAnyKm);
@@ -204,18 +290,24 @@ function runSeed(script, seed) {
       lastAnyKm = run.runMeters / 1000;
       lastAnySec = run.elapsed;
     }
+
     for (let i = 0; i < holes.length; i++) {
       const entity = holes[i];
       if (!entity.presented && isRecognizable(entity)) recordPresented("hole", entity);
     }
     for (let i = 0; i < obstacles.length; i++) {
       const entity = obstacles[i];
-      if (!entity.presented && isRecognizable(entity)) recordPresented(entity.movementType === MOVEMENT_TYPE.ONCOMING ? "oncoming" : "groundObstacle", entity);
+      if (!entity.presented && isRecognizable(entity)) {
+        recordPresented(entity.movementType === MOVEMENT_TYPE.ONCOMING ? "oncoming" : "groundObstacle", entity);
+      }
     }
     for (let i = 0; i < items.length; i++) {
       const entity = items[i];
-      if (!entity.presented && isRecognizable(entity)) recordPresented(entity.objectRole === OBJECT_ROLE.POWERUP ? "powerup" : "scoreItem", entity);
+      if (!entity.presented && isRecognizable(entity)) {
+        recordPresented(entity.objectRole === OBJECT_ROLE.POWERUP ? "powerup" : "scoreItem", entity);
+      }
     }
+
     let simultaneousHazards = 0;
     for (let i = 0; i < holes.length; i++) {
       const entity = holes[i];
@@ -226,6 +318,7 @@ function runSeed(script, seed) {
       if (entity.active !== false && entity.x < W && entity.x + (entity.w || 0) > 0) simultaneousHazards += 1;
     }
     maxSimultaneousStrongHazards = Math.max(maxSimultaneousStrongHazards, simultaneousHazards);
+
     if (measurementStarted) {
       const currentKm = run.runMeters / 1000;
       maxBlankKmAfter500m = Math.max(maxBlankKmAfter500m, currentKm - lastAnyKm);
@@ -266,17 +359,151 @@ function runSeed(script, seed) {
   };
   const sourceTotal = Object.values(sourceCounts).reduce((sum, value) => sum + value, 0);
   const generatedRelationOk = categoryNames.every((name) => presented[name] <= generated[name]);
+
   globalThis.__p1Report = {
-    seed: ${seed}, clientVersion: CLIENT_VERSION, targetMeters: ${TARGET_METERS}, reachedMeters: run.runMeters,
-    elapsedSec: run.elapsed, frames, recognizableWidthPx: ${RECOGNIZABLE_WIDTH_PX}, generated, presented, metrics,
-    sourceCounts, categorySourceCounts, presentedTotal, sourceTotal, invalidSourceCount, duplicatePresentationCount,
-    maxBlankKmAfter500m, maxBlankSecAfter500m, maxSimultaneousStrongHazards, generatedRelationOk,
-    sourceInvariantOk: sourceTotal === presentedTotal, reachedTarget: run.runMeters >= ${TARGET_METERS},
+    seed: ${seed},
+    clientVersion: CLIENT_VERSION,
+    targetMeters: ${TARGET_METERS},
+    reachedMeters: run.runMeters,
+    elapsedSec: run.elapsed,
+    frames,
+    recognizableWidthPx: ${RECOGNIZABLE_WIDTH_PX},
+    generated,
+    presented,
+    metrics,
+    sourceCounts,
+    categorySourceCounts,
+    presentedTotal,
+    sourceTotal,
+    invalidSourceCount,
+    duplicatePresentationCount,
+    maxBlankKmAfter500m,
+    maxBlankSecAfter500m,
+    maxSimultaneousStrongHazards,
+    generatedRelationOk,
+    sourceInvariantOk: sourceTotal === presentedTotal,
+    reachedTarget: run.runMeters >= ${TARGET_METERS},
   };
 })();`;
-  try { vm.runInContext(script + appended, sandbox, { timeout: 45000 }); }
-  catch (error) { sandbox.__testState.consoleErrors.push(error && error.stack ? error.stack : String(error)); }
-  return { ...sandbox.__p1Report, consoleErrors: sandbox.__testState.consoleErrors, consoleWarnings: sandbox.__testState.consoleWarnings, networkRequests: sandbox.__testState.networkRequests };
+
+  try {
+    vm.runInContext(script + appended, sandbox, { timeout: 45000 });
+  } catch (error) {
+    sandbox.__testState.consoleErrors.push(error && error.stack ? error.stack : String(error));
+  }
+
+  return {
+    ...sandbox.__p1Report,
+    consoleErrors: sandbox.__testState.consoleErrors,
+    consoleWarnings: sandbox.__testState.consoleWarnings,
+    networkRequests: sandbox.__testState.networkRequests,
+  };
+}
+
+function runSourceScenarioCoverage(script, seed) {
+  const sandbox = createSandbox(seed);
+  vm.createContext(sandbox);
+  const appended = `
+;(() => {
+  fetchBestRanking = async () => ({ ok: true, rows: [], error: "" });
+  fetchPlayStats = async () => ({ ok: true, stats: { play_count: 0, player_count: 0 }, error: "" });
+  sendScoreAfterResult = async () => ({ ok: true });
+
+  function visible(entity) {
+    if (!entity || entity.active === false) return false;
+    const width = Math.max(1, Number(entity.w) || 1);
+    return entity.x + Math.min(width, ${RECOGNIZABLE_WIDTH_PX}) >= 0 && entity.x < W;
+  }
+
+  function countPresentedBySource(source) {
+    let count = 0;
+    const groups = [holes, obstacles, items];
+    for (let g = 0; g < groups.length; g++) {
+      for (let i = 0; i < groups[g].length; i++) {
+        const entity = groups[g][i];
+        if (entity.spawnSource === source && visible(entity) && !entity.__scenarioCounted) {
+          entity.__scenarioCounted = true;
+          count += 1;
+        }
+      }
+    }
+    return count;
+  }
+
+  function advanceScenario(maxFrames, source, setup) {
+    el.playerName.value = "P1-SOURCE";
+    startGame();
+    checkCollisions = () => {};
+    checkHoleFall = () => false;
+    setup();
+    let frames = 0;
+    let presented = 0;
+    while (mode === MODE.PLAYING && frames < maxFrames) {
+      __advanceNow(FIXED_STEP * 1000);
+      update(FIXED_STEP);
+      presented += countPresentedBySource(source);
+      if (presented > 0 && source !== SPAWN_SOURCE.INVINCIBLE) break;
+      frames += 1;
+    }
+    return { source, presented, frames, runMeters: run.runMeters };
+  }
+
+  const earlyOncoming = advanceScenario(1800, SPAWN_SOURCE.EARLY_ONCOMING, () => {
+    run.runMeters = 1500;
+    run.maxRunMeters = 1500;
+    run.lastNonZeroRunMeters = 1500;
+    run.earlyOncomingSpawned = false;
+    run.earlyOncomingForceAt = 1.5;
+    spawn.nextOncomingAt = 99;
+    spawn.lastHoleAt = -9;
+    spawn.lastObstacleAt = -9;
+    spawn.lastOncomingAt = -9;
+  });
+
+  const chase = advanceScenario(1800, SPAWN_SOURCE.CHASE, () => {
+    run.runMeters = 2500;
+    run.maxRunMeters = 2500;
+    run.lastNonZeroRunMeters = 2500;
+    run.chase = 15;
+    run.elapsed = 2;
+    spawn.chaseGraceUntil = 0;
+    spawn.nextChaseEventAt = 0;
+    spawn.lastHoleAt = -9;
+    spawn.lastObstacleAt = -9;
+    spawn.lastOncomingAt = -9;
+  });
+
+  const invincible = advanceScenario(600, SPAWN_SOURCE.INVINCIBLE, () => {
+    run.runMeters = 2500;
+    run.maxRunMeters = 2500;
+    run.lastNonZeroRunMeters = 2500;
+    run.dancerInvincibleUntil = performance.now() + 4000;
+    run.forceObstacleDuringInvincibleUntil = performance.now() + 4000;
+    run.invincibleObstaclePlanCount = 3;
+    run.invincibleObstacleSpawned = 0;
+    spawn.nextObstacleAt = 2.5;
+    spawn.lastHoleAt = -9;
+    spawn.lastObstacleAt = -9;
+    spawn.lastOncomingAt = -9;
+  });
+
+  globalThis.__p1SourceCoverage = {
+    earlyOncoming,
+    chase,
+    invincible,
+    passed: earlyOncoming.presented > 0 && chase.presented > 0 && invincible.presented > 0,
+  };
+})();`;
+  try {
+    vm.runInContext(script + appended, sandbox, { timeout: 45000 });
+  } catch (error) {
+    sandbox.__testState.consoleErrors.push(error && error.stack ? error.stack : String(error));
+  }
+  return {
+    ...sandbox.__p1SourceCoverage,
+    consoleErrors: sandbox.__testState.consoleErrors,
+    consoleWarnings: sandbox.__testState.consoleWarnings,
+  };
 }
 
 function validateRun(run) {
@@ -307,7 +534,9 @@ function aggregate(runs) {
       maxGapKm: Math.max(...runs.map((run) => run.metrics[category].maxGapKm)),
       maxGapSec: Math.max(...runs.map((run) => run.metrics[category].maxGapSec)),
     };
-    totals[category].presentationRate = totals[category].generated ? totals[category].presented / totals[category].generated : 0;
+    totals[category].presentationRate = totals[category].generated
+      ? totals[category].presented / totals[category].generated
+      : 0;
   }
   return {
     seedCount: runs.length,
@@ -319,12 +548,24 @@ function aggregate(runs) {
   };
 }
 
-if (!fs.existsSync(INDEX_PATH)) { console.error(`index.html not found: ${INDEX_PATH}`); process.exit(1); }
+if (!fs.existsSync(INDEX_PATH)) {
+  console.error(`index.html not found: ${INDEX_PATH}`);
+  process.exit(1);
+}
+
 const html = fs.readFileSync(INDEX_PATH, "utf8");
 const scriptMatch = html.match(/<script>([\s\S]*)<\/script>/);
-if (!scriptMatch) { console.error("inline script not found in index.html"); process.exit(1); }
+if (!scriptMatch) {
+  console.error("inline script not found in index.html");
+  process.exit(1);
+}
+
 const runs = SEEDS.map((seed) => runSeed(scriptMatch[1], seed));
+const sourceScenarioCoverage = runSourceScenarioCoverage(scriptMatch[1], 17999);
 const failures = runs.flatMap((run) => validateRun(run).map((message) => `seed ${run.seed}: ${message}`));
+if (!sourceScenarioCoverage.passed) failures.push("scenario source coverage failed");
+if (sourceScenarioCoverage.consoleErrors.length) failures.push(`scenario console errors: ${sourceScenarioCoverage.consoleErrors.join(" | ")}`);
+if (sourceScenarioCoverage.consoleWarnings.length) failures.push(`scenario console warnings: ${sourceScenarioCoverage.consoleWarnings.join(" | ")}`);
 const report = {
   generatedAt: new Date().toISOString(),
   purpose: "P1 effective presentation measurement without gameplay changes",
@@ -335,10 +576,12 @@ const report = {
   },
   seeds: SEEDS,
   runs,
+  sourceScenarioCoverage,
   aggregate: aggregate(runs),
   failures,
   passed: failures.length === 0,
 };
+
 fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
 fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify({ passed: report.passed, aggregate: report.aggregate, failures }, null, 2));
