@@ -137,6 +137,7 @@ const appended = `
     if (i >= 2 && selections[i - 1] === name && selections[i - 2] === name) tripleRepeatCount += 1;
   }
   const maxSelectionShare = Math.max(...Object.values(selectionCounts)) / selections.length;
+  const selectionMaxConsecutive = run.patternMaxConsecutiveSame;
 
   startGame();
   checkCollisions = () => {};
@@ -145,6 +146,7 @@ const appended = `
   run.maxRunMeters = 2500;
   run.lastNonZeroRunMeters = 2500;
   run.nextDancerAt = 99;
+  run.earlyOncomingSpawned = true;
   spawn.nextHoleAt = 99;
   spawn.nextObstacleAt = 99;
   spawn.nextScoreItemAt = 99;
@@ -170,7 +172,7 @@ const appended = `
     selectionCounts,
     tripleRepeatCount,
     maxSelectionShare,
-    selectionMaxConsecutive: run.patternMaxConsecutiveSame,
+    selectionMaxConsecutive,
     runtimeStarted,
     runtimeFrames: frames,
     runtimeCompleted: run.patternCompletedCount,

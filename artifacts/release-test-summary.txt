@@ -1,4 +1,4 @@
-finalVerdict=WARN
+finalVerdict=FAIL
 supabaseMocked=true
 realSupabaseSubmission=false
 playwrightUsed=false

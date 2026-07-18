@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T07:28:58.412Z",
+  "generatedAt": "2026-07-18T15:54:30.766Z",
   "purpose": "P2 effective density regression across 30 fixed seeds",
   "sourceHarnessPassed": true,
   "targets": {
@@ -27,22 +27,22 @@
       "average": 6
     },
     "holeAfter2AverageGapKm": {
-      "min": 0.16957803308823408,
-      "max": 0.17860617421874825,
-      "average": 0.17257649688419072
+      "min": 0.1656576595588224,
+      "max": 0.17984052750000126,
+      "average": 0.17252839022885988
     },
-    "holeAfter2MaxGapKm": 0.2321660250000459,
+    "holeAfter2MaxGapKm": 0.23109592499999732,
     "scoreItemsPerKm": {
-      "min": 7,
-      "max": 7.4,
-      "average": 7.126666666666665
+      "min": 7.2,
+      "max": 7.8,
+      "average": 7.48
     },
     "missTargetsPerKm": {
       "min": 0,
       "max": 0.8,
-      "average": 0.38666666666666655
+      "average": 0.34
     },
-    "maxDecisionBlankSecAfter500m": 0.7166666666666672,
+    "maxDecisionBlankSecAfter500m": 0.7666666666666674,
     "maxSimultaneousStrongHazards": 2
   },
   "seedResults": [
@@ -51,16 +51,16 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17827339921874905,
-        "maximum": 0.22341599999999717
+        "count": 16,
+        "average": 0.17984052750000126,
+        "maximum": 0.22856096250004487
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 37,
       "scorePerKm": 7.4,
-      "missTargetCount": 4,
-      "missTargetPerKm": 0.8,
+      "missTargetCount": 1,
+      "missTargetPerKm": 0.2,
       "maxDecisionBlankSecAfter500m": 0.6500000000000004,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
@@ -88,16 +88,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17860617421874825,
-        "maximum": 0.2262086999999977
+        "average": 0.17922686484374895,
+        "maximum": 0.22711241250000613
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 37,
-      "scorePerKm": 7.4,
-      "missTargetCount": 3,
-      "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.6333333333333336,
+      "scoreItemCount": 39,
+      "scorePerKm": 7.8,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
+      "maxDecisionBlankSecAfter500m": 0.6000000000000002,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -124,16 +124,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17492892890624975,
-        "maximum": 0.23039774999999718
+        "average": 0.17405702578124993,
+        "maximum": 0.22495590000004428
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
-      "missTargetCount": 2,
-      "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.6500000000000004,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
+      "missTargetCount": 1,
+      "missTargetPerKm": 0.2,
+      "maxDecisionBlankSecAfter500m": 0.5333333333333333,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -160,13 +160,13 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17011959609375077,
-        "maximum": 0.22271782499999748
+        "average": 0.17428947890624985,
+        "maximum": 0.2241141749999973
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 2,
       "missTargetPerKm": 0.4,
       "maxDecisionBlankSecAfter500m": 0.7166666666666672,
@@ -196,16 +196,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17051109609375,
-        "maximum": 0.2241141749999973
+        "average": 0.17005679296874993,
+        "maximum": 0.22687424999995098
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
-      "missTargetCount": 4,
-      "missTargetPerKm": 0.8,
-      "maxDecisionBlankSecAfter500m": 0.5833333333333335,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
+      "maxDecisionBlankSecAfter500m": 0.6666666666666671,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -231,17 +231,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.169747683088234,
-        "maximum": 0.22639792500004452
+        "count": 17,
+        "average": 0.17288986640625034,
+        "maximum": 0.2256769125000444
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 2,
-      "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.4666666666666666,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
+      "missTargetCount": 3,
+      "missTargetPerKm": 0.6,
+      "maxDecisionBlankSecAfter500m": 0.7666666666666674,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -268,16 +268,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17423442421874996,
-        "maximum": 0.22481234999999744
+        "average": 0.1706546460937507,
+        "maximum": 0.2296995749999975
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 36,
       "scorePerKm": 7.2,
-      "missTargetCount": 3,
-      "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.6500000000000004,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
+      "maxDecisionBlankSecAfter500m": 0.7000000000000005,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -303,17 +303,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17089158515624991,
-        "maximum": 0.22639792500004452
+        "count": 18,
+        "average": 0.17133364191176303,
+        "maximum": 0.22783995000004476
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 36,
       "scorePerKm": 7.2,
-      "missTargetCount": 2,
-      "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.5833333333333335,
+      "missTargetCount": 3,
+      "missTargetPerKm": 0.6,
+      "maxDecisionBlankSecAfter500m": 0.7000000000000005,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -340,16 +340,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.1748538914062499,
-        "maximum": 0.22351387500004405
+        "average": 0.17954944453124888,
+        "maximum": 0.22551052499999713
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 2,
       "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.5833333333333335,
+      "maxDecisionBlankSecAfter500m": 0.5333333333333333,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -376,16 +376,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17387391796874999,
-        "maximum": 0.22315499999995225
+        "average": 0.17566706953124964,
+        "maximum": 0.22639792500004452
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
-      "missTargetCount": 1,
-      "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.4333333333333333,
+      "scoreItemCount": 39,
+      "scorePerKm": 7.8,
+      "missTargetCount": 3,
+      "missTargetPerKm": 0.6,
+      "maxDecisionBlankSecAfter500m": 0.6500000000000004,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -412,16 +412,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 18,
-        "average": 0.16969049338235173,
-        "maximum": 0.2276180999999502
+        "average": 0.1702182507352928,
+        "maximum": 0.22495590000004473
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
       "missTargetCount": 2,
       "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.4333333333333333,
+      "maxDecisionBlankSecAfter500m": 0.7166666666666672,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -447,17 +447,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17421729609374997,
-        "maximum": 0.2220196499999978
+        "count": 18,
+        "average": 0.17094252573529253,
+        "maximum": 0.22761809999995108
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
+      "scoreItemCount": 39,
+      "scorePerKm": 7.8,
       "missTargetCount": 2,
       "missTargetPerKm": 0.4,
-      "maxDecisionBlankSecAfter500m": 0.5666666666666668,
+      "maxDecisionBlankSecAfter500m": 0.6833333333333338,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -483,17 +483,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.17002902573529272,
-        "maximum": 0.2278399500000452
+        "count": 17,
+        "average": 0.17195434453125058,
+        "maximum": 0.2269068749999974
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 3,
-      "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.7000000000000005,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
+      "missTargetCount": 0,
+      "missTargetPerKm": 0,
+      "maxDecisionBlankSecAfter500m": 0.7166666666666672,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -520,16 +520,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17427806015624994,
-        "maximum": 0.22271782499999748
+        "average": 0.17453987578124994,
+        "maximum": 0.2269068749999974
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 36,
       "scorePerKm": 7.2,
-      "missTargetCount": 3,
-      "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.6000000000000002,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
+      "maxDecisionBlankSecAfter500m": 0.5333333333333333,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -556,16 +556,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 18,
-        "average": 0.17028081397058678,
-        "maximum": 0.23000298750004555
+        "average": 0.17094789926470427,
+        "maximum": 0.2220196499999978
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 3,
-      "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.55,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 0,
+      "missTargetPerKm": 0,
+      "maxDecisionBlankSecAfter500m": 0.4333333333333333,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -592,16 +592,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17434249453125,
-        "maximum": 0.22620869999999726
+        "average": 0.17276181328125034,
+        "maximum": 0.2262086999999977
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
-      "missTargetCount": 1,
-      "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.55,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
+      "maxDecisionBlankSecAfter500m": 0.7666666666666674,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -627,17 +627,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.16957803308823408,
-        "maximum": 0.22464269999995068
+        "count": 17,
+        "average": 0.17450765859374986,
+        "maximum": 0.22481234999999744
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 1,
-      "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.6333333333333336,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 4,
+      "missTargetPerKm": 0.8,
+      "maxDecisionBlankSecAfter500m": 0.7166666666666672,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -663,17 +663,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17462918671874977,
-        "maximum": 0.23072400000004567
+        "count": 18,
+        "average": 0.16748849779411684,
+        "maximum": 0.2241141749999973
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
       "missTargetCount": 1,
       "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.5833333333333335,
+      "maxDecisionBlankSecAfter500m": 0.7166666666666672,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -700,16 +700,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 18,
-        "average": 0.16974499632352813,
-        "maximum": 0.22241114999995126
+        "average": 0.1656576595588224,
+        "maximum": 0.22504724999997539
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 36,
+      "scorePerKm": 7.2,
       "missTargetCount": 1,
       "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.5666666666666668,
+      "maxDecisionBlankSecAfter500m": 0.6500000000000004,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -735,14 +735,14 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.16994151397058688,
-        "maximum": 0.2269068749999974
+        "count": 17,
+        "average": 0.1742429882812499,
+        "maximum": 0.22620869999999726
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 1,
       "missTargetPerKm": 0.2,
       "maxDecisionBlankSecAfter500m": 0.7166666666666672,
@@ -772,16 +772,16 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17466792890624994,
-        "maximum": 0.2321660250000459
+        "average": 0.17433963984375,
+        "maximum": 0.2256769125000444
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
-      "missTargetCount": 4,
-      "missTargetPerKm": 0.8,
-      "maxDecisionBlankSecAfter500m": 0.5666666666666668,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 3,
+      "missTargetPerKm": 0.6,
+      "maxDecisionBlankSecAfter500m": 0.6333333333333336,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -807,17 +807,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.16975574338235164,
-        "maximum": 0.22315499999995225
+        "count": 17,
+        "average": 0.17280341015624948,
+        "maximum": 0.22341599999999762
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 1,
       "missTargetPerKm": 0.2,
-      "maxDecisionBlankSecAfter500m": 0.4333333333333333,
+      "maxDecisionBlankSecAfter500m": 0.7000000000000005,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -843,17 +843,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17457209296874998,
-        "maximum": 0.22761809999995108
+        "count": 18,
+        "average": 0.1673660580882346,
+        "maximum": 0.22201964999999735
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
       "missTargetCount": 0,
       "missTargetPerKm": 0,
-      "maxDecisionBlankSecAfter500m": 0.4833333333333333,
+      "maxDecisionBlankSecAfter500m": 0.733333333333334,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -880,15 +880,15 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 18,
-        "average": 0.16988701102941042,
-        "maximum": 0.22271782499999748
+        "average": 0.16962447573529285,
+        "maximum": 0.22315499999995136
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 2,
-      "missTargetPerKm": 0.4,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 0,
+      "missTargetPerKm": 0,
       "maxDecisionBlankSecAfter500m": 0.6333333333333336,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
@@ -916,13 +916,13 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17503047421874973,
-        "maximum": 0.22687424999995098
+        "average": 0.16994668359375004,
+        "maximum": 0.22373572500003203
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 36,
-      "scorePerKm": 7.2,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 2,
       "missTargetPerKm": 0.4,
       "maxDecisionBlankSecAfter500m": 0.7166666666666672,
@@ -952,15 +952,15 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17491180078124982,
+        "average": 0.1746764929687499,
         "maximum": 0.22620869999999726
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 36,
       "scorePerKm": 7.2,
-      "missTargetCount": 1,
-      "missTargetPerKm": 0.2,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
       "maxDecisionBlankSecAfter500m": 0.6166666666666669,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
@@ -988,13 +988,13 @@
       "hole1to2": 6,
       "holeAfter2": {
         "count": 17,
-        "average": 0.17098293515625063,
-        "maximum": 0.2280846375000003
+        "average": 0.17200572890625038,
+        "maximum": 0.23109592499999732
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 38,
+      "scorePerKm": 7.6,
       "missTargetCount": 1,
       "missTargetPerKm": 0.2,
       "maxDecisionBlankSecAfter500m": 0.7000000000000005,
@@ -1023,17 +1023,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 18,
-        "average": 0.1700075316176457,
-        "maximum": 0.22411417499999775
+        "count": 17,
+        "average": 0.17718698671874936,
+        "maximum": 0.22760504999999753
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
+      "scoreItemCount": 39,
+      "scorePerKm": 7.8,
       "missTargetCount": 3,
       "missTargetPerKm": 0.6,
-      "maxDecisionBlankSecAfter500m": 0.6833333333333338,
+      "maxDecisionBlankSecAfter500m": 0.733333333333334,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,
@@ -1059,16 +1059,16 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17427520546874994,
-        "maximum": 0.22315499999995136
+        "count": 18,
+        "average": 0.1659462948529407,
+        "maximum": 0.22132147499999766
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
       "scoreItemCount": 36,
       "scorePerKm": 7.2,
-      "missTargetCount": 1,
-      "missTargetPerKm": 0.2,
+      "missTargetCount": 2,
+      "missTargetPerKm": 0.4,
       "maxDecisionBlankSecAfter500m": 0.55,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
@@ -1095,17 +1095,17 @@
       "hole0to1": 6,
       "hole1to2": 6,
       "holeAfter2": {
-        "count": 17,
-        "average": 0.17043157265625083,
-        "maximum": 0.22495590000004428
+        "count": 18,
+        "average": 0.17112906397058675,
+        "maximum": 0.22613039999995088
       },
       "earlyOncoming": 1,
       "tooEarlyOncoming": 0,
-      "scoreItemCount": 35,
-      "scorePerKm": 7,
-      "missTargetCount": 0,
-      "missTargetPerKm": 0,
-      "maxDecisionBlankSecAfter500m": 0.5166666666666666,
+      "scoreItemCount": 37,
+      "scorePerKm": 7.4,
+      "missTargetCount": 1,
+      "missTargetPerKm": 0.2,
+      "maxDecisionBlankSecAfter500m": 0.7000000000000005,
       "maxSimultaneousStrongHazards": 2,
       "checks": {
         "hole0to1": true,

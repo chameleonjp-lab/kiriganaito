@@ -182,3 +182,12 @@ consecutiveHoleViolationCount 0
 - Codeberg Pages公開版
 
 P2の自動合格条件は満たしているが、実機3プレイの確認が終わるまでPRはDraftのままとする。
+
+
+## v19 P3 判断パターン
+
+- 既存オブジェクトだけを使う8種類の短い判断パターンを導入。
+- 0〜1kmは学習用4種類だけ、1km以降に複合パターンを段階解禁。
+- 10,000回選択の分布、3連続禁止、定義安全性を `tests/p3-pattern-regression.js` で検査。
+- P1実効出現、P2 30seed、progressive autoplay、release comprehensive、150km耐久を同時回帰検査する。
+- 実機、Playwright/WebKit、Codeberg Pagesは未確認。
