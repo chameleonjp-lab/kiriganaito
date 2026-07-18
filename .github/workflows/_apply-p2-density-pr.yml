@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - .github/workflows/_apply-p2-density-pr.yml
+      - tools/apply-p2-density.py
 
 permissions:
   contents: write
@@ -34,6 +35,8 @@ jobs:
         run: node tests/effective-presentation-metrics.js
 
       - name: Run P2 30-seed density gate
+        id: p2
+        continue-on-error: true
         run: node tests/p2-density-regression.js
 
       - name: Run progressive autoplay
@@ -45,7 +48,26 @@ jobs:
       - name: Run endurance 150km
         run: node tests/endurance-150km.js
 
+      - name: Upload patched measurement artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-patched-density-diagnostics
+          path: |
+            artifacts/p1-effective-presentation-metrics.json
+            artifacts/p2-effective-presentation-30-seeds.json
+            artifacts/p2-density-regression.json
+            artifacts/progressive-autoplay-report.json
+            artifacts/release-test-report.json
+            artifacts/endurance-150km-result.json
+          if-no-files-found: warn
+
+      - name: Enforce P2 density gate
+        if: steps.p2.outcome != 'success'
+        run: exit 1
+
       - name: Commit verified implementation
+        if: steps.p2.outcome == 'success'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
