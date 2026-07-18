@@ -1,0 +1,113 @@
+{
+  "generatedAt": "2026-07-18T15:59:46.040Z",
+  "purpose": "P3 decision pattern regression",
+  "result": {
+    "version": "kiriganaito-2026-07-19-v19-decision-patterns",
+    "definitionErrors": [],
+    "learning": [
+      "G_S_H",
+      "H_S_G",
+      "G_A",
+      "H_A"
+    ],
+    "advanced": [
+      "G_S_H",
+      "H_S_G",
+      "G_A",
+      "H_A",
+      "O_S_H",
+      "H_S_O",
+      "G_A_H",
+      "P_G_G"
+    ],
+    "selectionCounts": {
+      "H_S_O": 1250,
+      "H_S_G": 1250,
+      "G_A": 1250,
+      "G_S_H": 1250,
+      "H_A": 1250,
+      "O_S_H": 1250,
+      "G_A_H": 1250,
+      "P_G_G": 1250
+    },
+    "tripleRepeatCount": 0,
+    "maxSelectionShare": 0.125,
+    "selectionMaxConsecutive": 2,
+    "runtimeStarted": true,
+    "runtimeFrames": 130,
+    "runtimeCompleted": 1,
+    "runtimeAborted": 0,
+    "runtimeStepResolved": 3,
+    "runtimeSeenSteps": [
+      0,
+      1,
+      2
+    ],
+    "runtimePatternResolvedCount": 3,
+    "runtimeQueueOverflow": 0,
+    "runtimeMandatoryTimeout": 0,
+    "runtimeConsecutiveHoleViolation": 0
+  },
+  "p1PatternRuns": [
+    {
+      "seed": 17001,
+      "patternPresented": 6,
+      "patternStats": {
+        "started": 5,
+        "completed": 5,
+        "aborted": 0,
+        "stepResolved": 11,
+        "stepSkipped": 0,
+        "maxConsecutiveSame": 2,
+        "counts": {
+          "H_S_G": 1,
+          "H_A": 2,
+          "G_A_H": 1,
+          "G_A": 1
+        },
+        "activePatternName": ""
+      }
+    },
+    {
+      "seed": 17002,
+      "patternPresented": 6,
+      "patternStats": {
+        "started": 5,
+        "completed": 5,
+        "aborted": 0,
+        "stepResolved": 11,
+        "stepSkipped": 0,
+        "maxConsecutiveSame": 1,
+        "counts": {
+          "H_S_G": 1,
+          "H_A": 1,
+          "G_A": 1,
+          "G_S_H": 1,
+          "G_A_H": 1
+        },
+        "activePatternName": ""
+      }
+    },
+    {
+      "seed": 17003,
+      "patternPresented": 4,
+      "patternStats": {
+        "started": 4,
+        "completed": 4,
+        "aborted": 0,
+        "stepResolved": 8,
+        "stepSkipped": 0,
+        "maxConsecutiveSame": 1,
+        "counts": {
+          "H_A": 2,
+          "H_S_G": 1,
+          "G_S_H": 1
+        },
+        "activePatternName": ""
+      }
+    }
+  ],
+  "p2Passed": true,
+  "failures": [],
+  "passed": true
+}

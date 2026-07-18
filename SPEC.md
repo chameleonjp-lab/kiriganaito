@@ -150,7 +150,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v18 P2 実効出現密度契約（現行）
 
-- 現行 CLIENT_VERSION は `kiriganaito-2026-07-18-v18-effective-density`。
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-19-v19-decision-patterns`。
 - 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
 - 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
 - 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
@@ -158,3 +158,15 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - `between_holes`、`early_oncoming`、`invincible` は通常予約より優先する。
 - 穴幅、障害物速度、TTC最低条件、ジャンプ、当たり判定、点数、UI、ランキング、Supabaseは変更しない。
 - P1の実効出現計測を継続し、30固定seedのP2密度ゲートで偏りを検査する。
+
+
+## v19 判断パターン契約
+
+- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-19-v19-decision-patterns`。
+- 既存の `G / O / A / H / P` を2〜3ステップの短いパターンとして予約する。
+- 0〜1kmは `G_S_H / H_S_G / G_A / H_A` の学習用4種類だけを使用する。
+- 1km以降に `O_S_H / H_S_O / G_A_H`、2km以降かつ👯‍♀️出現可能時に `P_G_G` を解禁する。
+- シャッフルバッグで単一パターン25%以下を保証し、同一パターン3連続を禁止する。
+- パターン中も既存の安全距離、TTC、穴間必須障害物、最大同時危険数を維持する。
+- パターンの失敗、期限超過、逃走・無敵への状態変化ではパターンを中断し、通常SpawnDirectorへ復帰する。
+- 詳細契約は `P3_DECISION_PATTERN_CONTRACT.md` を正本とする。

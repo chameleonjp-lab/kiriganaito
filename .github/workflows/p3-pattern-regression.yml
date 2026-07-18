@@ -1,4 +1,4 @@
-name: P2 effective density regression
+name: P3 decision pattern regression
 
 on:
   pull_request:
@@ -6,19 +6,21 @@ on:
       - "index.html"
       - "SPEC.md"
       - "TEST_REPORT.md"
+      - "P3_DECISION_PATTERN_CONTRACT.md"
       - "tests/effective-presentation-metrics.js"
       - "tests/p2-density-regression.js"
+      - "tests/p3-pattern-regression.js"
       - "tests/release-comprehensive.js"
-      - ".github/workflows/p2-density-regression.yml"
+      - ".github/workflows/p3-pattern-regression.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  density-regression:
+  decision-pattern-regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,18 +42,22 @@ jobs:
       - name: P1 effective presentation
         run: node tests/effective-presentation-metrics.js
 
-      - name: P2 30-seed density gate
+      - name: P2 density gate
         run: node tests/p2-density-regression.js
 
-      - name: Upload P2 artifacts
+      - name: P3 pattern gate
+        run: node tests/p3-pattern-regression.js
+
+      - name: Upload P3 artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: p2-density-regression
+          name: p3-decision-pattern-regression
           path: |
             artifacts/p1-effective-presentation-metrics.json
-            artifacts/p2-effective-presentation-30-seeds.json
             artifacts/p2-density-regression.json
+            artifacts/p2-effective-presentation-30-seeds.json
+            artifacts/p3-pattern-regression.json
             artifacts/progressive-autoplay-report.json
             artifacts/release-test-report.json
             artifacts/endurance-150km-result.json

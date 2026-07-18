@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-18-v18-effective-density" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-19-v19-decision-patterns" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-18-v18-effective-density</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-19-v19-decision-patterns</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-18-v18-effective-density</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-19-v19-decision-patterns</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-18-v18-effective-density",
+        CLIENT_VERSION = "kiriganaito-2026-07-19-v19-decision-patterns",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -779,6 +779,16 @@
           spawnInvincibleResolvedCount: 0,
           spawnEarlyOncomingResolvedCount: 0,
           spawnPatternResolvedCount: 0,
+          patternStartedCount: 0,
+          patternCompletedCount: 0,
+          patternAbortedCount: 0,
+          patternStepResolvedCount: 0,
+          patternStepSkippedCount: 0,
+          patternMaxConsecutiveSame: 0,
+          patternCurrentConsecutiveSame: 0,
+          patternHistory: [],
+          patternCounts: {},
+          patternAbortReasons: {},
         };
         spawn = {
           nextObstacleAt: 0.055,
@@ -794,6 +804,11 @@
           lastOncomingAt: -9,
           lastScoreItemAt: -9,
           lastPatternName: "none",
+          nextPatternAt: 0.22,
+          patternNextId: 1,
+          patternBag: [],
+          patternBagKey: "",
+          activePattern: null,
           nextChaseEventAt: 999,
           oncomingRetryAt: 0,
           needObstacleBeforeNextHole: false,
@@ -1191,6 +1206,7 @@
         }
         if (entity.objectRole === OBJECT_ROLE.REWARD) { run.scoreItemSpawnCount++; run.itemSpawnCount++; spawn.lastScoreItemAt = km; if (source === SPAWN_SOURCE.CHASE) run.chaseScoreItemSpawnCount++; }
         if (entity.objectRole === OBJECT_ROLE.POWERUP) { run.invincibleItemSpawnCount++; run.dancerSpawnCount++; run.itemSpawnCount++; }
+        maybeAdoptDecisionPatternFromEntity(entity, request, km);
       }
       function spawnRequiredObstacleBetweenHoles(km, d) {
         const allowOncoming = km >= 0.8;
@@ -1236,6 +1252,365 @@
         ONCOMING_OVERDUE_KM: 0.08,
         ONCOMING_CRITICAL_OVERDUE_KM: 0.275,
       });
+      const P3_PATTERN = Object.freeze({
+        PREPARE_KM: 0.006,
+        MAX_STEP_LATE_KM: 0.08,
+        MAX_PATTERN_SPAN_KM: 0.46,
+        EARLY_DELAY_MIN_KM: 0.45,
+        EARLY_DELAY_MAX_KM: 0.55,
+        NORMAL_DELAY_MIN_KM: 0.85,
+        NORMAL_DELAY_MAX_KM: 1.05,
+        O_TO_H_SAFE_KM: 0.18,
+      });
+      const P3_PATTERN_DEFS = Object.freeze([
+        { name: "G_S_H", learning: true, minKm: 0, steps: [
+          { symbol: "G", offsetKm: 0, payload: { dir: -1, emoji: "🚶", x: -44 } },
+          { symbol: "H", offsetKm: 0.09, payload: { kind: "SMALL", w: 30 } },
+        ] },
+        { name: "H_S_G", learning: true, minKm: 0, steps: [
+          { symbol: "H", offsetKm: 0, payload: { kind: "SMALL", w: 30 } },
+          { symbol: "G", offsetKm: 0.085, satisfiesBetweenHole: true, payload: { dir: -1, emoji: "🚶", x: -44 } },
+        ] },
+        { name: "G_A", learning: true, minKm: 0, steps: [
+          { symbol: "G", offsetKm: 0, payload: { dir: -1, emoji: "🚶", x: -44 } },
+          { symbol: "A", offsetKm: 0, overlay: true, payload: { lane: "high", high: true, type: "💰", x: -44, challenge: false } },
+        ] },
+        { name: "H_A", learning: true, minKm: 0, steps: [
+          { symbol: "H", offsetKm: 0, payload: { kind: "SMALL", w: 30, x: -46 } },
+          { symbol: "A", offsetKm: 0, overlay: true, payload: { lane: "high", high: true, type: "💰", x: -44, challenge: false } },
+        ] },
+        { name: "O_S_H", learning: false, minKm: 1, steps: [
+          { symbol: "O", offsetKm: 0, payload: { dir: 1, emoji: "🚶" } },
+          { symbol: "H", offsetKm: 0.18, payload: { kind: "SMALL", w: 30 } },
+        ] },
+        { name: "H_S_O", learning: false, minKm: 1, steps: [
+          { symbol: "H", offsetKm: 0, payload: { kind: "SMALL", w: 30 } },
+          { symbol: "O", offsetKm: 0.145, satisfiesBetweenHole: true, payload: { dir: 1, emoji: "🚶" } },
+        ] },
+        { name: "G_A_H", learning: false, minKm: 1, steps: [
+          { symbol: "G", offsetKm: 0, payload: { dir: -1, emoji: "🏃🏻", x: -44 } },
+          { symbol: "A", offsetKm: 0.045, payload: { lane: "mid", high: false, type: "💰", x: -44, challenge: false } },
+          { symbol: "H", offsetKm: 0.09, payload: { kind: "SMALL", w: 30 } },
+        ] },
+        { name: "P_G_G", learning: false, minKm: 2, requiresPowerup: true, steps: [
+          { symbol: "P", offsetKm: 0, payload: { type: "👯‍♀️", lane: "mid", high: false, x: -36 } },
+          { symbol: "G", offsetKm: 0.07, payload: { dir: -1, emoji: "🏃🏻", x: -44 } },
+          { symbol: "G", offsetKm: 0.145, payload: { dir: -1, emoji: "🚴", x: -44 } },
+        ] },
+      ]);
+      function decisionPatternByName(name) {
+        return P3_PATTERN_DEFS.find((def) => def.name === name) || null;
+      }
+      function availableDecisionPatterns(km) {
+        return P3_PATTERN_DEFS.filter((def) => {
+          if (km < 1) return def.learning === true;
+          if (km < def.minKm) return false;
+          if (def.requiresPowerup && km < run.nextDancerAt) return false;
+          return true;
+        });
+      }
+      function shuffleDecisionPatternNames(names) {
+        const result = names.slice();
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          const tmp = result[i]; result[i] = result[j]; result[j] = tmp;
+        }
+        return result;
+      }
+      function rememberDecisionPatternChoice(name) {
+        const history = Array.isArray(run.patternHistory) ? run.patternHistory : [];
+        const previous = history.length ? history[history.length - 1] : "";
+        run.patternCurrentConsecutiveSame = previous === name ? safeInt(run.patternCurrentConsecutiveSame) + 1 : 1;
+        run.patternMaxConsecutiveSame = Math.max(safeInt(run.patternMaxConsecutiveSame), run.patternCurrentConsecutiveSame);
+        history.push(name);
+        while (history.length > 12) history.shift();
+        run.patternHistory = history;
+        run.patternCounts[name] = safeInt(run.patternCounts[name]) + 1;
+      }
+      function selectNextDecisionPattern(km, remember = true) {
+        const available = availableDecisionPatterns(km);
+        if (!available.length) return null;
+        const key = available.map((def) => def.name).join("|");
+        if (spawn.patternBagKey !== key || !Array.isArray(spawn.patternBag) || !spawn.patternBag.length) {
+          spawn.patternBagKey = key;
+          spawn.patternBag = shuffleDecisionPatternNames(available.map((def) => def.name));
+        }
+        const history = Array.isArray(run.patternHistory) ? run.patternHistory : [];
+        const last = history.length > 0 ? history[history.length - 1] : "";
+        const secondLast = history.length > 1 ? history[history.length - 2] : "";
+        let pickIndex = spawn.patternBag.length - 1;
+        if (last && last === secondLast && spawn.patternBag[pickIndex] === last) {
+          const alternate = spawn.patternBag.findIndex((name) => name !== last);
+          if (alternate >= 0) pickIndex = alternate;
+        }
+        const name = spawn.patternBag.splice(pickIndex, 1)[0];
+        if (remember) rememberDecisionPatternChoice(name);
+        return decisionPatternByName(name);
+      }
+      function validateDecisionPatternDefinitions() {
+        const errors = [];
+        const learning = P3_PATTERN_DEFS.filter((def) => def.learning);
+        if (learning.length !== 4) errors.push("learning pattern count must be 4");
+        for (const def of P3_PATTERN_DEFS) {
+          const hazardAt = {};
+          const hazards = [];
+          for (let i = 0; i < def.steps.length; i++) {
+            const step = def.steps[i];
+            if (!["G", "O", "A", "H", "P"].includes(step.symbol)) errors.push(def.name + ": unknown symbol " + step.symbol);
+            if (!Number.isFinite(step.offsetKm) || step.offsetKm < 0) errors.push(def.name + ": invalid offset");
+            if (["G", "O", "H"].includes(step.symbol)) {
+              const key = step.offsetKm.toFixed(4);
+              hazardAt[key] = safeInt(hazardAt[key]) + 1;
+              hazards.push(step);
+            }
+            if (step.overlay && step.symbol !== "A") errors.push(def.name + ": only A may overlay");
+          }
+          for (const key in hazardAt) if (hazardAt[key] > 1) errors.push(def.name + ": simultaneous hazards");
+          hazards.sort((a, b) => a.offsetKm - b.offsetKm);
+          for (let i = 1; i < hazards.length; i++) {
+            const before = hazards[i - 1], after = hazards[i], gap = after.offsetKm - before.offsetKm;
+            if (before.symbol === "G" && after.symbol === "H" && gap < SPAWN.HOLE_AFTER_OBSTACLE) errors.push(def.name + ": G-H gap");
+            if (before.symbol === "H" && after.symbol === "G" && gap < SPAWN.OBSTACLE_AFTER_HOLE) errors.push(def.name + ": H-G gap");
+            if (before.symbol === "H" && after.symbol === "O" && gap < SPAWN.ONCOMING_AFTER_HOLE_SAFE_GAP) errors.push(def.name + ": H-O gap");
+            if (before.symbol === "O" && after.symbol === "H" && gap < P3_PATTERN.O_TO_H_SAFE_KM) errors.push(def.name + ": O-H gap");
+          }
+        }
+        return errors;
+      }
+      function nextDecisionPatternDelay(km) {
+        return km < 1 ? rand(P3_PATTERN.EARLY_DELAY_MIN_KM, P3_PATTERN.EARLY_DELAY_MAX_KM) : rand(P3_PATTERN.NORMAL_DELAY_MIN_KM, P3_PATTERN.NORMAL_DELAY_MAX_KM);
+      }
+      function decisionPatternStartCompatibility(def, km) {
+        if (!def || !def.steps || !def.steps.length) return false;
+        const first = def.steps[0];
+        let firstSafe = true;
+        if (first.symbol === "G") firstSafe = canSpawnObstacle(km, -1);
+        else if (first.symbol === "O") firstSafe = km >= 0.8 && canSpawnObstacle(km, 1);
+        else if (first.symbol === "H") {
+          const kind = first.payload && first.payload.kind || "SMALL";
+          const width = first.payload && first.payload.w || HOLE_TYPES[kind].max;
+          const x = first.payload && first.payload.x != null ? first.payload.x : -width - 16;
+          firstSafe = canSpawnHole(km, kind, x, width);
+        }
+        if (!firstSafe) return false;
+        const holeStep = def.steps.find((step) => step.symbol === "H");
+        if (holeStep) {
+          const expectedLead = holeStep.offsetKm;
+          const actualLead = spawn.nextHoleAt - km;
+          const tolerance = expectedLead === 0 ? 0.018 : 0.022;
+          return actualLead >= expectedLead - tolerance && actualLead <= expectedLead + tolerance;
+        }
+        const span = def.steps.reduce((max, step) => Math.max(max, step.offsetKm), 0);
+        const requiredHoleBuffer = span + SPAWN.HOLE_AFTER_OBSTACLE + 0.018;
+        return spawn.nextHoleAt - km >= requiredHoleBuffer;
+      }
+      function selectStartableDecisionPattern(km) {
+        const compatible = availableDecisionPatterns(km).filter((def) => decisionPatternStartCompatibility(def, km));
+        if (!compatible.length) return null;
+        const key = "start:" + compatible.map((def) => def.name).join("|");
+        if (spawn.patternBagKey !== key || !Array.isArray(spawn.patternBag) || !spawn.patternBag.length) {
+          spawn.patternBagKey = key;
+          spawn.patternBag = shuffleDecisionPatternNames(compatible.map((def) => def.name));
+        }
+        const history = Array.isArray(run.patternHistory) ? run.patternHistory : [];
+        const last = history.length ? history[history.length - 1] : "";
+        const secondLast = history.length > 1 ? history[history.length - 2] : "";
+        let pickIndex = spawn.patternBag.length - 1;
+        if (last && last === secondLast && spawn.patternBag[pickIndex] === last) {
+          const alternate = spawn.patternBag.findIndex((name) => name !== last);
+          if (alternate >= 0) pickIndex = alternate;
+        }
+        const name = spawn.patternBag.splice(pickIndex, 1)[0];
+        const def = decisionPatternByName(name);
+        if (def) rememberDecisionPatternChoice(name);
+        return def;
+      }
+      function decisionPatternSymbolForEntity(entity) {
+        if (!entity) return "";
+        if (entity.zone === WORLD_ZONE.HOLE) return "H";
+        if (entity.objectRole === OBJECT_ROLE.POWERUP) return "P";
+        if (entity.objectRole === OBJECT_ROLE.REWARD) return "A";
+        if (entity.objectRole === OBJECT_ROLE.HAZARD && entity.movementType === MOVEMENT_TYPE.ONCOMING) return "O";
+        if (entity.objectRole === OBJECT_ROLE.HAZARD) return "G";
+        return "";
+      }
+      function selectDecisionPatternForFirstSymbol(symbol, km) {
+        const compatible = availableDecisionPatterns(km).filter((def) => def.steps[0] && def.steps[0].symbol === symbol && def.name !== "H_S_O" && def.name !== "O_S_H");
+        if (!compatible.length) return null;
+        const history = Array.isArray(run.patternHistory) ? run.patternHistory : [];
+        const last = history.length ? history[history.length - 1] : "";
+        const secondLast = history.length > 1 ? history[history.length - 2] : "";
+        const allowed = compatible.filter((def) => !(last && last === secondLast && def.name === last));
+        if (!allowed.length) return null;
+        const key = "adopt:" + symbol + ":" + allowed.map((def) => def.name).join("|");
+        if (spawn.patternBagKey !== key || !Array.isArray(spawn.patternBag) || !spawn.patternBag.length) {
+          spawn.patternBagKey = key;
+          spawn.patternBag = shuffleDecisionPatternNames(allowed.map((def) => def.name));
+        }
+        const name = spawn.patternBag.pop();
+        const def = decisionPatternByName(name);
+        if (def) rememberDecisionPatternChoice(name);
+        return def;
+      }
+      function maybeAdoptDecisionPatternFromEntity(entity, request, km) {
+        if (!entity || !request || (request.spawnSource !== SPAWN_SOURCE.NORMAL && request.spawnSource !== SPAWN_SOURCE.BETWEEN_HOLES)) return false;
+        if (spawn.activePattern || run.chase > 0 || isDancerInvincible()) return false;
+        if (km < spawn.nextPatternAt) return false;
+        if (km >= 0.8 && km < 2 && !run.earlyOncomingSpawned) return false;
+        const symbol = decisionPatternSymbolForEntity(entity);
+        if (!["G", "O", "H", "P"].includes(symbol)) return false;
+        if (request.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && !["G", "O"].includes(symbol)) return false;
+        if (symbol === "P" && spawn.nextHoleAt - km < 0.24) return false;
+        const def = selectDecisionPatternForFirstSymbol(symbol, km);
+        if (!def || !startDecisionPattern(def, km)) return false;
+        const active = spawn.activePattern;
+        const first = active && active.steps[0];
+        if (!first || first.symbol !== symbol) {
+          abortDecisionPattern("adoption_symbol_mismatch", km);
+          cleanupOrphanedPatternRequests();
+          return false;
+        }
+        first.status = "resolved";
+        entity.patternId = active.id;
+        entity.patternName = active.name;
+        entity.patternStepIndex = first.index;
+        entity.patternSymbol = first.symbol;
+        run.patternStepResolvedCount = safeInt(run.patternStepResolvedCount) + 1;
+        if (active.steps.every((step) => step.status === "resolved")) finishDecisionPattern(km);
+        return true;
+      }
+      function startDecisionPattern(def, km) {
+        if (!def || spawn.activePattern) return false;
+        const id = spawn.patternNextId++;
+        spawn.activePattern = {
+          id,
+          name: def.name,
+          startKm: km,
+          status: "active",
+          steps: def.steps.map((step, index) => ({
+            index,
+            symbol: step.symbol,
+            offsetKm: step.offsetKm,
+            dueKm: km + step.offsetKm,
+            overlay: Boolean(step.overlay),
+            satisfiesBetweenHole: Boolean(step.satisfiesBetweenHole),
+            payload: Object.assign({}, step.payload || {}),
+            status: "waiting",
+          })),
+        };
+        spawn.lastPatternName = def.name;
+        spawn.nextPatternAt = km + nextDecisionPatternDelay(km);
+        run.patternStartedCount = safeInt(run.patternStartedCount) + 1;
+        return true;
+      }
+      function finishDecisionPattern(km) {
+        if (!spawn.activePattern || spawn.activePattern.status !== "active") return;
+        spawn.activePattern.status = "completed";
+        run.patternCompletedCount = safeInt(run.patternCompletedCount) + 1;
+        spawn.activePattern = null;
+        spawn.nextPatternAt = Math.max(spawn.nextPatternAt, km + nextDecisionPatternDelay(km));
+      }
+      function abortDecisionPattern(reason, km) {
+        const active = spawn.activePattern;
+        if (!active || active.status !== "active") return;
+        active.status = "aborted";
+        active.abortReason = reason;
+        run.patternAbortedCount = safeInt(run.patternAbortedCount) + 1;
+        run.patternAbortReasons[reason] = safeInt(run.patternAbortReasons[reason]) + 1;
+        spawn.nextPatternAt = Math.max(spawn.nextPatternAt, km + 0.18);
+      }
+      function cleanupOrphanedPatternRequests() {
+        const active = spawn.activePattern && spawn.activePattern.status === "active" ? spawn.activePattern.id : null;
+        const zones = [WORLD_ZONE.GROUND, WORLD_ZONE.AIR, WORLD_ZONE.HOLE];
+        for (const zone of zones) {
+          const kept = [];
+          for (const req of spawnRequestQueue(zone)) {
+            if (req.patternId && req.patternId !== active) {
+              if (req.status !== SPAWN_REQUEST_STATUS.RESOLVED && req.status !== SPAWN_REQUEST_STATUS.SKIPPED) run.spawnRequestSkippedCount++;
+            } else kept.push(req);
+          }
+          spawn.requests[zone] = kept;
+        }
+        if (spawn.activePattern && spawn.activePattern.status === "aborted") spawn.activePattern = null;
+      }
+      function maybeStartDecisionPattern(km) {
+        cleanupOrphanedPatternRequests();
+        const active = spawn.activePattern;
+        if (active && active.status === "active") {
+          if (run.chase > 0 || isDancerInvincible()) abortDecisionPattern("mode_changed", km);
+          else if (km - active.startKm > P3_PATTERN.MAX_PATTERN_SPAN_KM) abortDecisionPattern("pattern_timeout", km);
+          cleanupOrphanedPatternRequests();
+          return;
+        }
+        // New patterns begin by adopting an already-safe NORMAL entity in recordSpawnSuccess().
+        // This avoids creating a new gap or replacing P2's scheduled first hazard.
+      }
+      function isDecisionPatternReservationActive() {
+        return Boolean(spawn.activePattern && spawn.activePattern.status === "active");
+      }
+      function decisionPatternOwnsBetweenHoleObstacle() {
+        const active = spawn.activePattern;
+        return Boolean(active && active.status === "active" && active.steps.some((step) => step.satisfiesBetweenHole && step.status !== "resolved" && step.status !== "skipped"));
+      }
+      function makeDecisionPatternRequest(active, step) {
+        let zone, kind, fallbackKind;
+        const payload = Object.assign({}, step.payload || {});
+        if (step.symbol === "G") { zone = WORLD_ZONE.GROUND; kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; fallbackKind = kind; payload.dir = -1; payload.x = payload.x ?? -44; }
+        else if (step.symbol === "O") { zone = WORLD_ZONE.GROUND; kind = SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE; fallbackKind = kind; payload.dir = 1; payload.x = getOncomingSpawnX(step.dueKm); }
+        else if (step.symbol === "A") { zone = WORLD_ZONE.AIR; kind = SPAWN_REQUEST_KIND.SCORE_ITEM; fallbackKind = kind; }
+        else if (step.symbol === "H") { zone = WORLD_ZONE.HOLE; kind = SPAWN_REQUEST_KIND.HOLE; fallbackKind = kind; }
+        else if (step.symbol === "P") { zone = WORLD_ZONE.GROUND; kind = SPAWN_REQUEST_KIND.POWERUP; fallbackKind = kind; }
+        else return null;
+        const req = makeSpawnRequest(zone, kind, SPAWN_SOURCE.PATTERN, step.dueKm, "pattern:" + active.id + ":" + step.index, payload, fallbackKind);
+        req.patternId = active.id;
+        req.patternName = active.name;
+        req.patternStepIndex = step.index;
+        req.patternSymbol = step.symbol;
+        req.patternAllowsItemPlacement = step.symbol === "A";
+        req.satisfiesBetweenHole = step.satisfiesBetweenHole;
+        if (step.satisfiesBetweenHole) req.priority = SPAWN_SOURCE_PRIORITY[SPAWN_SOURCE.BETWEEN_HOLES];
+        return req;
+      }
+      function collectDecisionPatternRequests(km) {
+        maybeStartDecisionPattern(km);
+        const active = spawn.activePattern;
+        if (!active || active.status !== "active") return;
+        for (const step of active.steps) {
+          if (step.status !== "waiting") continue;
+          if (km < step.dueKm - P3_PATTERN.PREPARE_KM) continue;
+          const req = makeDecisionPatternRequest(active, step);
+          if (req && enqueueSpawnRequest(req)) {
+            step.status = "queued";
+            if (step.symbol === "O") run.oncomingCandidateCount++;
+          } else if (km - step.dueKm > P3_PATTERN.MAX_STEP_LATE_KM) {
+            step.status = "skipped";
+            run.patternStepSkippedCount = safeInt(run.patternStepSkippedCount) + 1;
+            abortDecisionPattern("enqueue_timeout", km);
+          }
+        }
+      }
+      function recordDecisionPatternRequestOutcome(req, success, km, entity) {
+        if (!req || !req.patternId) return;
+        const active = spawn.activePattern;
+        if (!active || active.id !== req.patternId || active.status !== "active") return;
+        const step = active.steps.find((candidate) => candidate.index === req.patternStepIndex);
+        if (!step) return;
+        if (entity) {
+          entity.patternId = req.patternId;
+          entity.patternName = req.patternName;
+          entity.patternStepIndex = req.patternStepIndex;
+          entity.patternSymbol = req.patternSymbol;
+        }
+        if (success) {
+          step.status = "resolved";
+          run.patternStepResolvedCount = safeInt(run.patternStepResolvedCount) + 1;
+          if (active.steps.every((candidate) => candidate.status === "resolved")) finishDecisionPattern(km);
+        } else {
+          step.status = "skipped";
+          run.patternStepSkippedCount = safeInt(run.patternStepSkippedCount) + 1;
+          abortDecisionPattern("step_skipped", km);
+        }
+      }
       function spawnRequestQueue(zone) { return spawn.requests && spawn.requests[zone] ? spawn.requests[zone] : []; }
       function hasPendingSpawnRequestKind(kind) {
         const zones = [WORLD_ZONE.GROUND, WORLD_ZONE.AIR, WORLD_ZONE.HOLE];
@@ -1276,6 +1651,8 @@
         return req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE;
       }
       function shouldDeferSpawnRequest(req, km) {
+        if (req && req.spawnSource === SPAWN_SOURCE.PATTERN) return false;
+        if (isDecisionPatternReservationActive() && req && (req.spawnSource === SPAWN_SOURCE.NORMAL || req.spawnSource === SPAWN_SOURCE.CHASE) && req.kind !== SPAWN_REQUEST_KIND.SCORE_ITEM) return true;
         if (req && req.kind === SPAWN_REQUEST_KIND.HOLE && isOncomingCriticallyOverdue(km)) return true;
         if (!isNonMandatoryGroundRequest(req)) return false;
         if (spawn.needObstacleBeforeNextHole) return true;
@@ -1343,15 +1720,17 @@
         const earlyOncomingDue = km >= 1.5 && km >= run.earlyOncomingForceAt && !run.earlyOncomingSpawned;
         const oncomingDue = km >= spawn.nextOncomingAt && km >= 0.8;
         const forceEarlyOncoming = (earlyOncomingDue || (km >= 2 && !run.earlyOncomingSpawned));
+        collectDecisionPatternRequests(km);
+        const reservePattern = isDecisionPatternReservationActive();
         const reserveHole = isHoleReservationActive(km);
         const reserveScoreItem = isScoreItemReservationActive(km);
         const reserveOncoming = isOncomingReservationActive(km);
-        const suppressNormalGround = spawn.needObstacleBeforeNextHole || reserveHole || reserveScoreItem;
+        const suppressNormalGround = spawn.needObstacleBeforeNextHole || reservePattern || reserveHole || reserveScoreItem;
         if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && km >= spawn.nextObstacleAt) {
           const key = "invincible:" + run.invincibleObstacleSpawned;
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.INVINCIBLE, km, key, () => ({ dir: -1, emoji: OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
         }
-        if (spawn.needObstacleBeforeNextHole && chaseReady) {
+        if (spawn.needObstacleBeforeNextHole && chaseReady && !decisionPatternOwnsBetweenHoleObstacle()) {
           const key = "between-hole:" + spawn.lastHoleAt.toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, SPAWN_SOURCE.BETWEEN_HOLES, km, key, () => {
             const allowOncoming = km >= 0.8;
@@ -1372,7 +1751,7 @@
             return { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge };
           }, SPAWN_REQUEST_KIND.SCORE_ITEM); if (itemQueued) scheduleNext("item", km, d); }
         }
-        if (dueHole && !isOncomingCriticallyOverdue(km) && !spawn.needObstacleBeforeNextHole && chaseReady) {
+        if (dueHole && !reservePattern && !isOncomingCriticallyOverdue(km) && !spawn.needObstacleBeforeNextHole && chaseReady) {
           const key = "hole:" + spawn.nextHoleAt.toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.HOLE, SPAWN_REQUEST_KIND.HOLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, key, () => { const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]); const type = HOLE_TYPES[kind === "LARGE" && km < 5 ? "MEDIUM" : kind] || HOLE_TYPES.MEDIUM; return { kind, w: rand(type.min, type.max) }; }, SPAWN_REQUEST_KIND.HOLE);
         } else if (dueHole && spawn.needObstacleBeforeNextHole) {
@@ -1387,7 +1766,7 @@
           const key = (forceEarlyOncoming ? "early:" : "oncoming:") + (forceEarlyOncoming ? run.earlyOncomingForceAt : spawn.nextOncomingAt).toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, forceEarlyOncoming ? SPAWN_SOURCE.EARLY_ONCOMING : SPAWN_SOURCE.NORMAL, km, key, () => ({ dir: 1, emoji: "🚶", x: getOncomingSpawnX(km) }), SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, () => { run.oncomingCandidateCount++; if (forceEarlyOncoming) run.earlyOncomingCandidateCount = safeInt(run.earlyOncomingCandidateCount) + 1; });
         }
-        if (km >= run.nextDancerAt) {
+        if (km >= run.nextDancerAt && !reservePattern) {
           const key = "dancer:" + run.nextDancerAt.toFixed(4);
           if (!hasSpawnRequestKey(key) && Math.random() < 0.006) enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.POWERUP, SPAWN_SOURCE.NORMAL, km, key, { type: "👯‍♀️", high: false, lane: "mid", x: -36 }, SPAWN_REQUEST_KIND.POWERUP);
         }
@@ -1469,7 +1848,10 @@
         else if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE) {
           if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && req.payload.dir === 1 && km - spawn.lastHoleAt > Math.max(SPAWN.REQUIRED_ONCOMING_AFTER_HOLE, spawn.lastHoleKind === "LARGE" ? 0.28 : 0)) { spawn.lastOncomingAt = Math.min(spawn.lastOncomingAt, km - SPAWN.ONCOMING_GAP - 0.001); spawn.lastObstacleAt = Math.min(spawn.lastObstacleAt, km - getOncomingAfterObstacleSafeGap(km) - 0.001); }
           ok = spawnObstaclePattern(km, d, req.payload.dir, req.payload.emoji, req.payload.x, req.spawnSource, true);
-        } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) ok = canSpawnItem(km) && spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
+        } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) {
+          const itemPlacementAllowed = req.patternAllowsItemPlacement === true || canSpawnItem(km);
+          ok = itemPlacementAllowed && spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
+        }
         else if (req.kind === SPAWN_REQUEST_KIND.POWERUP) ok = spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
         if (ok) {
           entity = holes.length > beforeH ? holes[holes.length - 1] : obstacles.length > beforeO ? obstacles[obstacles.length - 1] : items.length > beforeI ? items[items.length - 1] : null;
@@ -1477,6 +1859,7 @@
           recordSpawnResolution(req);
           advanceScheduleAfterResolution(req, entity, km, d);
           req.status = SPAWN_REQUEST_STATUS.RESOLVED;
+          recordDecisionPatternRequestOutcome(req, true, km, entity);
           return true;
         }
         if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) run.betweenHoleObstacleRetryCount = safeInt(run.betweenHoleObstacleRetryCount) + 1;
@@ -1488,7 +1871,12 @@
               if (km - req.dueKm > SPAWN_DIRECTOR_LIMITS.mandatoryWaitKm && !req.timeoutRecorded) { req.timeoutRecorded = true; run.spawnMandatoryTimeoutCount++; }
               if (req.spawnSource === SPAWN_SOURCE.EARLY_ONCOMING && !run.earlyOncomingSpawned && req.totalAttempts < maxTotal) { req.nextAttemptKm = km + 0.03; return false; }
             }
-            req.status = SPAWN_REQUEST_STATUS.SKIPPED; run.spawnRequestSkippedCount++; if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) resolveBetweenHoleObstacle(km, req.payload && req.payload.dir); advanceScheduleAfterResolution(req, null, km, d); return true;
+            req.status = SPAWN_REQUEST_STATUS.SKIPPED;
+            run.spawnRequestSkippedCount++;
+            recordDecisionPatternRequestOutcome(req, false, km, null);
+            if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) resolveBetweenHoleObstacle(km, req.payload && req.payload.dir);
+            advanceScheduleAfterResolution(req, null, km, d);
+            return true;
           }
         } else req.nextAttemptKm = km + (req.kind === SPAWN_REQUEST_KIND.HOLE ? 0.0005 : SPAWN_DIRECTOR_LIMITS.retryKm);
         req.status = SPAWN_REQUEST_STATUS.WAITING;
@@ -2414,6 +2802,15 @@
           spawnInvincibleResolvedCount: safeInt(run.spawnInvincibleResolvedCount),
           spawnEarlyOncomingResolvedCount: safeInt(run.spawnEarlyOncomingResolvedCount),
           spawnPatternResolvedCount: safeInt(run.spawnPatternResolvedCount),
+          patternStartedCount: safeInt(run.patternStartedCount),
+          patternCompletedCount: safeInt(run.patternCompletedCount),
+          patternAbortedCount: safeInt(run.patternAbortedCount),
+          patternStepResolvedCount: safeInt(run.patternStepResolvedCount),
+          patternStepSkippedCount: safeInt(run.patternStepSkippedCount),
+          patternMaxConsecutiveSame: safeInt(run.patternMaxConsecutiveSame),
+          patternCounts: Object.assign({}, run.patternCounts || {}),
+          patternAbortReasons: Object.assign({}, run.patternAbortReasons || {}),
+          activePatternName: spawn.activePattern ? spawn.activePattern.name : "",
           spawnPendingCount: pendingSpawnRequestCount(),
           spawnInvariantOk: safeInt(run.spawnRequestCreatedCount) === safeInt(run.spawnRequestResolvedCount) + safeInt(run.spawnRequestSkippedCount) + pendingSpawnRequestCount() && safeInt(run.spawnRequestResolvedCount) === safeInt(run.spawnGroundResolvedCount) + safeInt(run.spawnAirResolvedCount) + safeInt(run.spawnHoleResolvedCount) && safeInt(run.spawnRequestResolvedCount) === safeInt(run.spawnNormalResolvedCount) + safeInt(run.spawnBetweenHolesResolvedCount) + safeInt(run.spawnChaseResolvedCount) + safeInt(run.spawnInvincibleResolvedCount) + safeInt(run.spawnEarlyOncomingResolvedCount) + safeInt(run.spawnPatternResolvedCount),
         };

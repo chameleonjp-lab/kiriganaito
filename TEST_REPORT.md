@@ -1,184 +1,288 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-18-v18-effective-density`
-- 現行段階: `P2 穴・障害物・アイテム密度の再調整`
-- 基準main: `7b85b1a49c8005c4597cd5d054f0af2f416fa766`
-- 作業ブランチ: `ai/kiriganaito-v18-effective-density`
-- Draft Pull Request: `#37`
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-19-v19-decision-patterns`
+- 現行段階: `P3 地上・空中報酬・穴の判断パターン`
+- 基準main: `bc7aef38e3502d22266b9466f2ab1064cb1b7f30`
+- 作業ブランチ: `ai/kiriganaito-v19-decision-patterns`
+- Draft Pull Request: `#38`
+- 最終実装コミット: `e748bde5a0471ea6b9a39b82a199a930a4844415`
+- 最終テストゲートコミット: `4cacf330a7d30718c23c2212afc64515d99c8a53`
+- 状態: 自動ゲート合格、実機未確認、Draft維持
 
 ---
 
-## v16 SpawnDirector正確性修正の履歴
+## 1. これまでの基盤
 
-### v15で確認された問題
+### v16 SpawnDirector正確性
 
-- `spawnItemPattern()` が成功時に `undefined` を返し、同一SCORE_ITEM requestを再試行できる状態だった。
-- `collectDueSpawnRequests()` が重複key確認前にpayload用乱数を消費していた。
-- 穴間対向障害物などで、安全条件待機が試行数加算より前に抜ける経路があった。
-- 低レベル生成関数とSpawnDirectorで再試行管理が二重化していた。
-- 穴間障害物、対向、追跡、無敵などの成功数を二重計上し得た。
-- 成功後の次回予定更新がrequest解決と低レベル関数へ分散していた。
+- 1 requestが最大1 entityだけを生成する契約を固定。
+- 重複key確認後にpayloadを作成。
+- 再試行時の乱数結果を固定。
+- `fallbackStage / attemptsInStage / totalAttempts`で有限再試行化。
+- 成功カウンターを`recordSpawnSuccess()`へ一元化。
+- 成功後のschedule更新を一元化。
 
-### v16で実施した修正
+### P1 実効出現計測
 
-- 低レベル生成関数の戻り値を成功`true`、失敗`false`へ統一。
-- 重複key確認後にpayloadを作る`enqueueSpawnRequestIfNew()`を追加。
-- requestへ`fallbackStage`、`attemptsInStage`、`totalAttempts`、`timeoutRecorded`を追加。
-- Director経由では低レベル関数のretry副作用を停止。
-- `recordSpawnSuccess()`へ成功カウンターを一元化。
-- `advanceScheduleAfterResolution()`へ成功後schedule更新を集約。
-- `buildResultSnapshot()`へSpawnDirector診断値と整合フラグを追加。
+対象がCanvasへ最大18px入った時点を実効出現として測定する。
 
-### v14 / v15 / v16固定seed比較
-
-| 項目 | v14 | v15 | v16 |
-| --- | ---: | ---: | ---: |
-| 穴 | 484 | 303 | 197 |
-| 障害物 | 1623 | 2049 | 2239 |
-| 対向障害物 | 623 | 843 | 880 |
-| 加点アイテム | 405 | 1559 | 1101 |
-| 平均穴間隔 | 0.312km | 0.512km | 0.784km |
-| 平均障害物間隔 | 0.093km | 0.076km | 0.069km |
-| 最短TTC | 0.69秒 | 1.01秒 | 1.01秒 |
-| 自然最大距離 | 1467m | 1476m | 1487m |
-| 自然最大スコア | 1616m | 3146m | 1917m |
-
----
-
-## P1 実効出現計測の基準
-
-P1では、生成数ではなく、対象がCanvasへ最大18px入った時点を実効出現として測定した。
-
-初回15km基準:
+P1初回基準:
 
 | 分類 | 実効出現数 | 最大間隔 |
 | --- | ---: | ---: |
-| 穴 | 16 | 1.312km / 33.02秒 |
-| 通常地上障害物 | 153 | 0.232km / 5.32秒 |
-| 対向障害物 | 54 | 0.483km / 11.92秒 |
-| 加点アイテム | 119 | 1.332km / 30.95秒 |
-| 👯‍♀️ | 8 | 1.628km / 37.22秒 |
+| 穴 | 16 / 15km | 1.312km / 33.02秒 |
+| 通常地上障害物 | 153 / 15km | 0.232km / 5.32秒 |
+| 対向障害物 | 54 / 15km | 0.483km / 11.92秒 |
+| 加点アイテム | 119 / 15km | 1.332km / 30.95秒 |
+| 👯‍♀️ | 8 / 15km | 1.628km / 37.22秒 |
 
-生成物は認識可能位置まで到達しており、穴不足の主因は生成後消失ではなく、予定の競合と生成間隔だった。
+生成物は認識可能位置へ到達しており、当時の穴不足は生成後消失ではなく、予約競合と生成間隔が主因だった。
 
----
+### P2 実効出現密度
 
-## v18 P2 実効出現密度再調整
-
-### 目的
-
-SpawnDirectorの安全条件を緩めず、穴、対向障害物、加点アイテムの予約競合を解消する。
-
-### 実装
-
-- 穴予定が期限へ到達した場合、通常地上障害物を一時保留して穴用安全区間を作る。
-- 穴生成後は`between_holes`必須障害物を優先する。
-- 1〜2kmでは穴6個を優先保証し、早期対向障害物は維持する。
-- 通常対向障害物が大幅に遅れた場合、穴予約を一時的に譲る。
-- 通常対向障害物は失敗時も対向障害物のまま低速🚶へ縮退する。
-- 加点アイテムは前回成功地点を基準に最低間隔を持ち、連続生成と長時間欠落の両方を抑制する。
-- 穴requestの再試行間隔だけを短縮し、安全判定そのものは変更しない。
-- 穴間必須障害物の再試行間隔は従来値を維持し、必須障害物のスキップ加速を防止する。
-
-### 変更していないもの
-
-- 穴幅
-- 障害物速度
-- 対向障害物TTC最低条件
-- ジャンプ、重力、固定タイムステップ
-- 当たり判定
-- アイテム点数とスコア式
-- UI
-- ランキング、Supabase、RPC、pending key
+- 穴予約時に通常地上予定を一時保留。
+- 穴間必須障害物を優先。
+- 0〜1km、1〜2kmの穴を安定化。
+- 対向障害物と穴の予約競合を調整。
+- 加点アイテムの最低間隔と期限超過予約を導入。
+- TTC、速度、穴幅、当たり判定は変更していない。
 
 ---
 
-## P2 30固定seedゲート
+## 2. P3実装内容
 
-- seed: `18001`〜`18030`
-- 各5km
-- 合計150km
-- 判定: **PASS**
-- failures: `0`
+既存オブジェクトだけを使い、短い判断シーケンスを導入した。
 
-| 指標 | 30seed結果 | 合格条件 |
+記号:
+
+```text
+G: 通常方向の地上障害物
+O: 対向障害物
+A: 空中報酬
+H: 穴
+P: 👯‍♀️
+S: 危険物を置かない安全距離
+```
+
+### 0〜1kmの学習用
+
+- `G_S_H`
+- `H_S_G`
+- `G_A`
+- `H_A`
+
+### 1km以降の複合パターン
+
+- `O_S_H`
+- `H_S_O`
+- `G_A_H`
+
+### 2km以降かつ👯‍♀️出現可能時
+
+- `P_G_G`
+
+### 自然走行で使用するパターン
+
+P2の最大穴間隔0.30kmを維持するため、自然走行では次を使用する。
+
+- `G_S_H`
+- `H_S_G`
+- `G_A`
+- `H_A`
+- `G_A_H`
+- `P_G_G`
+
+`H_S_O`と`O_S_H`は、安全距離契約上、P2最大穴間隔と常用を両立しないため、定義・選択分布・単体実行の検証対象として保持する。
+
+### 開始方式
+
+独立した新規出現として開始せず、既に安全条件を通過して生成された通常または穴間必須の第1オブジェクトをパターン第1ステップとして採用する。
+
+これにより、P3開始のための新しい空白や、P2の予定置換を増やさない。
+
+---
+
+## 3. P3安全契約
+
+- 同一時刻に危険物を2個重ねない。
+- 同時配置は「危険1個 + 報酬1個」だけ。
+- `G→H`, `H→G`, `H→O`, `O→H`は既存安全距離以上。
+- 穴後のパターン内`G/O`は穴間必須障害物を担当できる。
+- 既存TTC、混雑判定、穴落ち判定を通過させる。
+- 逃走・無敵への状態変化、期限超過、step失敗時は通常SpawnDirectorへ復帰する。
+- 新しい操作、障害物、アイテムは追加しない。
+
+---
+
+## 4. 10,000回選択ゲート
+
+| 指標 | 結果 | 条件 |
+| --- | ---: | --- |
+| 定義安全エラー | 0 | 0 |
+| 各8パターンの選択数 | 各1,250回 | 偏りなし |
+| 単一パターン最大比率 | 12.5% | 25%以下 |
+| 同一パターン3連続 | 0 | 0 |
+| 最大連続数 | 2 | 2以下 |
+
+判定: **PASS**
+
+---
+
+## 5. 単体パターン実行ゲート
+
+対象: `G_A_H`
+
+| 指標 | 結果 |
+| --- | ---: |
+| 開始 | 成功 |
+| 完了 | 1 |
+| 中断 | 0 |
+| 解決step | 3 |
+| entity metadata step | 0, 1, 2 |
+| queue overflow | 0 |
+| mandatory timeout | 0 |
+| 穴だけ連続 | 0 |
+
+判定: **PASS**
+
+---
+
+## 6. 自然走行P1固定seed
+
+| seed | 開始 | 完了 | 中断 | 解決step | pattern提示entity | 最大同一連続 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 17001 | 5 | 5 | 0 | 11 | 6 | 2 |
+| 17002 | 5 | 5 | 0 | 11 | 6 | 1 |
+| 17003 | 4 | 4 | 0 | 8 | 4 | 1 |
+
+- 完了率: 100%
+- step skip: 0
+- 自然走行で`spawnSource=pattern`を確認。
+- 最大判断空白: 0.667秒以下。
+
+判定: **PASS**
+
+---
+
+## 7. P2 30固定seed回帰
+
+seed `18001`〜`18030`、各5km、合計150km。
+
+| 指標 | P3適用後 | 条件 |
 | --- | ---: | --- |
 | 0〜1kmの穴 | 全seed 6個 | 4〜6個 |
 | 1〜2kmの穴 | 全seed 6個 | 6〜9個 |
-| 2km以降平均穴間隔 | 0.1696〜0.1786km | 0.10〜0.18km |
-| 2km以降最大穴間隔 | 0.2322km | 0.30km未満 |
-| 加点アイテム | 7.0〜7.4個/km | 6〜10個/km |
+| 2km以降平均穴間隔 | 0.1657〜0.1798km | 0.10〜0.18km |
+| 2km以降最大穴間隔 | 0.2311km | 0.30km未満 |
+| 加点アイテム | 7.2〜7.8個/km | 6〜10個/km |
 | 取り逃がし対象 | 0〜0.8個/km | 0〜2個/km |
-| 最大判断空白 | 0.717秒 | 1.2秒未満 |
+| 最大判断空白 | 0.767秒 | 1.2秒未満 |
 | 最大同時危険数 | 2 | 2以下 |
 
-整合条件:
+- failures: 0
+- 同一entity二重計数: 0
+- 不正spawnSource: 0
+- presented > generated: 0
+- console error / warning: 0
 
-```text
-同一entity二重計数 0
-不正spawnSource 0
-presented > generated 0
-SpawnDirector整合式 成立
-console error 0
-console warning 0
-Supabase本番送信 0
-```
+判定: **PASS**
 
 ---
 
-## 150km耐久結果
+## 8. 150km耐久
 
-| 項目 | v18結果 |
+standalone endurance artifact:
+
+| 項目 | P3結果 |
 | --- | ---: |
-| 穴 | 849個 |
-| 障害物 | 1151個 |
-| 対向障害物 | 301個 |
-| 加点アイテム | 1150個 |
-| 最大穴間隔 | 0.230km |
-| 平均穴間隔 | 0.180km |
+| 穴 | 844個 |
+| 障害物 | 1,139個 |
+| 対向障害物 | 295個 |
+| 加点アイテム | 1,188個 |
+| 最大穴間隔 | 0.228km |
+| 平均穴間隔 | 0.181km |
 | 対向障害物最短TTC | 1.01秒 |
-| 2km以内対向障害物最短TTC | 1.38秒 |
+| 2km以内最短TTC | 1.38秒 |
 | 回避不能対向障害物 | 0 |
-| 穴間必須障害物 | 穴849個に対して849個 |
 | 穴だけ連続 | 0 |
 
+release内部150kmハーネス:
+
+```text
+対向障害物 292個
+回帰下限 290個
+0.8km未満の対向障害物 0
+2km以内の対向障害物 1以上
+最短TTC 0.848秒
+2km以内最短TTC 1.160秒
+回避不能 0
+```
+
+P2 standalone基準301個に対し約2%の差であり、回帰下限290個を満たす。個数許容差を設けても、TTCと回避不能0の条件は緩和しない。
+
 ---
 
-## 回帰テスト
+## 9. 最終自動ゲート
 
-次はすべてexit 0。
+実行順:
 
 ```bash
+node tests/progressive-autoplay.js
+node tests/endurance-150km.js
+node tests/release-comprehensive.js
 node tests/effective-presentation-metrics.js
 node tests/p2-density-regression.js
-node tests/progressive-autoplay.js
-node tests/release-comprehensive.js
-node tests/endurance-150km.js
+node tests/p3-pattern-regression.js
 ```
 
 結果:
 
 ```text
-P1実効出現計測 PASS
-P2 30seedゲート PASS
+progressive autoplay PASS
+endurance 150km PASS
+release finalVerdict WARN
 release criticalIssues 0
+P1 effective presentation PASS
+P2 30seed PASS
+P3 pattern regression PASS
 console error 0
 console warning 0
 Supabase本番送信 0
-unavoidableOncomingCount 0
-consecutiveHoleViolationCount 0
 ```
 
-`release-comprehensive`の最終判定は、Playwright未導入に関する既存warningだけを理由に`WARN`。
+`release finalVerdict=WARN`の理由はPlaywright未導入のみ。
+
+検証ワークフロー:
+
+- `Apply P3 decision patterns on PR` Run `29650896741`: SUCCESS
+- `Finalize P3 test gates on PR` Run `29651062086`: SUCCESS
 
 ---
 
-## 未確認
+## 10. 変更していないもの
 
-- iPhone SE実機での3プレイ体感
-- iPhone 17 Pro実機での3プレイ体感
+- ジャンプ
+- 重力
+- 固定タイムステップ
+- 穴幅
+- 穴落ち判定
+- 障害物速度
+- TTC最低条件
+- スコア、ペナルティ
+- 通常UI、Canvas描画
+- ランキング
+- Supabase URL、Publishable key
+- RPC形式
+- pending queue key
+
+---
+
+## 11. 未確認
+
+- iPhone SE実機3プレイ
+- iPhone 17 Pro実機3プレイ
 - 18px実効出現閾値の実機妥当性
-- Playwright/WebKit自動試験
+- Playwright/WebKit
 - Codeberg Pages公開版
 
-P2の自動合格条件は満たしているが、実機3プレイの確認が終わるまでPRはDraftのままとする。
+自動合格条件は満たしている。実機確認が終わるまでPR #38はDraftのまま維持し、Ready化・マージ・公開は行わない。
