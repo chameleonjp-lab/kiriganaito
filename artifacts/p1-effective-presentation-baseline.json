@@ -1,0 +1,116 @@
+{
+  "generatedAt": "2026-07-18T04:08:34.616Z",
+  "workflowRunId": 29630050852,
+  "workflowArtifactId": 8425153864,
+  "clientVersion": "kiriganaito-2026-07-12-v16-spawn-director-correctness",
+  "measurement": {
+    "canvasWidthPx": 320,
+    "recognizableWidthPx": 18,
+    "seeds": [17001, 17002, 17003],
+    "targetMetersPerSeed": 5000,
+    "totalMeasuredMeters": 15000
+  },
+  "aggregate": {
+    "hole": {
+      "generated": 16,
+      "presented": 16,
+      "presentationRate": 1,
+      "maxGapKm": 1.3124026125000703,
+      "maxGapSec": 33.0166666666657
+    },
+    "groundObstacle": {
+      "generated": 153,
+      "presented": 153,
+      "presentationRate": 1,
+      "maxGapKm": 0.23208119999994992,
+      "maxGapSec": 5.3166666666663644
+    },
+    "oncoming": {
+      "generated": 54,
+      "presented": 54,
+      "presentationRate": 1,
+      "maxGapKm": 0.4828663125000492,
+      "maxGapSec": 11.916666666665993
+    },
+    "scoreItem": {
+      "generated": 119,
+      "presented": 119,
+      "presentationRate": 1,
+      "maxGapKm": 1.3317035625001825,
+      "maxGapSec": 30.94999999999824
+    },
+    "powerup": {
+      "generated": 8,
+      "presented": 8,
+      "presentationRate": 1,
+      "maxGapKm": 1.627938562500022,
+      "maxGapSec": 37.21666666666456
+    },
+    "maxBlankKmAfter500m": 0.08509252500000852,
+    "maxBlankSecAfter500m": 2.0999999999998806,
+    "maxSimultaneousStrongHazards": 2
+  },
+  "seedSummaries": [
+    {
+      "seed": 17001,
+      "holePresented": 5,
+      "holeAvgGapKm": 1.0214316562500314,
+      "holeMaxGapKm": 1.2919989374999257,
+      "groundObstaclePresented": 50,
+      "oncomingPresented": 19,
+      "scoreItemPresented": 44,
+      "powerupPresented": 2,
+      "maxBlankSecAfter500m": 1.9999999999998863
+    },
+    {
+      "seed": 17002,
+      "holePresented": 7,
+      "holeAvgGapKm": 0.5685118312500478,
+      "holeMaxGapKm": 1.0861449750001753,
+      "groundObstaclePresented": 49,
+      "oncomingPresented": 17,
+      "scoreItemPresented": 44,
+      "powerupPresented": 3,
+      "maxBlankSecAfter500m": 2.0999999999998806
+    },
+    {
+      "seed": 17003,
+      "holePresented": 4,
+      "holeAvgGapKm": 0.7925863125000351,
+      "holeMaxGapKm": 1.3124026125000703,
+      "groundObstaclePresented": 54,
+      "oncomingPresented": 18,
+      "scoreItemPresented": 31,
+      "powerupPresented": 3,
+      "maxBlankSecAfter500m": 1.9499999999998892
+    }
+  ],
+  "sourceScenarioCoverage": {
+    "early_oncoming": {
+      "presented": 1,
+      "frames": 31,
+      "runMeters": 1521.6108000000022
+    },
+    "chase": {
+      "presented": 1,
+      "frames": 110,
+      "runMeters": 2577.497424999999
+    },
+    "invincible": {
+      "presented": 1,
+      "frames": 600,
+      "runMeters": 2918.904999999995
+    },
+    "passed": true
+  },
+  "invariants": {
+    "allSeedsReachedTarget": true,
+    "duplicatePresentationCount": 0,
+    "invalidSpawnSourceCount": 0,
+    "presentedNeverExceedsGenerated": true,
+    "spawnSourceTotalsMatchPresentedTotals": true,
+    "consoleErrors": 0,
+    "consoleWarnings": 0,
+    "passed": true
+  }
+}

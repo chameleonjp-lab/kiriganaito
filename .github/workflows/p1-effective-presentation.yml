@@ -1,0 +1,37 @@
+name: P1 effective presentation metrics
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "tests/effective-presentation-metrics.js"
+      - "P1_EFFECTIVE_PRESENTATION_METRICS.md"
+      - ".github/workflows/p1-effective-presentation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  effective-presentation-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Measure effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: Upload measurement artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-effective-presentation-metrics
+          path: artifacts/p1-effective-presentation-metrics.json
+          if-no-files-found: error
