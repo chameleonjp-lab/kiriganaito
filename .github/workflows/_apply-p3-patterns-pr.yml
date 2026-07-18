@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/_apply-p3-patterns-pr.yml"
       - "tools/apply-p3-patterns.py"
+      - "tools/tune-p3-patterns.py"
       - "tests/p3-pattern-regression.js"
       - "P3_DECISION_PATTERN_CONTRACT.md"
 
@@ -31,7 +32,9 @@ jobs:
           node-version: "20"
 
       - name: Apply P3 implementation
-        run: python tools/apply-p3-patterns.py
+        run: |
+          python tools/apply-p3-patterns.py
+          python tools/tune-p3-patterns.py
 
       - name: Progressive autoplay
         run: node tests/progressive-autoplay.js
@@ -72,8 +75,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/_apply-p3-patterns-pr.yml tools/apply-p3-patterns.py
-          git add index.html SPEC.md TEST_REPORT.md tests/effective-presentation-metrics.js \
+          git rm .github/workflows/_apply-p3-patterns-pr.yml \
+            tools/apply-p3-patterns.py \
+            tools/tune-p3-patterns.py
+          git add index.html SPEC.md TEST_REPORT.md \
+            tests/effective-presentation-metrics.js \
+            tests/p3-pattern-regression.js \
             artifacts/p1-effective-presentation-metrics.json \
             artifacts/p2-density-regression.json \
             artifacts/p2-effective-presentation-30-seeds.json \
