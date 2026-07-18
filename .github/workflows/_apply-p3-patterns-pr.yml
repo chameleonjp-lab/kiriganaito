@@ -12,6 +12,7 @@ on:
       - "tools/tune-p3-patterns-3.py"
       - "tools/tune-p3-patterns-4.py"
       - "tools/tune-p3-patterns-5.py"
+      - "tools/tune-p3-patterns-6.py"
       - "tests/p3-pattern-regression.js"
       - "P3_DECISION_PATTERN_CONTRACT.md"
 
@@ -43,6 +44,7 @@ jobs:
           python tools/tune-p3-patterns-3.py
           python tools/tune-p3-patterns-4.py
           python tools/tune-p3-patterns-5.py
+          python tools/tune-p3-patterns-6.py
 
       - name: Progressive autoplay
         run: node tests/progressive-autoplay.js
@@ -89,7 +91,8 @@ jobs:
             tools/tune-p3-patterns-2.py \
             tools/tune-p3-patterns-3.py \
             tools/tune-p3-patterns-4.py \
-            tools/tune-p3-patterns-5.py
+            tools/tune-p3-patterns-5.py \
+            tools/tune-p3-patterns-6.py
           git add index.html SPEC.md TEST_REPORT.md \
             tests/effective-presentation-metrics.js \
             tests/p3-pattern-regression.js \
