@@ -1,0 +1,57 @@
+name: P2 effective density regression
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "SPEC.md"
+      - "TEST_REPORT.md"
+      - "tests/effective-presentation-metrics.js"
+      - "tests/p2-density-regression.js"
+      - ".github/workflows/p2-density-regression.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  density-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Progressive autoplay
+        run: node tests/progressive-autoplay.js
+
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
+
+      - name: Endurance 150km
+        run: node tests/endurance-150km.js
+
+      - name: P1 effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: P2 30-seed density gate
+        run: node tests/p2-density-regression.js
+
+      - name: Upload P2 artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-density-regression
+          path: |
+            artifacts/p1-effective-presentation-metrics.json
+            artifacts/p2-effective-presentation-30-seeds.json
+            artifacts/p2-density-regression.json
+            artifacts/progressive-autoplay-report.json
+            artifacts/release-test-report.json
+            artifacts/endurance-150km-result.json
+          if-no-files-found: warn

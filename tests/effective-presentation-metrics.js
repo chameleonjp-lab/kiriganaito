@@ -222,6 +222,8 @@ function runSeed(script, seed) {
       totalGapSec: 0,
       maxGapSec: 0,
       gapSamples: 0,
+      presentationKm: [],
+      bandCounts: { km0to1: 0, km1to2: 0, km2plus: 0 },
     };
     categorySourceCounts[name] = {};
     for (const source of sourceNames) categorySourceCounts[name][source] = 0;
@@ -236,6 +238,9 @@ function runSeed(script, seed) {
   let lastAnySec = 0;
   let maxBlankKmAfter500m = 0;
   let maxBlankSecAfter500m = 0;
+  let maxDecisionBlankSecAfter500m = 0;
+  let currentDecisionBlankSec = 0;
+  let presentedMissTargetCount = 0;
   let maxSimultaneousStrongHazards = 0;
 
   function isRecognizable(entity) {
@@ -255,6 +260,11 @@ function runSeed(script, seed) {
     entity.presentedSec = run.elapsed;
     const metric = metrics[type];
     metric.count += 1;
+    metric.presentationKm.push(entity.presentedKm);
+    if (entity.presentedKm < 1) metric.bandCounts.km0to1 += 1;
+    else if (entity.presentedKm < 2) metric.bandCounts.km1to2 += 1;
+    else metric.bandCounts.km2plus += 1;
+    if (type === "scoreItem" && Number(entity.missPenalty || 0) > 0) presentedMissTargetCount += 1;
     if (metric.lastKm !== null) {
       const gapKm = Math.max(0, entity.presentedKm - metric.lastKm);
       const gapSec = Math.max(0, entity.presentedSec - metric.lastSec);
@@ -289,6 +299,7 @@ function runSeed(script, seed) {
       measurementStarted = true;
       lastAnyKm = run.runMeters / 1000;
       lastAnySec = run.elapsed;
+      currentDecisionBlankSec = 0;
     }
 
     for (let i = 0; i < holes.length; i++) {
@@ -319,10 +330,16 @@ function runSeed(script, seed) {
     }
     maxSimultaneousStrongHazards = Math.max(maxSimultaneousStrongHazards, simultaneousHazards);
 
+    const visibleContent =
+      holes.some((entity) => entity.x < W && entity.x + (entity.w || 0) > 0) ||
+      obstacles.some((entity) => entity.active !== false && entity.x < W && entity.x + (entity.w || 0) > 0) ||
+      items.some((entity) => entity.active !== false && entity.x < W && entity.x + (entity.w || 0) > 0);
     if (measurementStarted) {
       const currentKm = run.runMeters / 1000;
       maxBlankKmAfter500m = Math.max(maxBlankKmAfter500m, currentKm - lastAnyKm);
       maxBlankSecAfter500m = Math.max(maxBlankSecAfter500m, run.elapsed - lastAnySec);
+      currentDecisionBlankSec = visibleContent ? 0 : currentDecisionBlankSec + FIXED_STEP;
+      maxDecisionBlankSecAfter500m = Math.max(maxDecisionBlankSecAfter500m, currentDecisionBlankSec);
     }
   }
 
@@ -379,6 +396,8 @@ function runSeed(script, seed) {
     duplicatePresentationCount,
     maxBlankKmAfter500m,
     maxBlankSecAfter500m,
+    maxDecisionBlankSecAfter500m,
+    presentedMissTargetCount,
     maxSimultaneousStrongHazards,
     generatedRelationOk,
     sourceInvariantOk: sourceTotal === presentedTotal,
