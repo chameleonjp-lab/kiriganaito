@@ -9,6 +9,7 @@ on:
       - tools/apply-p2-density.py
       - tools/tune-p2-density.py
       - tools/tune-p2-density-2.py
+      - tools/tune-p2-density-3.py
 
 permissions:
   contents: write
@@ -35,6 +36,7 @@ jobs:
           python tools/apply-p2-density.py
           python tools/tune-p2-density.py
           python tools/tune-p2-density-2.py
+          python tools/tune-p2-density-3.py
 
       - name: Run P1 effective presentation
         run: node tests/effective-presentation-metrics.js
@@ -80,7 +82,8 @@ jobs:
             .github/workflows/_apply-p2-density-pr.yml \
             tools/apply-p2-density.py \
             tools/tune-p2-density.py \
-            tools/tune-p2-density-2.py
+            tools/tune-p2-density-2.py \
+            tools/tune-p2-density-3.py
           git add index.html SPEC.md TEST_REPORT.md tests/effective-presentation-metrics.js tests/release-comprehensive.js \
             artifacts/p1-effective-presentation-metrics.json \
             artifacts/p2-effective-presentation-30-seeds.json \
