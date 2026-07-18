@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T15:54:30.860Z",
+  "generatedAt": "2026-07-18T15:59:46.040Z",
   "purpose": "P3 decision pattern regression",
   "result": {
     "version": "kiriganaito-2026-07-19-v19-decision-patterns",
@@ -21,14 +21,14 @@
       "P_G_G"
     ],
     "selectionCounts": {
-      "G_S_H": 1250,
       "H_S_O": 1250,
-      "G_A_H": 1250,
-      "G_A": 1250,
       "H_S_G": 1250,
-      "P_G_G": 1250,
+      "G_A": 1250,
+      "G_S_H": 1250,
+      "H_A": 1250,
       "O_S_H": 1250,
-      "H_A": 1250
+      "G_A_H": 1250,
+      "P_G_G": 1250
     },
     "tripleRepeatCount": 0,
     "maxSelectionShare": 0.125,

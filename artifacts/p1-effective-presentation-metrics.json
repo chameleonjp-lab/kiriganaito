@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T15:54:22.863Z",
+  "generatedAt": "2026-07-18T15:59:39.553Z",
   "purpose": "P1 effective presentation measurement without gameplay changes",
   "definition": {
     "presented": "An entity is counted once when at least min(width, 18px) has entered the visible canvas and its left edge is still before the canvas right edge.",
