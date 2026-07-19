@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/_apply-p4-air-obstacle-pr.yml"
       - "tools/apply-p4-air-obstacle.py"
+      - "tools/fix-p4-apply.py"
       - "tests/p4-air-obstacle-regression.js"
       - "P4_AIR_OBSTACLE_CONTRACT.md"
 
@@ -35,7 +36,8 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          python tools/apply-p4-air-obstacle.py > artifacts/p4-apply.log 2>&1
+          python tools/fix-p4-apply.py > artifacts/p4-apply.log 2>&1
+          python tools/apply-p4-air-obstacle.py >> artifacts/p4-apply.log 2>&1
 
       - name: Upload apply diagnostics
         if: always()
@@ -94,7 +96,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/_apply-p4-air-obstacle-pr.yml tools/apply-p4-air-obstacle.py
+          git rm .github/workflows/_apply-p4-air-obstacle-pr.yml \
+            tools/apply-p4-air-obstacle.py \
+            tools/fix-p4-apply.py
           git add index.html SPEC.md TEST_REPORT.md \
             tests/effective-presentation-metrics.js \
             tests/p2-density-regression.js \
