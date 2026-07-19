@@ -199,7 +199,7 @@ try { p1 = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts", "p1-effective
 try { p2 = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts", "p2-density-regression.json"), "utf8")); } catch {}
 
 const failures = [];
-if (result.version !== "kiriganaito-2026-07-20-v20-air-obstacle") failures.push("CLIENT_VERSION is not v19");
+if (result.version !== "kiriganaito-2026-07-20-v21-chase-invincible") failures.push("CLIENT_VERSION is not v19");
 if ((result.definitionErrors || []).length) failures.push(`definition safety errors: ${(result.definitionErrors || []).join(" | ")}`);
 if ((result.learning || []).length !== 4) failures.push("learning pattern count is not 4");
 if (!["G_S_H", "H_S_G", "G_A", "H_A"].every((name) => (result.learning || []).includes(name))) failures.push("learning pool contains wrong patterns");

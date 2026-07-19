@@ -1,6 +1,6 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v20-air-obstacle`
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v21-chase-invincible`
 - 現行段階: `P4 空中障害物の試作と跳ぶ・跳ばない判断`
 - 基準main: `0b16b4850fb511c5600bb8c3bfe1254b6e1d37b9`
 - 作業ブランチ: `ai/kiriganaito-v20-air-obstacle`
@@ -364,3 +364,12 @@ Run 29704983044
 - Codeberg Pages公開版
 
 自動合格条件は満たしています。P4はmainへ反映済みですが、実機確認は未完了です。
+
+
+## v21 P5 逃走・無敵専用構成
+
+- 15秒逃走を4フェーズへ分割。
+- 逃走専用の地上、SMALL hole、報酬、2km以降対向requestを追加。
+- 無敵4秒を実プレイ時間基準へ変更。
+- 無敵障害物2〜3回、終了後LARGE hole抑制、突破表示を追加。
+- P1〜P4、progressive、release、150km耐久を回帰ゲートとして維持する。

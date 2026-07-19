@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T21:47:25.578Z",
+  "generatedAt": "2026-07-19T22:51:58.486Z",
   "targets": [
     1000,
     5000,
@@ -27,8 +27,8 @@
   "supabaseMocked": true,
   "realSupabaseSubmission": false,
   "summary": {
-    "maxRunMeters": 1367,
-    "maxScoreMeters": 1566,
+    "maxRunMeters": 1435,
+    "maxScoreMeters": 2335,
     "bestSeed": 1001,
     "highestTargetReached": 1000,
     "natural150kmReached": false
@@ -39,7 +39,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1100,
+      "maxScoreMeters": 1500,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_A",
@@ -53,11 +53,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 94.6,
-            "y": 206.8,
+            "x": -30.4,
+            "y": 204.3,
             "emoji": "💰",
             "kind": "score"
           }
@@ -65,32 +72,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -184.3,
-            "width": 29.4
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 12,
+      "particlesLength": 23,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1500,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -106,10 +114,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1270,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -120,44 +128,52 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 104.4,
-            "y": 199.2,
-            "emoji": "⚙️",
+            "x": -30.4,
+            "y": 199.6,
+            "emoji": "💰",
             "kind": "score"
           }
         ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -186.3,
-            "width": 33.4
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
       "particlesLength": 20,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -173,7 +189,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1000,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_S_H",
@@ -187,11 +203,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 87.7,
-            "y": 270.3,
+            "x": -30.4,
+            "y": 195.8,
             "emoji": "💰",
             "kind": "score"
           }
@@ -199,32 +222,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -182.5,
-            "width": 26
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 15,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1000,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -240,10 +264,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1100,
+      "maxScoreMeters": 1500,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -254,11 +278,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 80.6,
-            "y": 264.7,
+            "x": -30.4,
+            "y": 210.5,
             "emoji": "💰",
             "kind": "score"
           }
@@ -266,32 +297,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -183.8,
-            "width": 28.5
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 18,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1500,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -307,10 +339,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1300,
+      "maxScoreMeters": 1600,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -321,11 +353,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 78.1,
-            "y": 205.3,
+            "x": -30.4,
+            "y": 203.7,
             "emoji": "💰",
             "kind": "score"
           }
@@ -333,32 +372,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -185,
-            "width": 30.9
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 14,
+      "particlesLength": 27,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1600,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -374,7 +414,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1170,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_A",
@@ -388,44 +428,52 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 74.8,
-            "y": 219.1,
-            "emoji": "⚙️",
+            "x": -30.4,
+            "y": 199.2,
+            "emoji": "💰",
             "kind": "score"
           }
         ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -186.2,
-            "width": 33.3
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 12,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1170,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -441,10 +489,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1300,
+      "maxScoreMeters": 1500,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -455,11 +503,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 80.3,
-            "y": 219.3,
+            "x": -30.4,
+            "y": 197.2,
             "emoji": "💰",
             "kind": "score"
           }
@@ -467,32 +522,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -185,
-            "width": 30.9
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 10,
+      "particlesLength": 30,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1500,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -508,7 +564,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1230,
+      "maxScoreMeters": 1500,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_S_H",
@@ -522,11 +578,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 117.7,
-            "y": 219.7,
+            "x": -30.4,
+            "y": 197.8,
             "emoji": "💰",
             "kind": "score"
           }
@@ -534,32 +597,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -183.8,
-            "width": 28.4
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 17,
+      "particlesLength": 29,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1230,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1500,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -575,10 +639,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1000,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -589,11 +653,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 109.9,
-            "y": 265.5,
+            "x": -30.4,
+            "y": 212.3,
             "emoji": "💰",
             "kind": "score"
           }
@@ -601,32 +672,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -185.8,
-            "width": 32.5
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 16,
+      "particlesLength": 23,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1000,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -642,10 +714,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1090,
+      "maxScoreMeters": 1430,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -656,11 +728,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 91.9,
-            "y": 266.9,
+            "x": -30.4,
+            "y": 203.2,
             "emoji": "💰",
             "kind": "score"
           }
@@ -668,32 +747,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -184.2,
-            "width": 29.4
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 14,
+      "particlesLength": 25,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1090,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1430,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -709,10 +789,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1300,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -723,11 +803,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 100.9,
-            "y": 221.8,
+            "x": -30.4,
+            "y": 201.2,
             "emoji": "💰",
             "kind": "score"
           }
@@ -735,32 +822,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -184.4,
-            "width": 29.7
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 11,
+      "particlesLength": 25,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -776,10 +864,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1170,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -790,11 +878,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 82.8,
-            "y": 270.4,
+            "x": -30.4,
+            "y": 203.5,
             "emoji": "💰",
             "kind": "score"
           }
@@ -802,32 +897,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -184.4,
-            "width": 29.6
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 13,
+      "particlesLength": 15,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1170,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -843,10 +939,10 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1230,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 2,
       "maxDanger": 2,
       "sawDancer": false,
@@ -857,11 +953,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 87.1,
-            "y": 211.9,
+            "x": -30.4,
+            "y": 205,
             "emoji": "💰",
             "kind": "score"
           }
@@ -869,32 +972,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -185.3,
-            "width": 31.4
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 11,
+      "particlesLength": 25,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1230,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -910,7 +1014,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1270,
+      "maxScoreMeters": 1570,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_A",
@@ -924,44 +1028,52 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 116.6,
-            "y": 226.7,
-            "emoji": "⚙️",
+            "x": -30.4,
+            "y": 213.5,
+            "emoji": "💰",
             "kind": "score"
           }
         ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -183.5,
-            "width": 28
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
-      "particlesLength": 22,
+      "particlesLength": 28,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1570,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -977,7 +1089,7 @@
       "target": 1000,
       "reached": true,
       "maxRunMeters": 1000,
-      "maxScoreMeters": 1130,
+      "maxScoreMeters": 1400,
       "finishReason": "自然走行で目標到達",
       "failureCategory": "none",
       "lastPatternName": "G_A",
@@ -991,11 +1103,18 @@
       "truckBlackRisk": false,
       "lastVisible": {
         "holes": [],
-        "obstacles": [],
+        "obstacles": [
+          {
+            "x": 378.7,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
         "items": [
           {
-            "x": 80.3,
-            "y": 221.9,
+            "x": -30.4,
+            "y": 199.3,
             "emoji": "💰",
             "kind": "score"
           }
@@ -1003,32 +1122,33 @@
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 275.7,
-        "vy": 0,
-        "onGround": true,
-        "jumping": false
+        "y": 213.7,
+        "vy": 334.2,
+        "onGround": false,
+        "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 937,
-        "elapsed": 23.93,
+        "runMeters": 976.1,
+        "elapsed": 24.93,
         "dangerAhead": [
           {
-            "type": "hole",
-            "lead": 169.6,
-            "center": -182.2,
-            "width": 25.3
+            "type": "obstacle",
+            "lead": 149.6,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
           }
         ]
       },
       "holesLength": 0,
-      "obstaclesLength": 0,
+      "obstaclesLength": 1,
       "itemsLength": 1,
       "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1130,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 1400,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1043,8 +1163,8 @@
       "seed": 1001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1566,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2335,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_A",
@@ -1060,28 +1180,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 209.5,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1090,13 +1217,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 29,
+      "itemsLength": 1,
+      "particlesLength": 18,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1367,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2135,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1111,11 +1238,11 @@
       "seed": 1002,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1736,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1128,28 +1255,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 200.3,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1158,13 +1292,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 25,
+      "itemsLength": 1,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1537,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1179,8 +1313,8 @@
       "seed": 1003,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1466,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_S_H",
@@ -1196,28 +1330,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 208.7,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1226,13 +1367,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 27,
+      "itemsLength": 1,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1267,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1247,11 +1388,11 @@
       "seed": 1004,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1566,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2335,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1264,28 +1405,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 207.2,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1294,13 +1442,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
+      "itemsLength": 1,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1367,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2135,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1315,11 +1463,11 @@
       "seed": 1005,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1766,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2435,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1332,28 +1480,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 199.1,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1362,13 +1517,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
+      "itemsLength": 1,
+      "particlesLength": 17,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1567,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2235,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1383,8 +1538,8 @@
       "seed": 2001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1636,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_A",
@@ -1400,28 +1555,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 201.3,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1430,13 +1592,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 25,
+      "itemsLength": 1,
+      "particlesLength": 18,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1437,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1451,11 +1613,11 @@
       "seed": 2002,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1666,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2335,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_S_H",
+      "lastPatternName": "G_A",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1468,28 +1630,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 207.3,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1498,13 +1667,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 29,
+      "itemsLength": 1,
+      "particlesLength": 20,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1467,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2135,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1519,8 +1688,8 @@
       "seed": 2003,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1696,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2335,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_S_H",
@@ -1536,28 +1705,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 209.1,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1566,13 +1742,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 26,
+      "itemsLength": 1,
+      "particlesLength": 20,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1497,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2135,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1587,76 +1763,8 @@
       "seed": 2004,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1466,
-      "finishReason": "🚓に捕まりました",
-      "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_A",
-      "accidents": 3,
-      "maxDanger": 3,
-      "sawDancer": false,
-      "dancerPicked": false,
-      "sawBike": false,
-      "bikeCleared": false,
-      "warningRendered": true,
-      "truckBlackRisk": false,
-      "lastVisible": {
-        "holes": [],
-        "obstacles": [
-          {
-            "x": 282,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ],
-        "items": []
-      },
-      "lastPlayer": {
-        "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
-        "onGround": false,
-        "jumping": true
-      },
-      "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
-        "dangerAhead": [
-          {
-            "type": "obstacle",
-            "lead": 145.1,
-            "emoji": "🚶",
-            "direction": -1,
-            "speed": 1
-          }
-        ]
-      },
-      "holesLength": 0,
-      "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 29,
-      "mockSubmitPayload": {
-        "p_game_slug": "kiriganaito",
-        "p_display_name": "AUTO",
-        "p_score": 1267,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
-      },
-      "consoleErrors": [],
-      "consoleWarnings": [],
-      "supabaseRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
-    },
-    {
-      "seed": 2005,
-      "target": 5000,
-      "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1656,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_S_H",
@@ -1672,28 +1780,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 200.6,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1702,13 +1817,88 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 29,
+      "itemsLength": 1,
+      "particlesLength": 18,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1457,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
+      },
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "supabaseRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 2005,
+      "target": 5000,
+      "reached": false,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2265,
+      "finishReason": "🚓に捕まりました",
+      "failureCategory": "oncoming_unavoidable",
+      "lastPatternName": "G_A",
+      "accidents": 3,
+      "maxDanger": 3,
+      "sawDancer": false,
+      "dancerPicked": false,
+      "sawBike": false,
+      "bikeCleared": false,
+      "warningRendered": true,
+      "truckBlackRisk": false,
+      "lastVisible": {
+        "holes": [],
+        "obstacles": [
+          {
+            "x": 265.5,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ],
+        "items": [
+          {
+            "x": 426.2,
+            "y": 202.2,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
+      },
+      "lastPlayer": {
+        "x": 265.2,
+        "y": 262.7,
+        "vy": 503.3,
+        "onGround": false,
+        "jumping": true
+      },
+      "lastJumpAt": {
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
+        "dangerAhead": [
+          {
+            "type": "obstacle",
+            "lead": 149.3,
+            "emoji": "🚶",
+            "direction": -1,
+            "speed": 1
+          }
+        ]
+      },
+      "holesLength": 0,
+      "obstaclesLength": 1,
+      "itemsLength": 1,
+      "particlesLength": 18,
+      "mockSubmitPayload": {
+        "p_game_slug": "kiriganaito",
+        "p_display_name": "AUTO",
+        "p_score": 2065,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1723,11 +1913,11 @@
       "seed": 3001,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1766,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1740,28 +1930,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 203.1,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1770,13 +1967,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 27,
+      "itemsLength": 1,
+      "particlesLength": 21,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1567,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1791,11 +1988,11 @@
       "seed": 3002,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1636,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1808,28 +2005,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 196.6,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1838,13 +2042,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
+      "itemsLength": 1,
+      "particlesLength": 19,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1437,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1859,11 +2063,11 @@
       "seed": 3003,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1696,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
-      "lastPatternName": "G_A",
+      "lastPatternName": "G_S_H",
       "accidents": 3,
       "maxDanger": 3,
       "sawDancer": false,
@@ -1876,28 +2080,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 209,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1906,13 +2117,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 37,
+      "itemsLength": 1,
+      "particlesLength": 23,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1497,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1927,8 +2138,8 @@
       "seed": 3004,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1706,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2405,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_A",
@@ -1944,28 +2155,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 205,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -1974,13 +2192,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 28,
+      "itemsLength": 1,
+      "particlesLength": 20,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1507,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2205,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1995,8 +2213,8 @@
       "seed": 3005,
       "target": 5000,
       "reached": false,
-      "maxRunMeters": 1367,
-      "maxScoreMeters": 1596,
+      "maxRunMeters": 1435,
+      "maxScoreMeters": 2235,
       "finishReason": "🚓に捕まりました",
       "failureCategory": "oncoming_unavoidable",
       "lastPatternName": "G_A",
@@ -2012,28 +2230,35 @@
         "holes": [],
         "obstacles": [
           {
-            "x": 282,
+            "x": 265.5,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
           }
         ],
-        "items": []
+        "items": [
+          {
+            "x": 426.2,
+            "y": 207.1,
+            "emoji": "💰",
+            "kind": "score"
+          }
+        ]
       },
       "lastPlayer": {
         "x": 265.2,
-        "y": 256.6,
-        "vy": 479.2,
+        "y": 262.7,
+        "vy": 503.3,
         "onGround": false,
         "jumping": true
       },
       "lastJumpAt": {
-        "runMeters": 1338,
-        "elapsed": 33.88,
+        "runMeters": 1405.5,
+        "elapsed": 35.55,
         "dangerAhead": [
           {
             "type": "obstacle",
-            "lead": 145.1,
+            "lead": 149.3,
             "emoji": "🚶",
             "direction": -1,
             "speed": 1
@@ -2042,13 +2267,13 @@
       },
       "holesLength": 0,
       "obstaclesLength": 1,
-      "itemsLength": 0,
-      "particlesLength": 32,
+      "itemsLength": 1,
+      "particlesLength": 20,
       "mockSubmitPayload": {
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
-        "p_score": 1397,
-        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+        "p_score": 2035,
+        "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -2062,7 +2287,7 @@
   ],
   "findings": [
     "Highest target reached: 1000m",
-    "Best natural run: 1367m seed 1001",
+    "Best natural run: 1435m seed 1001",
     "Most common failure category: none"
   ],
   "recommendedFixes": [

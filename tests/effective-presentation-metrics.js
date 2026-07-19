@@ -495,27 +495,33 @@ function runSourceScenarioCoverage(script, seed) {
     run.runMeters = 2500;
     run.maxRunMeters = 2500;
     run.lastNonZeroRunMeters = 2500;
-    run.chase = 15;
-    run.elapsed = 2;
-    spawn.chaseGraceUntil = 0;
-    spawn.nextChaseEventAt = 0;
     spawn.lastHoleAt = -9;
     spawn.lastObstacleAt = -9;
     spawn.lastOncomingAt = -9;
+    spawn.nextHoleAt = 99;
+    spawn.nextObstacleAt = 99;
+    spawn.nextOncomingAt = 99;
+    spawn.nextScoreItemAt = 99;
+    spawn.nextItemAt = 99;
+    startP5ChaseSession(2.5);
+    run.chase = 13.90;
   });
 
   const invincible = advanceScenario(600, SPAWN_SOURCE.INVINCIBLE, () => {
     run.runMeters = 2500;
     run.maxRunMeters = 2500;
     run.lastNonZeroRunMeters = 2500;
-    run.dancerInvincibleUntil = performance.now() + 4000;
-    run.forceObstacleDuringInvincibleUntil = performance.now() + 4000;
-    run.invincibleObstaclePlanCount = 3;
-    run.invincibleObstacleSpawned = 0;
-    spawn.nextObstacleAt = 2.5;
     spawn.lastHoleAt = -9;
     spawn.lastObstacleAt = -9;
     spawn.lastOncomingAt = -9;
+    spawn.nextHoleAt = 99;
+    spawn.nextObstacleAt = 99;
+    spawn.nextOncomingAt = 99;
+    spawn.nextScoreItemAt = 99;
+    spawn.nextItemAt = 99;
+    activateDancerInvincible();
+    run.invincibleObstaclePlanCount = 3;
+    spawn.nextInvincibleObstacleAt = run.elapsed;
   });
 
   globalThis.__p1SourceCoverage = {

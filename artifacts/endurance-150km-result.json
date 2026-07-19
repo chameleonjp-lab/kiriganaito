@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T21:47:26.151Z",
+  "generatedAt": "2026-07-19T22:51:59.231Z",
   "targetMeters": 150000,
   "seed": 150001,
   "result": {
@@ -299,7 +299,7 @@
       ],
       [
         "version",
-        "kiriganaito-2026-07-20-v20-air-obstacle"
+        "kiriganaito-2026-07-20-v21-chase-invincible"
       ]
     ],
     "maxObs": 3,
@@ -314,7 +314,7 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
       "p_score": 150000,
-      "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
+      "p_client_version": "kiriganaito-2026-07-20-v21-chase-invincible"
     },
     "debug": ""
   },
