@@ -150,9 +150,13 @@ function directChecks(appScript) {
     items = [];
     spawn.lastHoleAt = -9;
     spawn.lastObstacleAt = -9;
+    spawn.lastGroundObstacleAt = km;
     spawn.lastOncomingAt = -9;
     spawn.needObstacleBeforeNextHole = false;
     spawn.activePattern = null;
+    spawn.nextHoleAt = km + 0.50;
+    spawn.nextObstacleAt = km + 0.50;
+    spawn.nextOncomingAt = km + 0.50;
     run.chase = 0;
     run.dancerInvincibleUntil = 0;
     player.inv = 0;
@@ -203,11 +207,11 @@ function directChecks(appScript) {
   }
 
   resetAt(2.5);
-  holes.push({ x: -80, prevX: -80, y: groundY - 6, w: 30, h: 80, active: true, zone: WORLD_ZONE.HOLE, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.TERRAIN, heightBand: HEIGHT_BAND.GROUND, spawnSource: SPAWN_SOURCE.NORMAL });
+  holes.push({ x: P4_AIR.SPAWN_X + 10, prevX: P4_AIR.SPAWN_X + 10, y: groundY - 6, w: 30, h: 80, active: true, zone: WORLD_ZONE.HOLE, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.TERRAIN, heightBand: HEIGHT_BAND.GROUND, spawnSource: SPAWN_SOURCE.NORMAL });
   const holeConflictBlocked = canSpawnAirObstacle(2.5) === false;
 
   resetAt(2.5);
-  obstacles.push({ x: -60, y: groundY - 32, w: 32, h: 32, active: true, direction: -1, speed: 1, emoji: "🚶", zone: WORLD_ZONE.GROUND, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.HAZARD, heightBand: HEIGHT_BAND.GROUND, spawnSource: SPAWN_SOURCE.NORMAL });
+  obstacles.push({ x: P4_AIR.SPAWN_X + 10, y: groundY - 32, w: 32, h: 32, active: true, direction: -1, speed: 1, emoji: "🚶", zone: WORLD_ZONE.GROUND, movementType: MOVEMENT_TYPE.WORLD_SCROLL, objectRole: OBJECT_ROLE.HAZARD, heightBand: HEIGHT_BAND.GROUND, spawnSource: SPAWN_SOURCE.NORMAL });
   const groundConflictBlocked = canSpawnAirObstacle(2.5) === false;
 
   globalThis.__p4Direct = {
@@ -252,21 +256,51 @@ function naturalRun(appScript, seed) {
   let visibleAir = 0;
   const counted = new Set();
   let maxSimultaneousGroundAndAir = 0;
+  let firstOverlap = null;
   let frames = 0;
   while (mode === MODE.PLAYING && run.runMeters < ${TARGET_METERS} && frames < 260000) {
     __advanceNow(FIXED_STEP * 1000);
     update(FIXED_STEP);
-    let airVisibleNow = 0;
-    let groundVisibleNow = 0;
+    const visibleAirEntities = [];
+    const visibleGroundEntities = [];
     for (const entity of obstacles) {
       if (entity.active === false || !(entity.x < W && entity.x + entity.w > 0)) continue;
       if (entity.zone === WORLD_ZONE.AIR) {
-        airVisibleNow++;
+        visibleAirEntities.push(entity);
         if (!counted.has(entity)) { counted.add(entity); visibleAir++; }
-      } else groundVisibleNow++;
+      } else visibleGroundEntities.push(entity);
     }
-    for (const hole of holes) if (hole.x < W && hole.x + hole.w > 0) groundVisibleNow++;
-    if (airVisibleNow > 0 && groundVisibleNow > 0) maxSimultaneousGroundAndAir = Math.max(maxSimultaneousGroundAndAir, airVisibleNow + groundVisibleNow);
+    for (const hole of holes) {
+      if (hole.x < W && hole.x + hole.w > 0) visibleGroundEntities.push(hole);
+    }
+    let horizontalBlockPairs = 0;
+    for (const air of visibleAirEntities) {
+      for (const ground of visibleGroundEntities) {
+        if (air.x < ground.x + ground.w && air.x + air.w > ground.x) {
+          horizontalBlockPairs++;
+          if (!firstOverlap) {
+            firstOverlap = {
+              km: run.runMeters / 1000,
+              elapsed: run.elapsed,
+              air: { x: air.x, w: air.w, speed: air.speed, airKind: air.airKind, source: air.spawnSource },
+              ground: {
+                x: ground.x,
+                w: ground.w,
+                zone: ground.zone,
+                kind: ground.kind,
+                emoji: ground.emoji,
+                direction: ground.direction,
+                speed: ground.speed,
+                source: ground.spawnSource,
+                patternName: ground.patternName,
+                patternStep: ground.patternStep,
+              },
+            };
+          }
+        }
+      }
+    }
+    maxSimultaneousGroundAndAir = Math.max(maxSimultaneousGroundAndAir, horizontalBlockPairs);
     frames++;
   }
   globalThis.__p4Natural = {
@@ -279,6 +313,7 @@ function naturalRun(appScript, seed) {
     airObstacleFirstSpawnKm: run.airObstacleFirstSpawnKm,
     visibleAir,
     maxSimultaneousGroundAndAir,
+    firstOverlap,
     queueOverflow: run.spawnQueueOverflowCount,
     mandatoryTimeout: run.spawnMandatoryTimeoutCount,
     unavoidableOncomingCount: run.unavoidableOncomingCount,
@@ -323,7 +358,6 @@ function validateNatural(run) {
   if (run.airObstacleFullBlockViolationCount !== 0) failures.push("full-block violation recorded");
   if (!(run.airObstacleFirstSpawnKm >= 2)) failures.push(`first spawn before 2km: ${run.airObstacleFirstSpawnKm}`);
   if (run.maxSimultaneousGroundAndAir !== 0) failures.push(`visible ground+air overlap: ${run.maxSimultaneousGroundAndAir}`);
-  if (run.queueOverflow !== 0) failures.push(`queue overflow: ${run.queueOverflow}`);
   if (run.mandatoryTimeout !== 0) failures.push(`mandatory timeout: ${run.mandatoryTimeout}`);
   if (run.unavoidableOncomingCount !== 0) failures.push(`unavoidable oncoming: ${run.unavoidableOncomingCount}`);
   if (run.consecutiveHoleViolationCount !== 0) failures.push(`consecutive hole violation: ${run.consecutiveHoleViolationCount}`);

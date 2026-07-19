@@ -1,6 +1,6 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-19-v19-decision-patterns`
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v20-air-obstacle`
 - 現行段階: `P3 地上・空中報酬・穴の判断パターン`
 - 基準main: `bc7aef38e3502d22266b9466f2ab1064cb1b7f30`
 - 作業ブランチ: `ai/kiriganaito-v19-decision-patterns`
@@ -286,3 +286,12 @@ Supabase本番送信 0
 - Codeberg Pages公開版
 
 自動合格条件は満たしている。実機確認が終わるまでPR #38はDraftのまま維持し、Ready化・マージ・公開は行わない。
+
+
+## v20 P4 空中障害物
+
+- Canvas図形の吊り下げバーを1種類追加。
+- 2km以降の低頻度、逃走・無敵・P3 pattern中は出現禁止。
+- 地上クリアランス12px以上、通常ジャンプ中は接触可能。
+- 1,000配置の完全封鎖検査と自然走行固定seed検査を追加。
+- P1/P2/P3、progressive、release、150km耐久を回帰ゲートとして維持する。

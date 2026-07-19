@@ -150,7 +150,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v18 P2 実効出現密度契約（現行）
 
-- 現行 CLIENT_VERSION は `kiriganaito-2026-07-19-v19-decision-patterns`。
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-20-v20-air-obstacle`。
 - 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
 - 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
 - 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
@@ -162,7 +162,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v19 判断パターン契約
 
-- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-19-v19-decision-patterns`。
+- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-20-v20-air-obstacle`。
 - 既存の `G / O / A / H / P` を2〜3ステップの短いパターンとして予約する。
 - 0〜1kmは `G_S_H / H_S_G / G_A / H_A` の学習用4種類だけを使用する。
 - 1km以降に `O_S_H / H_S_O / G_A_H`、2km以降かつ👯‍♀️出現可能時に `P_G_G` を解禁する。
@@ -170,3 +170,14 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - パターン中も既存の安全距離、TTC、穴間必須障害物、最大同時危険数を維持する。
 - パターンの失敗、期限超過、逃走・無敵への状態変化ではパターンを中断し、通常SpawnDirectorへ復帰する。
 - 詳細契約は `P3_DECISION_PATTERN_CONTRACT.md` を正本とする。
+
+
+## v20 P4 空中障害物
+
+- 2km以降へ低頻度の吊り下げバーを1種類追加する。
+- `AIR / HAZARD / MID / NORMAL` のmetadataを持つ。
+- 地上走行は安全で、通常ジャンプ中は接触する。
+- 逃走中、無敵中、P3 pattern中、穴間必須障害物待ちには新規生成しない。
+- AIR queueの`AIR_OBSTACLE` requestとして管理する。
+- 空中障害物成功後は地上0.16km、穴0.18km、対向0.20kmの安全区間を予約する。
+- P2/P3密度、安全距離、TTC、スコア、ランキング連携は変更しない。

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T15:59:37.676Z",
+  "generatedAt": "2026-07-19T21:47:25.578Z",
   "targets": [
     1000,
     5000,
@@ -90,7 +90,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -157,7 +157,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -224,7 +224,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1000,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -291,7 +291,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1100,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -358,7 +358,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -425,7 +425,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1170,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -492,7 +492,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -559,7 +559,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1230,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -626,7 +626,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1000,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -693,7 +693,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1090,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -760,7 +760,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1300,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -827,7 +827,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1170,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -894,7 +894,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1230,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -961,7 +961,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1270,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1028,7 +1028,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1130,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1096,7 +1096,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1367,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1164,7 +1164,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1537,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1232,7 +1232,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1267,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1300,7 +1300,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1367,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1368,7 +1368,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1567,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1436,7 +1436,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1437,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1504,7 +1504,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1467,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1572,7 +1572,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1497,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1640,7 +1640,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1267,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1708,7 +1708,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1457,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1776,7 +1776,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1567,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1844,7 +1844,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1437,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1912,7 +1912,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1497,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -1980,7 +1980,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1507,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],
@@ -2048,7 +2048,7 @@
         "p_game_slug": "kiriganaito",
         "p_display_name": "AUTO",
         "p_score": 1397,
-        "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+        "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
       },
       "consoleErrors": [],
       "consoleWarnings": [],

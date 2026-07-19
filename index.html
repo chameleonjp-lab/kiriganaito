@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-19-v19-decision-patterns" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-20-v20-air-obstacle" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-19-v19-decision-patterns</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v20-air-obstacle</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-19-v19-decision-patterns</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v20-air-obstacle</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-19-v19-decision-patterns",
+        CLIENT_VERSION = "kiriganaito-2026-07-20-v20-air-obstacle",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -442,6 +442,7 @@
         HOLE: "hole",
         GROUND_OBSTACLE: "ground_obstacle",
         ONCOMING_OBSTACLE: "oncoming_obstacle",
+        AIR_OBSTACLE: "air_obstacle",
         SCORE_ITEM: "score_item",
         POWERUP: "powerup",
       });
@@ -717,6 +718,13 @@
           holeBand0to1Count: 0,
           holeBand1to2Count: 0,
           obstacleSpawnCount: 0,
+          airObstacleSpawnCount: 0,
+          airObstacleContactCount: 0,
+          airObstacleGroundSafePassCount: 0,
+          airObstacleFullBlockViolationCount: 0,
+          airObstacleBefore2kmCount: 0,
+          airObstacleChaseSpawnCount: 0,
+          airObstacleFirstSpawnKm: -1,
           oncomingSpawnCount: 0,
           oncomingCandidateCount: 0,
           dancerSpawnCount: 0,
@@ -796,11 +804,14 @@
           nextItemAt: 0.012,
           nextScoreItemAt: 0.012,
           nextOncomingAt: 0.9 + rand(0, 0.2),
+          nextAirObstacleAt: 2.35,
+          lastAirObstacleAt: -9,
           chaseGraceUntil: 0,
           lastDangerAt: -9,
           lastHoleAt: -9,
           lastHoleKind: "NONE",
           lastObstacleAt: -9,
+          lastGroundObstacleAt: -9,
           lastOncomingAt: -9,
           lastScoreItemAt: -9,
           lastPatternName: "none",
@@ -1137,7 +1148,7 @@
       function canSpawnAvoidableOncoming(km, x, obstacleType) {
         if (!canSpawnObstacle(km, 1)) return false;
         if (km - spawn.lastHoleAt < getOncomingAfterHoleSafeGap(km)) { run.oncomingUnsafeAfterHoleRejectCount = safeInt(run.oncomingUnsafeAfterHoleRejectCount) + 1; return false; }
-        const crowd = obstacles.filter(o => o.active && o.x > -40 && o.x < W + 90).length + holes.filter(h => h.x > -60 && h.x < W + 90).length;
+        const crowd = obstacles.filter(o => o.active && o.zone !== WORLD_ZONE.AIR && o.x > -40 && o.x < W + 90).length + holes.filter(h => h.x > -60 && h.x < W + 90).length;
         if (crowd > (km < 2 ? 2 : 3)) return false;
         return true;
       }
@@ -1189,7 +1200,13 @@
           else if (km < 2) run.holeBand1to2Count = safeInt(run.holeBand1to2Count) + 1;
           if (source === SPAWN_SOURCE.CHASE) run.chaseHoleSpawnCount++;
         }
-        if (entity.objectRole === OBJECT_ROLE.HAZARD) {
+        if (entity.objectRole === OBJECT_ROLE.HAZARD && entity.zone === WORLD_ZONE.AIR) {
+          run.airObstacleSpawnCount = safeInt(run.airObstacleSpawnCount) + 1;
+          if (run.airObstacleFirstSpawnKm < 0) run.airObstacleFirstSpawnKm = km;
+          if (km < P4_AIR.MIN_KM) run.airObstacleBefore2kmCount = safeInt(run.airObstacleBefore2kmCount) + 1;
+          if (run.chase > 0) run.airObstacleChaseSpawnCount = safeInt(run.airObstacleChaseSpawnCount) + 1;
+        }
+        if (entity.objectRole === OBJECT_ROLE.HAZARD && entity.zone !== WORLD_ZONE.AIR) {
           run.obstacleSpawnCount++;
           if (source === SPAWN_SOURCE.CHASE) run.chaseObstacleSpawnCount++;
           if (source === SPAWN_SOURCE.INVINCIBLE) { run.invincibleObstacleSpawnCount++; run.invincibleObstacleSpawned++; }
@@ -1240,6 +1257,68 @@
           run.earlyOncomingSpawnCount = safeInt(run.earlyOncomingSpawnCount) + 1;
         }
       }
+      function nextAirObstacleInterval() {
+        return 1.10;
+      }
+      function airObstacleGroundClearancePx(entity = null) {
+        const y = entity && Number.isFinite(entity.y) ? entity.y : groundY - P4_AIR.Y_OFFSET;
+        const h = entity && Number.isFinite(entity.h) ? entity.h : P4_AIR.HEIGHT;
+        const obstacleBottom = y + h - 3;
+        const groundPlayerTop = groundY - player.h + HIT.PLAYER_SHRINK_TOP;
+        return groundPlayerTop - obstacleBottom;
+      }
+      function isGroundHazardNearAirCorridor(airX = P4_AIR.SPAWN_X, airWidth = P4_AIR.WIDTH) {
+        const left = airX - 18;
+        const right = airX + airWidth + 18;
+        const groundObstacle = obstacles.some((entity) =>
+          entity.active !== false && entity.zone === WORLD_ZONE.GROUND && entity.objectRole === OBJECT_ROLE.HAZARD &&
+          entity.x + entity.w > left && entity.x < right
+        );
+        const hole = holes.some((entity) => entity.x + entity.w > left && entity.x < right);
+        return groundObstacle || hole;
+      }
+      function isAirObstacleReservationActive(km) {
+        if (!run || !spawn || km < P4_AIR.MIN_KM) return false;
+        if (run.chase > 0 || isDancerInvincible() || spawn.needObstacleBeforeNextHole || isDecisionPatternReservationActive()) return false;
+        return km >= spawn.nextAirObstacleAt || hasPendingSpawnRequestKind(SPAWN_REQUEST_KIND.AIR_OBSTACLE);
+      }
+      function canSpawnAirObstacle(km) {
+        if (km < P4_AIR.MIN_KM || run.chase > 0 || isDancerInvincible()) return false;
+        if (spawn.needObstacleBeforeNextHole || isDecisionPatternReservationActive()) return false;
+        if (km - safeNumber(spawn.lastGroundObstacleAt, -9) > 0.003) return false;
+        if (obstacles.some((entity) => entity.active !== false && entity.zone === WORLD_ZONE.AIR && entity.objectRole === OBJECT_ROLE.HAZARD)) return false;
+        if (isGroundHazardNearAirCorridor(P4_AIR.SPAWN_X, P4_AIR.WIDTH)) return false;
+        return airObstacleGroundClearancePx() >= P4_AIR.MIN_GROUND_CLEARANCE_PX;
+      }
+      function scheduleNextAirObstacle(km) {
+        spawn.nextAirObstacleAt = km + nextAirObstacleInterval();
+      }
+      function spawnAirObstaclePattern(km, opt = {}) {
+        if (!canSpawnAirObstacle(km)) return false;
+        const entity = {
+          x: opt.x ?? P4_AIR.SPAWN_X,
+          y: opt.y ?? groundY - P4_AIR.Y_OFFSET,
+          w: P4_AIR.WIDTH,
+          h: P4_AIR.HEIGHT,
+          active: true,
+          direction: -1,
+          speed: 0,
+          emoji: "",
+          airKind: "hanging_bar",
+          zone: WORLD_ZONE.AIR,
+          movementType: MOVEMENT_TYPE.WORLD_SCROLL,
+          objectRole: OBJECT_ROLE.HAZARD,
+          heightBand: HEIGHT_BAND.MID,
+          spawnSource: opt.spawnSource || SPAWN_SOURCE.NORMAL,
+          groundSafeCounted: false,
+        };
+        if (airObstacleGroundClearancePx(entity) < P4_AIR.MIN_GROUND_CLEARANCE_PX) return false;
+        if (isGroundHazardNearAirCorridor(entity.x, entity.w)) run.airObstacleFullBlockViolationCount = safeInt(run.airObstacleFullBlockViolationCount) + 1;
+        obstacles.push(entity);
+        spawn.lastAirObstacleAt = km;
+        spawn.lastDangerAt = km;
+        return true;
+      }
       function canSpawnItem(km) {
         return (
           km - spawn.lastObstacleAt > SPAWN.ITEM_OBSTACLE_GAP &&
@@ -1261,6 +1340,27 @@
         NORMAL_DELAY_MIN_KM: 0.85,
         NORMAL_DELAY_MAX_KM: 1.05,
         O_TO_H_SAFE_KM: 0.18,
+      });
+      const P4_AIR = Object.freeze({
+        MIN_KM: 2,
+        FIRST_MIN_KM: 2.20,
+        FIRST_MAX_KM: 2.55,
+        INTERVAL_MIN_KM: 0.90,
+        INTERVAL_MAX_KM: 1.30,
+        WIDTH: 58,
+        HEIGHT: 24,
+        Y_OFFSET: 76,
+        SPAWN_X: -190,
+        SCROLL_PX: 190,
+        MIN_GROUND_CLEARANCE_PX: 12,
+        GROUND_BEFORE_KM: 0.09,
+        GROUND_AFTER_KM: 0.010,
+        HOLE_BEFORE_KM: 0.10,
+        HOLE_AFTER_KM: 0.010,
+        ONCOMING_BEFORE_KM: 0.12,
+        ONCOMING_AFTER_KM: 0.012,
+        VISIBLE_CLEAR_LEFT_PX: -150,
+        VISIBLE_CLEAR_RIGHT_PX: 120,
       });
       const P3_PATTERN_DEFS = Object.freeze([
         { name: "G_S_H", learning: true, minKm: 0, steps: [
@@ -1427,6 +1527,7 @@
       }
       function decisionPatternSymbolForEntity(entity) {
         if (!entity) return "";
+        if (entity.zone === WORLD_ZONE.AIR && entity.objectRole === OBJECT_ROLE.HAZARD) return "";
         if (entity.zone === WORLD_ZONE.HOLE) return "H";
         if (entity.objectRole === OBJECT_ROLE.POWERUP) return "P";
         if (entity.objectRole === OBJECT_ROLE.REWARD) return "A";
@@ -1720,12 +1821,25 @@
         const earlyOncomingDue = km >= 1.5 && km >= run.earlyOncomingForceAt && !run.earlyOncomingSpawned;
         const oncomingDue = km >= spawn.nextOncomingAt && km >= 0.8;
         const forceEarlyOncoming = (earlyOncomingDue || (km >= 2 && !run.earlyOncomingSpawned));
+        const dueAirObstacle = km >= spawn.nextAirObstacleAt;
         collectDecisionPatternRequests(km);
         const reservePattern = isDecisionPatternReservationActive();
         const reserveHole = isHoleReservationActive(km);
         const reserveScoreItem = isScoreItemReservationActive(km);
         const reserveOncoming = isOncomingReservationActive(km);
         const suppressNormalGround = spawn.needObstacleBeforeNextHole || reservePattern || reserveHole || reserveScoreItem;
+        if (dueAirObstacle && canSpawnAirObstacle(km)) {
+          const key = "air-obstacle:" + spawn.nextAirObstacleAt.toFixed(4);
+          enqueueSpawnRequestIfNew(
+            WORLD_ZONE.AIR,
+            SPAWN_REQUEST_KIND.AIR_OBSTACLE,
+            SPAWN_SOURCE.NORMAL,
+            km,
+            key,
+            () => ({ x: P4_AIR.SPAWN_X }),
+            SPAWN_REQUEST_KIND.AIR_OBSTACLE
+          );
+        }
         if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && km >= spawn.nextObstacleAt) {
           const key = "invincible:" + run.invincibleObstacleSpawned;
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.INVINCIBLE, km, key, () => ({ dir: -1, emoji: OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
@@ -1791,6 +1905,7 @@
         req._scheduleAdvanced = true;
         if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("obstacle", km, d);
         if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("oncoming", km, d);
+        if (req.kind === SPAWN_REQUEST_KIND.AIR_OBSTACLE) scheduleNextAirObstacle(km);
         if (req.spawnSource === SPAWN_SOURCE.CHASE) spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
         if (req.kind === SPAWN_REQUEST_KIND.POWERUP) run.nextDancerAt = km + 1.5;
       }
@@ -1829,6 +1944,10 @@
         } else if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE) {
           if (req.fallbackStage === 1) { req.kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; req.payload.dir = -1; req.payload.emoji = "🚶"; req.payload.x = -44; }
           else return false;
+        } else if (req.kind === SPAWN_REQUEST_KIND.AIR_OBSTACLE) {
+          if (req.fallbackStage === 1) {
+            req.payload.x = P4_AIR.SPAWN_X;
+          } else return false;
         } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) {
           if (req.fallbackStage === 1) req.payload = { lane: "low", high: false, type: "💰", x: -36, challenge: false };
           else return false;
@@ -1848,6 +1967,8 @@
         else if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE) {
           if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES && req.payload.dir === 1 && km - spawn.lastHoleAt > Math.max(SPAWN.REQUIRED_ONCOMING_AFTER_HOLE, spawn.lastHoleKind === "LARGE" ? 0.28 : 0)) { spawn.lastOncomingAt = Math.min(spawn.lastOncomingAt, km - SPAWN.ONCOMING_GAP - 0.001); spawn.lastObstacleAt = Math.min(spawn.lastObstacleAt, km - getOncomingAfterObstacleSafeGap(km) - 0.001); }
           ok = spawnObstaclePattern(km, d, req.payload.dir, req.payload.emoji, req.payload.x, req.spawnSource, true);
+        } else if (req.kind === SPAWN_REQUEST_KIND.AIR_OBSTACLE) {
+          ok = spawnAirObstaclePattern(km, Object.assign({}, req.payload, { spawnSource: req.spawnSource }));
         } else if (req.kind === SPAWN_REQUEST_KIND.SCORE_ITEM) {
           const itemPlacementAllowed = req.patternAllowsItemPlacement === true || canSpawnItem(km);
           ok = itemPlacementAllowed && spawnItemPattern(km, d, Object.assign({}, req.payload, { spawnSource: req.spawnSource, directorManaged: true }));
@@ -2061,6 +2182,7 @@
         };
         obstacles.push(entity);
         spawn.lastObstacleAt = km;
+        if (dir === -1) spawn.lastGroundObstacleAt = km;
         spawn.lastDangerAt = km;
         if (!directorManaged) recordSpawnSuccess(entity, { spawnSource }, km);
         if (run.lastObstacleSpawnKm >= 0) { const gapKm = km - run.lastObstacleSpawnKm; run.totalObstacleGapKm = (run.totalObstacleGapKm || 0) + gapKm; run.obstacleGapSamples = (run.obstacleGapSamples || 0) + 1; run.maxObstacleGapKm = Math.max(run.maxObstacleGapKm || 0, gapKm); }
@@ -2140,11 +2262,18 @@
         }
         for (let i = obstacles.length - 1; i >= 0; i--) {
           let o = obstacles[i];
+          const previousX = o.x;
           let relPx =
-            o.direction === 1
-              ? (BASE_SPEED + o.speed) * 42
-              : STATIC_OBSTACLE_SCROLL_PX;
+            o.zone === WORLD_ZONE.AIR
+              ? P4_AIR.SCROLL_PX
+              : o.direction === 1
+                ? (BASE_SPEED + o.speed) * 42
+                : STATIC_OBSTACLE_SCROLL_PX;
           o.x += relPx * getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000) * (run.chase > 0 ? CHASE_MULT : 1) * dt;
+          if (o.zone === WORLD_ZONE.AIR && !o.groundSafeCounted && previousX <= player.x && o.x > player.x) {
+            o.groundSafeCounted = true;
+            if (player.onGround) run.airObstacleGroundSafePassCount = safeInt(run.airObstacleGroundSafePassCount) + 1;
+          }
           if (o.x > W + 70 || !o.active) obstacles.splice(i, 1);
         }
         for (let i = items.length - 1; i >= 0; i--) {
@@ -2217,6 +2346,9 @@
         };
       }
       function obstacleRect(o) {
+        if (o.zone === WORLD_ZONE.AIR) {
+          return { x: o.x + 4, y: o.y + 3, w: o.w - 8, h: o.h - 6 };
+        }
         const topShrink = HIT.OBSTACLE_SHRINK + (o.emoji === "🚴" ? BIKE_SHRINK_TOP_EXTRA : 0);
         return {
           x: o.x + HIT.OBSTACLE_SHRINK,
@@ -2303,6 +2435,7 @@
         for (let i = 0; i < obstacles.length; i++) {
           let o = obstacles[i];
           if (rects(pr, obstacleRect(o))) {
+            if (o.zone === WORLD_ZONE.AIR) run.airObstacleContactCount = safeInt(run.airObstacleContactCount) + 1;
             if (isDancerInvincible()) {
               o.active = false;
               burst(o.x, o.y, "#b7a8ff", 10);
@@ -2475,7 +2608,29 @@
         for (let i = 0; i < obstacles.length; i++) {
           let o = obstacles[i];
           ctx.save();
-          if (o.direction === 1) {
+          if (o.zone === WORLD_ZONE.AIR) {
+            ctx.strokeStyle = "rgba(210,220,240,0.72)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(o.x + 8, Math.max(0, o.y - 34));
+            ctx.lineTo(o.x + 8, o.y + 2);
+            ctx.moveTo(o.x + o.w - 8, Math.max(0, o.y - 34));
+            ctx.lineTo(o.x + o.w - 8, o.y + 2);
+            ctx.stroke();
+            ctx.fillStyle = "#252a35";
+            ctx.fillRect(o.x, o.y, o.w, o.h);
+            ctx.fillStyle = "#f2c84b";
+            for (let stripe = 3; stripe < o.w - 5; stripe += 12) ctx.fillRect(o.x + stripe, o.y + 4, 6, o.h - 8);
+            ctx.strokeStyle = "rgba(255,245,178,0.9)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2);
+            ctx.globalAlpha = 0.22;
+            ctx.fillStyle = "#05070b";
+            ctx.beginPath();
+            ctx.ellipse(o.x + o.w / 2, getGroundY(o.x + o.w / 2) + 6, o.w * 0.42, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+          } else if (o.direction === 1) {
             ctx.translate(o.x + 16, o.y + 16);
             ctx.scale(-1, 1);
             ctx.fillText(o.emoji, 0, 0);
@@ -2737,6 +2892,13 @@
           maxDanger: run.maxDanger,
           holeSpawnCount: run.holeSpawnCount || 0,
           obstacleSpawnCount: run.obstacleSpawnCount || 0,
+          airObstacleSpawnCount: safeInt(run.airObstacleSpawnCount),
+          airObstacleContactCount: safeInt(run.airObstacleContactCount),
+          airObstacleGroundSafePassCount: safeInt(run.airObstacleGroundSafePassCount),
+          airObstacleFullBlockViolationCount: safeInt(run.airObstacleFullBlockViolationCount),
+          airObstacleBefore2kmCount: safeInt(run.airObstacleBefore2kmCount),
+          airObstacleChaseSpawnCount: safeInt(run.airObstacleChaseSpawnCount),
+          airObstacleFirstSpawnKm: safeNumber(run.airObstacleFirstSpawnKm, -1),
           oncomingSpawnCount: run.oncomingSpawnCount || 0,
           oncomingCandidateCount: run.oncomingCandidateCount || 0,
           oncomingRetryCount: safeInt(run.oncomingRetryCount),

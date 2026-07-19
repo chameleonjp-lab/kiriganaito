@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-18T15:59:39.553Z",
+  "generatedAt": "2026-07-19T21:47:28.115Z",
   "purpose": "P1 effective presentation measurement without gameplay changes",
   "definition": {
     "presented": "An entity is counted once when at least min(width, 18px) has entered the visible canvas and its left edge is still before the canvas right edge.",
     "blankAfter500m": "Maximum distance/time after 0.5km with no newly presented hole, obstacle, item, or powerup.",
-    "strongHazard": "A visible hole or active ground/oncoming obstacle intersecting the canvas."
+    "strongHazard": "A visible hole or active ground/oncoming/air obstacle intersecting the canvas."
   },
   "seeds": [
     17001,
@@ -14,7 +14,7 @@
   "runs": [
     {
       "seed": 17001,
-      "clientVersion": "kiriganaito-2026-07-19-v19-decision-patterns",
+      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -23,6 +23,7 @@
       "generated": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 3,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 2
@@ -30,6 +31,7 @@
       "presented": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 3,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 2
@@ -126,6 +128,26 @@
           },
           "avgGapKm": 0.17199177589286105,
           "avgGapSec": 4.117857142856951
+        },
+        "airObstacle": {
+          "count": 3,
+          "totalGapKm": 2.332729912500029,
+          "maxGapKm": 1.2325627125001213,
+          "totalGapSec": 53.83333333333028,
+          "maxGapSec": 28.933333333331696,
+          "gapSamples": 2,
+          "presentationKm": [
+            2.4158714625001085,
+            3.64843417500023,
+            4.7486013750001375
+          ],
+          "bandCounts": {
+            "km0to1": 0,
+            "km1to2": 0,
+            "km2plus": 3
+          },
+          "avgGapKm": 1.1663649562500145,
+          "avgGapSec": 26.91666666666514
         },
         "oncoming": {
           "count": 6,
@@ -226,7 +248,7 @@
         }
       },
       "sourceCounts": {
-        "normal": 70,
+        "normal": 73,
         "between_holes": 27,
         "chase": 0,
         "invincible": 0,
@@ -249,6 +271,14 @@
           "invincible": 0,
           "early_oncoming": 0,
           "pattern": 1
+        },
+        "airObstacle": {
+          "normal": 3,
+          "between_holes": 0,
+          "chase": 0,
+          "invincible": 0,
+          "early_oncoming": 0,
+          "pattern": 0
         },
         "oncoming": {
           "normal": 5,
@@ -275,8 +305,8 @@
           "pattern": 0
         }
       },
-      "presentedTotal": 104,
-      "sourceTotal": 104,
+      "presentedTotal": 107,
+      "sourceTotal": 107,
       "invalidSourceCount": 0,
       "duplicatePresentationCount": 0,
       "maxBlankKmAfter500m": 0.0774974249999989,
@@ -313,7 +343,7 @@
     },
     {
       "seed": 17002,
-      "clientVersion": "kiriganaito-2026-07-19-v19-decision-patterns",
+      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -322,6 +352,7 @@
       "generated": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 2,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 3
@@ -329,6 +360,7 @@
       "presented": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 2,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 3
@@ -425,6 +457,25 @@
           },
           "avgGapKm": 0.17231056875000386,
           "avgGapSec": 4.124999999999809
+        },
+        "airObstacle": {
+          "count": 2,
+          "totalGapKm": 1.415161575000191,
+          "maxGapKm": 1.415161575000191,
+          "totalGapSec": 33.03333333333146,
+          "maxGapSec": 33.03333333333146,
+          "gapSamples": 1,
+          "presentationKm": [
+            2.575753537500107,
+            3.9909151125002977
+          ],
+          "bandCounts": {
+            "km0to1": 0,
+            "km1to2": 0,
+            "km2plus": 2
+          },
+          "avgGapKm": 1.415161575000191,
+          "avgGapSec": 33.03333333333146
         },
         "oncoming": {
           "count": 6,
@@ -526,7 +577,7 @@
         }
       },
       "sourceCounts": {
-        "normal": 71,
+        "normal": 73,
         "between_holes": 27,
         "chase": 0,
         "invincible": 0,
@@ -549,6 +600,14 @@
           "invincible": 0,
           "early_oncoming": 0,
           "pattern": 1
+        },
+        "airObstacle": {
+          "normal": 2,
+          "between_holes": 0,
+          "chase": 0,
+          "invincible": 0,
+          "early_oncoming": 0,
+          "pattern": 0
         },
         "oncoming": {
           "normal": 5,
@@ -575,8 +634,8 @@
           "pattern": 0
         }
       },
-      "presentedTotal": 105,
-      "sourceTotal": 105,
+      "presentedTotal": 107,
+      "sourceTotal": 107,
       "invalidSourceCount": 0,
       "duplicatePresentationCount": 0,
       "maxBlankKmAfter500m": 0.08580048750001668,
@@ -614,7 +673,7 @@
     },
     {
       "seed": 17003,
-      "clientVersion": "kiriganaito-2026-07-19-v19-decision-patterns",
+      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -623,6 +682,7 @@
       "generated": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 2,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 3
@@ -630,6 +690,7 @@
       "presented": {
         "hole": 29,
         "groundObstacle": 29,
+        "airObstacle": 2,
         "oncoming": 6,
         "scoreItem": 38,
         "powerup": 3
@@ -726,6 +787,25 @@
           },
           "avgGapKm": 0.17246996517857524,
           "avgGapSec": 4.128571428571236
+        },
+        "airObstacle": {
+          "count": 2,
+          "totalGapKm": 1.2496712625001605,
+          "maxGapKm": 1.2496712625001605,
+          "totalGapSec": 29.19999999999834,
+          "maxGapSec": 29.19999999999834,
+          "gapSamples": 1,
+          "presentationKm": [
+            2.5862261625001066,
+            3.835897425000267
+          ],
+          "bandCounts": {
+            "km0to1": 0,
+            "km1to2": 0,
+            "km2plus": 2
+          },
+          "avgGapKm": 1.2496712625001605,
+          "avgGapSec": 29.19999999999834
         },
         "oncoming": {
           "count": 6,
@@ -827,7 +907,7 @@
         }
       },
       "sourceCounts": {
-        "normal": 73,
+        "normal": 75,
         "between_holes": 27,
         "chase": 0,
         "invincible": 0,
@@ -850,6 +930,14 @@
           "invincible": 0,
           "early_oncoming": 0,
           "pattern": 1
+        },
+        "airObstacle": {
+          "normal": 2,
+          "between_holes": 0,
+          "chase": 0,
+          "invincible": 0,
+          "early_oncoming": 0,
+          "pattern": 0
         },
         "oncoming": {
           "normal": 5,
@@ -876,8 +964,8 @@
           "pattern": 0
         }
       },
-      "presentedTotal": 105,
-      "sourceTotal": 105,
+      "presentedTotal": 107,
+      "sourceTotal": 107,
       "invalidSourceCount": 0,
       "duplicatePresentationCount": 0,
       "maxBlankKmAfter500m": 0.08580048750001712,
@@ -951,6 +1039,13 @@
         "presented": 87,
         "maxGapKm": 0.22830322499999722,
         "maxGapSec": 5.44999999999969,
+        "presentationRate": 1
+      },
+      "airObstacle": {
+        "generated": 7,
+        "presented": 7,
+        "maxGapKm": 1.415161575000191,
+        "maxGapSec": 33.03333333333146,
         "presentationRate": 1
       },
       "oncoming": {
