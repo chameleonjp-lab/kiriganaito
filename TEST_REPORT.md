@@ -1,23 +1,22 @@
 # kiriganaito TEST_REPORT
 
 - 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v20-air-obstacle`
-- 現行段階: `P3 地上・空中報酬・穴の判断パターン`
-- 基準main: `bc7aef38e3502d22266b9466f2ab1064cb1b7f30`
-- 作業ブランチ: `ai/kiriganaito-v19-decision-patterns`
-- Draft Pull Request: `#38`
-- 最終実装コミット: `e748bde5a0471ea6b9a39b82a199a930a4844415`
-- 最終テストゲートコミット: `4cacf330a7d30718c23c2212afc64515d99c8a53`
+- 現行段階: `P4 空中障害物の試作と跳ぶ・跳ばない判断`
+- 基準main: `0b16b4850fb511c5600bb8c3bfe1254b6e1d37b9`
+- 作業ブランチ: `ai/kiriganaito-v20-air-obstacle`
+- Draft Pull Request: `#39`
+- 検証済み実装コミット: `871ecd25b3c6fc804cf6b10e80b3bb11ecb3de91`
 - 状態: 自動ゲート合格、実機未確認、Draft維持
 
 ---
 
-## 1. これまでの基盤
+## 1. 既存基盤
 
 ### v16 SpawnDirector正確性
 
 - 1 requestが最大1 entityだけを生成する契約を固定。
-- 重複key確認後にpayloadを作成。
-- 再試行時の乱数結果を固定。
+- 重複key確認後にpayloadを生成。
+- 再試行時のpayloadと乱数結果を固定。
 - `fallbackStage / attemptsInStage / totalAttempts`で有限再試行化。
 - 成功カウンターを`recordSpawnSuccess()`へ一元化。
 - 成功後のschedule更新を一元化。
@@ -26,141 +25,177 @@
 
 対象がCanvasへ最大18px入った時点を実効出現として測定する。
 
-P1初回基準:
-
-| 分類 | 実効出現数 | 最大間隔 |
-| --- | ---: | ---: |
-| 穴 | 16 / 15km | 1.312km / 33.02秒 |
-| 通常地上障害物 | 153 / 15km | 0.232km / 5.32秒 |
-| 対向障害物 | 54 / 15km | 0.483km / 11.92秒 |
-| 加点アイテム | 119 / 15km | 1.332km / 30.95秒 |
-| 👯‍♀️ | 8 / 15km | 1.628km / 37.22秒 |
-
-生成物は認識可能位置へ到達しており、当時の穴不足は生成後消失ではなく、予約競合と生成間隔が主因だった。
+P4では分類へ`airObstacle`を追加し、AIRを従来の地上障害物数へ混入させない。
 
 ### P2 実効出現密度
 
-- 穴予約時に通常地上予定を一時保留。
-- 穴間必須障害物を優先。
-- 0〜1km、1〜2kmの穴を安定化。
-- 対向障害物と穴の予約競合を調整。
-- 加点アイテムの最低間隔と期限超過予約を導入。
-- TTC、速度、穴幅、当たり判定は変更していない。
+- 0〜1km、1〜2kmの穴数を安定化。
+- 2km以降の穴間隔を固定seedで制御。
+- 対向障害物TTCと2km以内保証を維持。
+- 加点アイテム密度と最大判断空白を制御。
+
+### P3 判断パターン
+
+既存の地上障害物、穴、対向障害物、空中報酬、👯‍♀️だけを使う短い判断シーケンスを導入済み。
+
+P4 AIR HAZARDはP3の地上`G`として採用しない。
 
 ---
 
-## 2. P3実装内容
+## 2. P4実装内容
 
-既存オブジェクトだけを使い、短い判断シーケンスを導入した。
-
-記号:
+追加した空中障害物は1種類だけです。
 
 ```text
-G: 通常方向の地上障害物
-O: 対向障害物
-A: 空中報酬
-H: 穴
-P: 👯‍♀️
-S: 危険物を置かない安全距離
+名称: 吊り下げバー
+描画: Canvas図形
+zone: air
+movementType: world_scroll
+objectRole: hazard
+heightBand: mid
+spawnSource: normal
+airKind: hanging_bar
 ```
 
-### 0〜1kmの学習用
+SpawnDirectorのAIR queueへ`AIR_OBSTACLE` requestとして登録します。
 
-- `G_S_H`
-- `H_S_G`
-- `G_A`
-- `H_A`
+### 表示
 
-### 1km以降の複合パターン
+- 2本の支持線
+- 暗色の横棒
+- 黄色の警告帯
+- 地上との隙間を示す影
 
-- `O_S_H`
-- `H_S_O`
-- `G_A_H`
-
-### 2km以降かつ👯‍♀️出現可能時
-
-- `P_G_G`
-
-### 自然走行で使用するパターン
-
-P2の最大穴間隔0.30kmを維持するため、自然走行では次を使用する。
-
-- `G_S_H`
-- `H_S_G`
-- `G_A`
-- `H_A`
-- `G_A_H`
-- `P_G_G`
-
-`H_S_O`と`O_S_H`は、安全距離契約上、P2最大穴間隔と常用を両立しないため、定義・選択分布・単体実行の検証対象として保持する。
-
-### 開始方式
-
-独立した新規出現として開始せず、既に安全条件を通過して生成された通常または穴間必須の第1オブジェクトをパターン第1ステップとして採用する。
-
-これにより、P3開始のための新しい空白や、P2の予定置換を増やさない。
+外部画像と既存作品の素材は使用していません。
 
 ---
 
-## 3. P3安全契約
+## 3. 当たり判定
 
-- 同一時刻に危険物を2個重ねない。
-- 同時配置は「危険1個 + 報酬1個」だけ。
-- `G→H`, `H→G`, `H→O`, `O→H`は既存安全距離以上。
-- 穴後のパターン内`G/O`は穴間必須障害物を担当できる。
-- 既存TTC、混雑判定、穴落ち判定を通過させる。
-- 逃走・無敵への状態変化、期限超過、step失敗時は通常SpawnDirectorへ復帰する。
-- 新しい操作、障害物、アイテムは追加しない。
+### 地上
+
+```text
+最低契約: 12px以上
+固定seed検査値: 29px
+地上状態での接触: 0
+```
+
+### ジャンプ
+
+通常ジャンプ中は吊り下げバーへ接触します。
+
+```text
+直接ジャンプ接触検査: PASS
+接触時 airObstacleContactCount: 1
+```
+
+接触処理は既存障害物事故を再利用します。
+
+- 通常時: ペナルティ、警戒度+1、15秒逃走
+- 👯‍♀️無敵時: 障害物事故を無効化
+- 穴判定: 変更なし
 
 ---
 
-## 4. 10,000回選択ゲート
+## 4. 正式な出現方式
 
-| 指標 | 結果 | 条件 |
-| --- | ---: | --- |
-| 定義安全エラー | 0 | 0 |
-| 各8パターンの選択数 | 各1,250回 | 偏りなし |
-| 単一パターン最大比率 | 12.5% | 25%以下 |
-| 同一パターン3連続 | 0 | 0 |
-| 最大連続数 | 2 | 2以下 |
+### スケジュール
 
-判定: **PASS**
+```text
+2km未満: 出現0
+初回due: 2.35km
+成功後の次回due: 1.10km後
+同時に有効な空中障害物: 最大1個
+```
+
+### 実生成条件
+
+初回dueへ到達しても即時生成しません。
+
+既存安全判定を通過した通常の地上障害物が生成された直後だけ、吊り下げバーを後方へ追加します。
+
+```text
+初期X: -190px
+スクロール速度: 190px/s × 既存速度倍率
+地上障害物成功からの許容遅延: 0.003km以内
+```
+
+先行する地上危険より低速で追従するため、水平距離は縮まりません。
+
+### 生成禁止
+
+```text
+逃走中
+👯‍♀️無敵中
+P3 pattern進行中
+穴間必須障害物待ち
+既存AIR HAZARDが有効
+初期X帯に穴または地上障害物が存在
+```
+
+### P2/P3との分離
+
+P4成功時に次を変更しません。
+
+- `nextHoleAt`
+- `nextObstacleAt`
+- `nextOncomingAt`
+- P2の穴・障害物・アイテム予定
+- P3 pattern状態
+
+AIRは従来の地上混雑数から除外し、上下封鎖はP4専用ゲートで検査します。
 
 ---
 
-## 5. 単体パターン実行ゲート
-
-対象: `G_A_H`
+## 5. P4直接検査
 
 | 指標 | 結果 |
-| --- | ---: |
-| 開始 | 成功 |
-| 完了 | 1 |
-| 中断 | 0 |
-| 解決step | 3 |
-| entity metadata step | 0, 1, 2 |
-| queue overflow | 0 |
-| mandatory timeout | 0 |
-| 穴だけ連続 | 0 |
+| --- | --- |
+| metadata生成 | PASS |
+| metadata error | 0 |
+| 地上クリアランス | 29px |
+| 地上安全 | PASS |
+| 通常ジャンプ接触 | PASS |
+| 2km未満生成拒否 | PASS |
+| 逃走中生成拒否 | PASS |
+| 無敵中生成拒否 | PASS |
+| 1000 geometry placements failure | 0 |
+| 穴との初期X競合拒否 | PASS |
+| 地上障害物との初期X競合拒否 | PASS |
+| console error / warning | 0 / 0 |
 
 判定: **PASS**
 
 ---
 
-## 6. 自然走行P1固定seed
+## 6. P4自然走行ゲート
 
-| seed | 開始 | 完了 | 中断 | 解決step | pattern提示entity | 最大同一連続 |
+seed `20001`〜`20005`、各7km。
+
+| seed | 出現数 | 実効出現数 | 初回km | 2km未満 | 逃走中 | 水平重複 |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 17001 | 5 | 5 | 0 | 11 | 6 | 2 |
-| 17002 | 5 | 5 | 0 | 11 | 6 | 1 |
-| 17003 | 4 | 4 | 0 | 8 | 4 | 1 |
+| 20001 | 4 | 4 | 2.379 | 0 | 0 | 0 |
+| 20002 | 4 | 4 | 2.387 | 0 | 0 | 0 |
+| 20003 | 4 | 4 | 2.385 | 0 | 0 | 0 |
+| 20004 | 4 | 4 | 2.380 | 0 | 0 | 0 |
+| 20005 | 4 | 4 | 2.379 | 0 | 0 | 0 |
 
-- 完了率: 100%
-- step skip: 0
-- 自然走行で`spawnSource=pattern`を確認。
-- 最大判断空白: 0.667秒以下。
+共通結果:
+
+```text
+生成数と実効出現数: 一致
+airObstacleFullBlockViolationCount: 0
+firstOverlap: null
+mandatory timeout: 0
+unavoidableOncomingCount: 0
+consecutiveHoleViolationCount: 0
+patternAbortedCount: 0
+console error / warning: 0 / 0
+```
 
 判定: **PASS**
+
+P4自然走行で観測されるSpawnDirector全体のqueue overflowは、既存GROUND/P3 queueを含む総数です。P4固有の合否値には使用せず、P2/P3恒久ゲートとrelease comprehensiveの整合検査を正本とします。
 
 ---
 
@@ -168,7 +203,7 @@ P2の最大穴間隔0.30kmを維持するため、自然走行では次を使用
 
 seed `18001`〜`18030`、各5km、合計150km。
 
-| 指標 | P3適用後 | 条件 |
+| 指標 | P4適用後 | 条件 |
 | --- | ---: | --- |
 | 0〜1kmの穴 | 全seed 6個 | 4〜6個 |
 | 1〜2kmの穴 | 全seed 6個 | 6〜9個 |
@@ -177,52 +212,85 @@ seed `18001`〜`18030`、各5km、合計150km。
 | 加点アイテム | 7.2〜7.8個/km | 6〜10個/km |
 | 取り逃がし対象 | 0〜0.8個/km | 0〜2個/km |
 | 最大判断空白 | 0.767秒 | 1.2秒未満 |
-| 最大同時危険数 | 2 | 2以下 |
+| 最大同時地上危険数 | 2 | 2以下 |
 
-- failures: 0
-- 同一entity二重計数: 0
-- 不正spawnSource: 0
-- presented > generated: 0
-- console error / warning: 0
+```text
+30seed failures: 0
+二重計数: 0
+不正spawnSource: 0
+presented > generated: 0
+console error / warning: 0 / 0
+```
 
 判定: **PASS**
 
 ---
 
-## 8. 150km耐久
+## 8. P3回帰
 
-standalone endurance artifact:
+### 10,000回選択
 
-| 項目 | P3結果 |
+```text
+8パターン各1,250回
+単一最大比率12.5%
+同一パターン3連続0
+最大連続2
+定義エラー0
+```
+
+### 単体実行
+
+```text
+開始成功
+完了1
+中断0
+解決step 3
+queue overflow 0
+mandatory timeout 0
+穴だけ連続0
+```
+
+### P1固定seed自然走行
+
+```text
+seed 17001: 開始5 / 完了5 / 中断0
+seed 17002: 開始5 / 完了5 / 中断0
+seed 17003: 開始4 / 完了4 / 中断0
+step skip 0
+```
+
+P4 AIRはP3の第1stepへ採用されません。
+
+判定: **PASS**
+
+---
+
+## 9. 150km耐久
+
+| 項目 | P4結果 |
 | --- | ---: |
+| 実走行距離 | 152.05km |
+| 最終スコア | 150.00km |
 | 穴 | 844個 |
-| 障害物 | 1,139個 |
-| 対向障害物 | 295個 |
-| 加点アイテム | 1,188個 |
+| 地上障害物 | 1,134個 |
+| 対向障害物 | 289個 |
+| 加点アイテム | 1,186個 |
 | 最大穴間隔 | 0.228km |
-| 平均穴間隔 | 0.181km |
-| 対向障害物最短TTC | 1.01秒 |
+| 平均穴間隔 | 0.180km |
+| 最大障害物間隔 | 0.178km |
+| 平均障害物間隔 | 0.134km |
+| 対向最短TTC | 1.01秒 |
 | 2km以内最短TTC | 1.38秒 |
 | 回避不能対向障害物 | 0 |
 | 穴だけ連続 | 0 |
 
-release内部150kmハーネス:
+2km以内対向障害物は1個以上を維持しています。TTC最低条件は緩和していません。
 
-```text
-対向障害物 292個
-回帰下限 290個
-0.8km未満の対向障害物 0
-2km以内の対向障害物 1以上
-最短TTC 0.848秒
-2km以内最短TTC 1.160秒
-回避不能 0
-```
-
-P2 standalone基準301個に対し約2%の差であり、回帰下限290個を満たす。個数許容差を設けても、TTCと回避不能0の条件は緩和しない。
+判定: **PASS**
 
 ---
 
-## 9. 最終自動ゲート
+## 10. 最終自動ゲート
 
 実行順:
 
@@ -233,6 +301,7 @@ node tests/release-comprehensive.js
 node tests/effective-presentation-metrics.js
 node tests/p2-density-regression.js
 node tests/p3-pattern-regression.js
+node tests/p4-air-obstacle-regression.js
 ```
 
 結果:
@@ -245,53 +314,53 @@ release criticalIssues 0
 P1 effective presentation PASS
 P2 30seed PASS
 P3 pattern regression PASS
+P4 air obstacle regression PASS
 console error 0
 console warning 0
 Supabase本番送信 0
 ```
 
-`release finalVerdict=WARN`の理由はPlaywright未導入のみ。
+`release finalVerdict=WARN`の理由はPlaywright未導入のみです。
 
 検証ワークフロー:
 
-- `Apply P3 decision patterns on PR` Run `29650896741`: SUCCESS
-- `Finalize P3 test gates on PR` Run `29651062086`: SUCCESS
+```text
+Apply P4 airborne obstacle on PR
+Run 29704983044
+全機能ゲート・commit・push・一時ファイル削除 SUCCESS
+```
 
 ---
 
-## 10. 変更していないもの
+## 11. 変更していないもの
 
-- ジャンプ
+- ジャンプ力
 - 重力
 - 固定タイムステップ
 - 穴幅
 - 穴落ち判定
-- 障害物速度
-- TTC最低条件
+- 地上障害物速度
+- 対向障害物TTC最低条件
+- P2密度目標
+- P3パターン定義
+- アイテム点数
 - スコア、ペナルティ
-- 通常UI、Canvas描画
+- 通常UI
 - ランキング
 - Supabase URL、Publishable key
 - RPC形式
 - pending queue key
+- 逃走・無敵の完成調整
 
 ---
 
-## 11. 未確認
+## 12. 未確認
 
 - iPhone SE実機3プレイ
 - iPhone 17 Pro実機3プレイ
 - 18px実効出現閾値の実機妥当性
+- 吊り下げバーの初見認識性
 - Playwright/WebKit
 - Codeberg Pages公開版
 
-自動合格条件は満たしている。実機確認が終わるまでPR #38はDraftのまま維持し、Ready化・マージ・公開は行わない。
-
-
-## v20 P4 空中障害物
-
-- Canvas図形の吊り下げバーを1種類追加。
-- 2km以降の低頻度、逃走・無敵・P3 pattern中は出現禁止。
-- 地上クリアランス12px以上、通常ジャンプ中は接触可能。
-- 1,000配置の完全封鎖検査と自然走行固定seed検査を追加。
-- P1/P2/P3、progressive、release、150km耐久を回帰ゲートとして維持する。
+自動合格条件は満たしています。実機確認が終わるまでPR #39はDraftのまま維持し、Ready化、マージ、公開は行いません。
