@@ -8,6 +8,7 @@ on:
       - ".github/workflows/_apply-p5-chase-invincible-pr.yml"
       - "tools/apply-p5-chase-invincible.py"
       - "tools/tune-p5-regressions.py"
+      - "tools/tune-p5-runtime.py"
       - "tests/p5-chase-invincible-regression.js"
       - "P5_CHASE_INVINCIBLE_CONTRACT.md"
 
@@ -38,6 +39,7 @@ jobs:
           mkdir -p artifacts
           python tools/apply-p5-chase-invincible.py > artifacts/p5-apply.log 2>&1
           python tools/tune-p5-regressions.py >> artifacts/p5-apply.log 2>&1
+          python tools/tune-p5-runtime.py >> artifacts/p5-apply.log 2>&1
 
       - name: Upload apply diagnostics
         if: always()
@@ -108,7 +110,8 @@ jobs:
             git rm -f --ignore-unmatch \
               .github/workflows/_apply-p5-chase-invincible-pr.yml \
               tools/apply-p5-chase-invincible.py \
-              tools/tune-p5-regressions.py
+              tools/tune-p5-regressions.py \
+              tools/tune-p5-runtime.py
             git add -u
             test -f artifacts/p5-chase-invincible-regression.json
             git add artifacts/p5-chase-invincible-regression.json
