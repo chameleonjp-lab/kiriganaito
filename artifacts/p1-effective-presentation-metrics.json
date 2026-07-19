@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T21:47:28.115Z",
+  "generatedAt": "2026-07-19T22:52:01.591Z",
   "purpose": "P1 effective presentation measurement without gameplay changes",
   "definition": {
     "presented": "An entity is counted once when at least min(width, 18px) has entered the visible canvas and its left edge is still before the canvas right edge.",
@@ -14,7 +14,7 @@
   "runs": [
     {
       "seed": 17001,
-      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -343,7 +343,7 @@
     },
     {
       "seed": 17002,
-      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -673,7 +673,7 @@
     },
     {
       "seed": 17003,
-      "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -1010,12 +1010,12 @@
     "chase": {
       "source": "chase",
       "presented": 1,
-      "frames": 103,
-      "runMeters": 2572.610199999999
+      "frames": 6,
+      "runMeters": 2504.887225
     },
     "invincible": {
       "source": "invincible",
-      "presented": 1,
+      "presented": 2,
       "frames": 600,
       "runMeters": 2918.904999999995
     },

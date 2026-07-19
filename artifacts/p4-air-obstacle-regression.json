@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-19T21:47:39.396Z",
-  "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
+  "generatedAt": "2026-07-19T22:52:12.151Z",
+  "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
   "purpose": "P4 first airborne obstacle and jump/no-jump decision regression",
   "direct": {
-    "clientVersion": "kiriganaito-2026-07-20-v20-air-obstacle",
+    "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
     "metadataSpawn": true,
     "metadata": {
       "zone": "air",

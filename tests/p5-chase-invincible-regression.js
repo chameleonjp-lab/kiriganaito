@@ -326,7 +326,7 @@ function invinciblePresentationScenario(appScript, seed) {
     __advanceNow(FIXED_STEP * 1000);
     update(FIXED_STEP);
     for (const entity of obstacles) {
-      if (entity.spawnSource !== SPAWN_SOURCE.INVINCIBLE || seen.has(entity)) continue;
+      if (entity.p5InvincibleSessionId !== run.invincibleSessionId || seen.has(entity)) continue;
       const width = Math.max(1, Number(entity.w) || 1);
       if (entity.active !== false && entity.x + Math.min(width, 18) >= 0 && entity.x < W) {
         seen.add(entity);

@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-20-v20-air-obstacle" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-20-v21-chase-invincible" />
     <style>
       * {
         box-sizing: border-box;
@@ -285,7 +285,7 @@
             ><button id="homeShareBtn" class="secondary">シェア</button>
           </div>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v20-air-obstacle</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v21-chase-invincible</p>
         </div>
         <div class="card">
           <h2>ランキング</h2>
@@ -347,7 +347,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v20-air-obstacle</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v21-chase-invincible</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -387,7 +387,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-20-v20-air-obstacle",
+        CLIENT_VERSION = "kiriganaito-2026-07-20-v21-chase-invincible",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -685,10 +685,19 @@
           dancerInvincible: 0,
           dancerInvincibleUntil: 0,
           forceObstacleDuringInvincibleUntil: 0,
+          invincibleSessionId: 0,
+          invincibleSessionCount: 0,
           invincibleObstaclePlanCount: 0,
           invincibleObstacleSpawned: 0,
           invincibleObstacleSpawnCount: 0,
+          invincibleSessionPresentedObstacleCount: 0,
+          invinciblePresentedObstacleCount: 0,
+          invincibleRequestIndex: 0,
           invinciblePreventedAccidents: 0,
+          invincibleLargeHoleBlockUntilKm: -9,
+          invincibleLargeHoleViolationCount: 0,
+          invincibleBackgroundDecayViolationCount: 0,
+          invincibleBreakthroughFlash: 0,
           challengeItemSpawnCount: 0,
           missTargetItemCount: 0,
           missCount: 0,
@@ -705,6 +714,29 @@
           sameItemRhythmCount: 0,
           maxDanger: 0,
           chase: 0,
+          chaseSessionId: 0,
+          chaseSessionCount: 0,
+          chaseCompletedSessionCount: 0,
+          chaseSessionActive: false,
+          chaseElapsedSec: 0,
+          chasePhase: P5_CHASE_PHASE.IDLE,
+          chaseEventStatus: [],
+          chaseSessionGroundCount: 0,
+          chaseSessionHoleCount: 0,
+          chaseSessionScoreItemCount: 0,
+          chaseSessionOncomingCount: 0,
+          chaseGroundPresentedCount: 0,
+          chaseHolePresentedCount: 0,
+          chaseScoreItemPresentedCount: 0,
+          chaseOncomingPresentedCount: 0,
+          chaseCurrentDecisionBlankSec: 0,
+          chaseSessionMaxDecisionBlankSec: 0,
+          chaseMaxDecisionBlankSec: 0,
+          chaseGraceHazardViolationCount: 0,
+          chaseCountRangeViolationCount: 0,
+          chaseReached2Km: false,
+          chaseSessionStartDancerSpawnCount: 0,
+          chaseLastSessionSummary: null,
           elapsed: 0,
           finishReason: "",
           finalScore: 0,
@@ -821,6 +853,7 @@
           patternBagKey: "",
           activePattern: null,
           nextChaseEventAt: 999,
+          nextInvincibleObstacleAt: 999,
           oncomingRetryAt: 0,
           needObstacleBeforeNextHole: false,
           lastHoleResolvedByObstacleAt: -9,
@@ -944,7 +977,7 @@
         player.landedFlash = Math.max(0, player.landedFlash - dt);
         inputState.landedPulse = Math.max(0, inputState.landedPulse - dt);
         player.inv = Math.max(0, player.inv - dt);
-        run.dancerInvincible = getDancerInvincibleRemainingSec();
+        updateDancerInvincible(dt);
         const speedMult = getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000);
         run.maxSpeedMultiplier = Math.max(run.maxSpeedMultiplier || 1, speedMult);
         let visual = (run.chase > 0 ? CHASE_MULT : 1) * speedMult;
@@ -972,9 +1005,7 @@
         if (run.runMeters > 0) run.lastNonZeroRunMeters = run.runMeters;
         checkCollisions();
         if (mode !== MODE.PLAYING) return;
-        const beforeChase = run.chase;
-        run.chase = Math.max(0, run.chase - dt);
-        if (beforeChase > 0 && run.chase <= 0) run.escapedFlash = ESCAPED_FLASH_SEC;
+        updateP5ChaseState(dt);
         run.escapedFlash = Math.max(0, run.escapedFlash - dt);
         run.shake = Math.max(0, run.shake - dt);
         run.elapsed += dt;
@@ -1004,17 +1035,40 @@
       function getSpeedMultiplierByKm(km) { return getRunSpeedMultiplier(km); }
       function nowMs() { return performance.now(); }
       function activateDancerInvincible() {
-        run.dancerInvincibleUntil = nowMs() + 4000;
-        run.dancerInvincible = 4;
-        run.forceObstacleDuringInvincibleUntil = nowMs() + 4000;
+        run.invincibleSessionId = safeInt(run.invincibleSessionId) + 1;
+        run.invincibleSessionCount = safeInt(run.invincibleSessionCount) + 1;
+        run.dancerInvincibleUntil = 0;
+        run.dancerInvincible = P5_CHASE.INVINCIBLE_DURATION_SEC;
+        run.forceObstacleDuringInvincibleUntil = 0;
         run.invincibleObstaclePlanCount = 2 + (Math.random() < 0.45 ? 1 : 0);
         run.invincibleObstacleSpawned = 0;
-        spawn.nextObstacleAt = Math.min(spawn.nextObstacleAt, run.runMeters / 1000 + rand(0.012, 0.026));
+        run.invincibleSessionPresentedObstacleCount = 0;
+        run.invincibleRequestIndex = 0;
+        spawn.nextInvincibleObstacleAt = run.elapsed + 0.35;
+        for (const entity of obstacles) {
+          if (entity.active !== false && entity.objectRole === OBJECT_ROLE.HAZARD) entity.p5InvincibleSessionId = run.invincibleSessionId;
+        }
       }
       function getDancerInvincibleRemainingSec() {
-        return Math.max(0, ((run && run.dancerInvincibleUntil || 0) - nowMs()) / 1000);
+        return Math.max(0, safeNumber(run && run.dancerInvincible));
       }
       function isDancerInvincible() { return getDancerInvincibleRemainingSec() > 0; }
+      function updateDancerInvincible(dt) {
+        run.invincibleBreakthroughFlash = Math.max(0, safeNumber(run.invincibleBreakthroughFlash) - dt);
+        const before = getDancerInvincibleRemainingSec();
+        if (before <= 0) return;
+        const next = before - dt;
+        run.dancerInvincible = next <= 1e-9 ? 0 : next;
+        if (before > 0 && run.dancerInvincible <= 0) {
+          const kmNow = (run.maxRunMeters || run.runMeters || 0) / 1000;
+          run.invincibleLargeHoleBlockUntilKm = Math.max(safeNumber(run.invincibleLargeHoleBlockUntilKm, -9), kmNow + P5_CHASE.LARGE_HOLE_BLOCK_KM);
+          spawn.nextInvincibleObstacleAt = 999;
+        }
+      }
+      function normalizeHoleKindForP5(kind, km) {
+        if (kind === "LARGE" && (isDancerInvincible() || km < safeNumber(run.invincibleLargeHoleBlockUntilKm, -9))) return "MEDIUM";
+        return kind;
+      }
       function getDifficultyByKm(km) {
         const chase = run && run.chase > 0;
         if (km < 0.5)
@@ -1161,7 +1215,7 @@
       }
       function betweenHoleOncomingRate(km) {
         if (km < 0.8) return 0;
-        if (run.chase > 0 && km >= 2) return 0.55;
+        if (run.chase > 0) return 0;
         if (km < 1.5) return 0.15;
         if (km < 2) return 0.25;
         if (km < 5) return 0.35;
@@ -1185,6 +1239,180 @@
       function safeNumber(value, fallback = 0) {
         const n = Number(value);
         return Number.isFinite(n) ? n : fallback;
+      }
+      function getP5ChaseElapsedSec() {
+        if (!run || !run.chaseSessionActive) return 0;
+        return Math.max(0, P5_CHASE.END_SEC - safeNumber(run.chase));
+      }
+      function getP5ChasePhase(elapsed = getP5ChaseElapsedSec()) {
+        if (!run || !run.chaseSessionActive) return P5_CHASE_PHASE.IDLE;
+        if (elapsed < P5_CHASE.GRACE_END_SEC) return P5_CHASE_PHASE.GRACE;
+        if (elapsed < P5_CHASE.GROUND_REWARD_END_SEC) return P5_CHASE_PHASE.GROUND_REWARD;
+        if (elapsed < P5_CHASE.MIXED_END_SEC) return P5_CHASE_PHASE.MIXED;
+        return P5_CHASE_PHASE.FINALE;
+      }
+      function p5DecisionContentVisible() {
+        const visible = (entity) => entity && entity.active !== false && entity.x < W && entity.x + safeNumber(entity.w, 1) > 0;
+        return holes.some(visible) || obstacles.some(visible) || items.some(visible);
+      }
+      function cleanupP5ChaseRequests() {
+        if (!spawn || !spawn.requests) return;
+        for (const zone of [WORLD_ZONE.GROUND, WORLD_ZONE.AIR, WORLD_ZONE.HOLE]) {
+          spawn.requests[zone] = spawnRequestQueue(zone).filter((req) => !req.p5ChaseSessionId);
+        }
+      }
+      function startP5ChaseSession(km) {
+        cleanupP5ChaseRequests();
+        if (spawn.activePattern && spawn.activePattern.status === "active") abortDecisionPattern("chase_started", km);
+        cleanupOrphanedPatternRequests();
+        run.chaseSessionId = safeInt(run.chaseSessionId) + 1;
+        run.chaseSessionCount = safeInt(run.chaseSessionCount) + 1;
+        run.chaseSessionActive = true;
+        run.chase = P5_CHASE.END_SEC;
+        run.chaseElapsedSec = 0;
+        run.chasePhase = P5_CHASE_PHASE.GRACE;
+        run.chaseEventStatus = P5_CHASE.EVENTS.map(() => "waiting");
+        run.chaseSessionGroundCount = 0;
+        run.chaseSessionHoleCount = 0;
+        run.chaseSessionScoreItemCount = 0;
+        run.chaseSessionOncomingCount = 0;
+        run.chaseCurrentDecisionBlankSec = 0;
+        run.chaseSessionMaxDecisionBlankSec = 0;
+        run.chaseReached2Km = km >= 2;
+        run.chaseSessionStartDancerSpawnCount = safeInt(run.dancerSpawnCount);
+        spawn.chaseGraceUntil = run.elapsed + P5_CHASE.GRACE_END_SEC;
+        spawn.nextChaseEventAt = 999;
+      }
+      function finishP5ChaseSession(km) {
+        if (!run.chaseSessionActive) return;
+        cleanupP5ChaseRequests();
+        run.chaseCompletedSessionCount = safeInt(run.chaseCompletedSessionCount) + 1;
+        const groundOk = run.chaseSessionGroundCount >= 5 && run.chaseSessionGroundCount <= 8;
+        const holeOk = run.chaseSessionHoleCount >= 2 && run.chaseSessionHoleCount <= 4;
+        const scoreOk = run.chaseSessionScoreItemCount >= 4 && run.chaseSessionScoreItemCount <= 7;
+        const oncomingOk = run.chaseReached2Km
+          ? run.chaseSessionOncomingCount >= 1 && run.chaseSessionOncomingCount <= 3
+          : run.chaseSessionOncomingCount <= 3;
+        const dancerOk = safeInt(run.dancerSpawnCount) === safeInt(run.chaseSessionStartDancerSpawnCount);
+        if (!groundOk || !holeOk || !scoreOk || !oncomingOk || !dancerOk) run.chaseCountRangeViolationCount = safeInt(run.chaseCountRangeViolationCount) + 1;
+        run.chaseLastSessionSummary = {
+          id: run.chaseSessionId,
+          ground: run.chaseSessionGroundCount,
+          holes: run.chaseSessionHoleCount,
+          scoreItems: run.chaseSessionScoreItemCount,
+          oncoming: run.chaseSessionOncomingCount,
+          reached2Km: Boolean(run.chaseReached2Km),
+          maxDecisionBlankSec: safeNumber(run.chaseSessionMaxDecisionBlankSec),
+          dancerAdded: safeInt(run.dancerSpawnCount) - safeInt(run.chaseSessionStartDancerSpawnCount),
+        };
+        run.chaseSessionActive = false;
+        run.chasePhase = P5_CHASE_PHASE.IDLE;
+        run.chaseElapsedSec = P5_CHASE.END_SEC;
+        const d = getDifficultyByKm(km);
+        spawn.nextObstacleAt = Math.max(spawn.nextObstacleAt, km + d.obs + 0.008);
+        spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + d.holeGap + 0.010);
+        const itemAt = km + d.item + 0.006;
+        spawn.nextItemAt = Math.max(spawn.nextItemAt, itemAt);
+        spawn.nextScoreItemAt = Math.max(spawn.nextScoreItemAt, itemAt);
+        spawn.nextOncomingAt = Math.max(spawn.nextOncomingAt, km + nextOncomingInterval(km));
+      }
+      function updateP5ChaseState(dt) {
+        const before = safeNumber(run.chase);
+        if (before > 0 && run.chaseSessionActive) {
+          const kmNow = (run.maxRunMeters || run.runMeters || 0) / 1000;
+          run.chaseReached2Km = run.chaseReached2Km || kmNow >= 2;
+          run.chaseElapsedSec = getP5ChaseElapsedSec();
+          run.chasePhase = getP5ChasePhase(run.chaseElapsedSec);
+          if (run.chaseElapsedSec >= P5_CHASE.GRACE_END_SEC) {
+            if (p5DecisionContentVisible()) run.chaseCurrentDecisionBlankSec = 0;
+            else run.chaseCurrentDecisionBlankSec = safeNumber(run.chaseCurrentDecisionBlankSec) + dt;
+            run.chaseSessionMaxDecisionBlankSec = Math.max(safeNumber(run.chaseSessionMaxDecisionBlankSec), run.chaseCurrentDecisionBlankSec);
+            run.chaseMaxDecisionBlankSec = Math.max(safeNumber(run.chaseMaxDecisionBlankSec), run.chaseSessionMaxDecisionBlankSec);
+          }
+          run.chase = Math.max(0, before - dt);
+          run.chaseElapsedSec = getP5ChaseElapsedSec();
+          run.chasePhase = getP5ChasePhase(run.chaseElapsedSec);
+          if (before > 0 && run.chase <= 0) {
+            finishP5ChaseSession(kmNow);
+            run.escapedFlash = ESCAPED_FLASH_SEC;
+          }
+        } else run.chase = Math.max(0, before - dt);
+      }
+      function makeP5ChaseRequest(event, index, km) {
+        let zone, kind, fallbackKind, payload;
+        if (event.type === "ground") {
+          zone = WORLD_ZONE.GROUND; kind = SPAWN_REQUEST_KIND.GROUND_OBSTACLE; fallbackKind = kind;
+          payload = { dir: -1, emoji: index % 2 ? "🏃🏻" : "🚶", x: -44 };
+        } else if (event.type === "hole") {
+          zone = WORLD_ZONE.HOLE; kind = SPAWN_REQUEST_KIND.HOLE; fallbackKind = kind;
+          payload = { kind: "SMALL", w: 30 };
+        } else if (event.type === "score") {
+          zone = WORLD_ZONE.AIR; kind = SPAWN_REQUEST_KIND.SCORE_ITEM; fallbackKind = kind;
+          payload = { lane: "high", high: true, type: "💰", x: -36, challenge: false, placed: true, speedMult: 0.70 };
+        } else if (event.type === "oncoming") {
+          if (km < 2) return null;
+          zone = WORLD_ZONE.GROUND; kind = SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE; fallbackKind = kind;
+          payload = { dir: 1, emoji: "🚶", x: getOncomingSpawnX(km) };
+        } else return null;
+        const req = makeSpawnRequest(zone, kind, SPAWN_SOURCE.CHASE, km, `p5:${run.chaseSessionId}:${index}`, payload, fallbackKind);
+        req.p5ChaseSessionId = run.chaseSessionId;
+        req.p5ChaseEventIndex = index;
+        req.p5ChaseEventType = event.type;
+        req.maxTotalAttempts = 12;
+        if (event.type === "score") req.patternAllowsItemPlacement = true;
+        return req;
+      }
+      function collectP5ChaseRequests(km) {
+        if (!run.chaseSessionActive || run.chase <= 0) return;
+        const elapsed = getP5ChaseElapsedSec();
+        let queued = 0;
+        for (let i = 0; i < P5_CHASE.EVENTS.length && queued < 2; i++) {
+          if (run.chaseEventStatus[i] !== "waiting") continue;
+          const event = P5_CHASE.EVENTS[i];
+          if (event.at > elapsed) continue;
+          if (event.type === "oncoming" && km < 2) continue;
+          const req = makeP5ChaseRequest(event, i, km);
+          if (req && enqueueSpawnRequest(req)) {
+            run.chaseEventStatus[i] = "queued";
+            if (event.type === "oncoming") run.oncomingCandidateCount = safeInt(run.oncomingCandidateCount) + 1;
+            queued++;
+          }
+        }
+      }
+      function recordP5ChaseRequestOutcome(req, success) {
+        if (!req || !req.p5ChaseSessionId || req.p5ChaseSessionId !== run.chaseSessionId) return;
+        const index = safeInt(req.p5ChaseEventIndex);
+        if (index < run.chaseEventStatus.length) run.chaseEventStatus[index] = success ? "resolved" : "skipped";
+      }
+      function recordP5SpawnSuccess(entity, request, km) {
+        if (!entity) return;
+        if (isDancerInvincible() && entity.objectRole === OBJECT_ROLE.HAZARD) {
+          entity.p5InvincibleSessionId = run.invincibleSessionId;
+        }
+        if (!run.chaseSessionActive || run.chase <= 0 || entity.p5ChaseCounted) return;
+        entity.p5ChaseCounted = true;
+        entity.p5ChaseSessionId = run.chaseSessionId;
+        const elapsed = getP5ChaseElapsedSec();
+        const isHazard = entity.zone === WORLD_ZONE.HOLE || entity.objectRole === OBJECT_ROLE.HAZARD;
+        if (elapsed < P5_CHASE.GRACE_END_SEC && isHazard) run.chaseGraceHazardViolationCount = safeInt(run.chaseGraceHazardViolationCount) + 1;
+        if (entity.zone === WORLD_ZONE.HOLE) {
+          run.chaseSessionHoleCount = safeInt(run.chaseSessionHoleCount) + 1;
+          run.chaseHolePresentedCount = safeInt(run.chaseHolePresentedCount) + 1;
+        } else if (entity.objectRole === OBJECT_ROLE.HAZARD && entity.zone !== WORLD_ZONE.AIR) {
+          if (entity.movementType === MOVEMENT_TYPE.ONCOMING) {
+            run.chaseSessionOncomingCount = safeInt(run.chaseSessionOncomingCount) + 1;
+            run.chaseOncomingPresentedCount = safeInt(run.chaseOncomingPresentedCount) + 1;
+          } else {
+            run.chaseSessionGroundCount = safeInt(run.chaseSessionGroundCount) + 1;
+            run.chaseGroundPresentedCount = safeInt(run.chaseGroundPresentedCount) + 1;
+          }
+        } else if (entity.objectRole === OBJECT_ROLE.REWARD) {
+          run.chaseSessionScoreItemCount = safeInt(run.chaseSessionScoreItemCount) + 1;
+          run.chaseScoreItemPresentedCount = safeInt(run.chaseScoreItemPresentedCount) + 1;
+        }
+      }
+      function hasPendingInvincibleRequest() {
+        return spawnRequestQueue(WORLD_ZONE.GROUND).some((req) => req.spawnSource === SPAWN_SOURCE.INVINCIBLE && req.status !== SPAWN_REQUEST_STATUS.RESOLVED && req.status !== SPAWN_REQUEST_STATUS.SKIPPED);
       }
       function resolveBetweenHoleObstacle(km, dir) {
         if (!spawn.needObstacleBeforeNextHole) return;
@@ -1223,6 +1451,7 @@
         }
         if (entity.objectRole === OBJECT_ROLE.REWARD) { run.scoreItemSpawnCount++; run.itemSpawnCount++; spawn.lastScoreItemAt = km; if (source === SPAWN_SOURCE.CHASE) run.chaseScoreItemSpawnCount++; }
         if (entity.objectRole === OBJECT_ROLE.POWERUP) { run.invincibleItemSpawnCount++; run.dancerSpawnCount++; run.itemSpawnCount++; }
+        recordP5SpawnSuccess(entity, request, km);
         maybeAdoptDecisionPatternFromEntity(entity, request, km);
       }
       function spawnRequiredObstacleBetweenHoles(km, d) {
@@ -1361,6 +1590,38 @@
         ONCOMING_AFTER_KM: 0.012,
         VISIBLE_CLEAR_LEFT_PX: -150,
         VISIBLE_CLEAR_RIGHT_PX: 120,
+      });
+      const P5_CHASE_PHASE = Object.freeze({
+        IDLE: "idle",
+        GRACE: "grace",
+        GROUND_REWARD: "ground_reward",
+        MIXED: "mixed",
+        FINALE: "finale",
+      });
+      const P5_CHASE = Object.freeze({
+        GRACE_END_SEC: 1,
+        GROUND_REWARD_END_SEC: 6,
+        MIXED_END_SEC: 12,
+        END_SEC: 15,
+        LARGE_HOLE_BLOCK_KM: 0.14,
+        INVINCIBLE_DURATION_SEC: 4,
+        INVINCIBLE_REQUEST_GAP_SEC: 0.72,
+        EVENTS: Object.freeze([
+          { at: 1.05, type: "score" },
+          { at: 1.25, type: "ground" },
+          { at: 3.20, type: "ground" },
+          { at: 4.00, type: "score" },
+          { at: 5.15, type: "ground" },
+          { at: 6.00, type: "score" },
+          { at: 6.85, type: "hole" },
+          { at: 7.80, type: "score" },
+          { at: 9.50, type: "score" },
+          { at: 10.15, type: "ground" },
+          { at: 10.95, type: "oncoming" },
+          { at: 11.80, type: "score" },
+          { at: 13.40, type: "hole" },
+          { at: 14.10, type: "score" },
+        ]),
       });
       const P3_PATTERN_DEFS = Object.freeze([
         { name: "G_S_H", learning: true, minKm: 0, steps: [
@@ -1752,6 +2013,7 @@
         return req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE || req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE;
       }
       function shouldDeferSpawnRequest(req, km) {
+        if (req && req.p5ChaseSessionId) return false;
         if (req && req.spawnSource === SPAWN_SOURCE.PATTERN) return false;
         if (isDecisionPatternReservationActive() && req && (req.spawnSource === SPAWN_SOURCE.NORMAL || req.spawnSource === SPAWN_SOURCE.CHASE) && req.kind !== SPAWN_REQUEST_KIND.SCORE_ITEM) return true;
         if (req && req.kind === SPAWN_REQUEST_KIND.HOLE && isOncomingCriticallyOverdue(km)) return true;
@@ -1823,6 +2085,7 @@
         const forceEarlyOncoming = (earlyOncomingDue || (km >= 2 && !run.earlyOncomingSpawned));
         const dueAirObstacle = km >= spawn.nextAirObstacleAt;
         collectDecisionPatternRequests(km);
+        collectP5ChaseRequests(km);
         const reservePattern = isDecisionPatternReservationActive();
         const reserveHole = isHoleReservationActive(km);
         const reserveScoreItem = isScoreItemReservationActive(km);
@@ -1840,9 +2103,21 @@
             SPAWN_REQUEST_KIND.AIR_OBSTACLE
           );
         }
-        if (isDancerInvincible() && run.invincibleObstacleSpawned < run.invincibleObstaclePlanCount && km >= spawn.nextObstacleAt) {
-          const key = "invincible:" + run.invincibleObstacleSpawned;
-          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.INVINCIBLE, km, key, () => ({ dir: -1, emoji: OBS_TYPES[(Math.random()*OBS_TYPES.length)|0][0], x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
+        if (!chase && isDancerInvincible() && run.invincibleSessionPresentedObstacleCount < run.invincibleObstaclePlanCount && run.elapsed >= spawn.nextInvincibleObstacleAt && !hasPendingInvincibleRequest()) {
+          const key = `invincible:${run.invincibleSessionId}:${run.invincibleRequestIndex}`;
+          enqueueSpawnRequestIfNew(
+            WORLD_ZONE.GROUND,
+            SPAWN_REQUEST_KIND.GROUND_OBSTACLE,
+            SPAWN_SOURCE.INVINCIBLE,
+            km,
+            key,
+            () => ({ dir: -1, emoji: run.invincibleRequestIndex % 2 ? "🏃🏻" : "🚶", x: -18 }),
+            SPAWN_REQUEST_KIND.GROUND_OBSTACLE,
+            () => {
+              run.invincibleRequestIndex = safeInt(run.invincibleRequestIndex) + 1;
+              spawn.nextInvincibleObstacleAt = run.elapsed + P5_CHASE.INVINCIBLE_REQUEST_GAP_SEC;
+            }
+          );
         }
         if (spawn.needObstacleBeforeNextHole && chaseReady && !decisionPatternOwnsBetweenHoleObstacle()) {
           const key = "between-hole:" + spawn.lastHoleAt.toFixed(4);
@@ -1852,11 +2127,7 @@
             return { dir: useOncoming ? 1 : -1, emoji: useOncoming ? "🚶" : (forcedBetweenHoleEmoji(km) || "🚶"), x: useOncoming ? getOncomingSpawnX(km) : -44 };
           }, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, () => { if (spawnRequestQueue(WORLD_ZONE.GROUND).some(r => r.key === key && r.payload && r.payload.dir === 1)) run.oncomingCandidateCount++; });
         }
-        if (chase && chaseReady && !suppressNormalGround && !reserveOncoming && run.elapsed >= (spawn.nextChaseEventAt || 999)) {
-          const key = "chase:" + spawn.nextChaseEventAt.toFixed(2);
-          enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, SPAWN_SOURCE.CHASE, km, key, () => ({ dir: -1, emoji: "🚶", x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE, () => { spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8); });
-        }
-        if (dueScoreItem) {
+        if (!chase && dueScoreItem) {
           const key = "score:" + spawn.nextScoreItemAt.toFixed(4);
           if (canSpawnItem(km) && items.length < MAX_ITEMS) { const itemQueued = enqueueSpawnRequestIfNew(WORLD_ZONE.AIR, SPAWN_REQUEST_KIND.SCORE_ITEM, SPAWN_SOURCE.NORMAL, km, key, () => {
             const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length];
@@ -1865,22 +2136,22 @@
             return { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge };
           }, SPAWN_REQUEST_KIND.SCORE_ITEM); if (itemQueued) scheduleNext("item", km, d); }
         }
-        if (dueHole && !reservePattern && !isOncomingCriticallyOverdue(km) && !spawn.needObstacleBeforeNextHole && chaseReady) {
+        if (!chase && dueHole && !reservePattern && !isOncomingCriticallyOverdue(km) && !spawn.needObstacleBeforeNextHole && chaseReady) {
           const key = "hole:" + spawn.nextHoleAt.toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.HOLE, SPAWN_REQUEST_KIND.HOLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, key, () => { const kind = chase ? "SMALL" : (d.holeKinds[(Math.random() * d.holeKinds.length) | 0]); const type = HOLE_TYPES[kind === "LARGE" && km < 5 ? "MEDIUM" : kind] || HOLE_TYPES.MEDIUM; return { kind, w: rand(type.min, type.max) }; }, SPAWN_REQUEST_KIND.HOLE);
         } else if (dueHole && spawn.needObstacleBeforeNextHole) {
           if (km < 1) spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km + 0.012);
           else spawn.nextHoleAt = Math.max(spawn.nextHoleAt, km);
         }
-        if (dueObstacle && chaseReady && !suppressNormalGround && !reserveOncoming) {
+        if (!chase && dueObstacle && chaseReady && !suppressNormalGround && !reserveOncoming) {
           const key = "obstacle:" + spawn.nextObstacleAt.toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.GROUND_OBSTACLE, chase ? SPAWN_SOURCE.CHASE : SPAWN_SOURCE.NORMAL, km, key, () => ({ dir: -1, emoji: chase ? "🚶" : null, x: -44 }), SPAWN_REQUEST_KIND.GROUND_OBSTACLE);
         }
-        if ((oncomingDue || forceEarlyOncoming) && (!suppressNormalGround || forceEarlyOncoming)) {
+        if (!chase && (oncomingDue || forceEarlyOncoming) && (!suppressNormalGround || forceEarlyOncoming)) {
           const key = (forceEarlyOncoming ? "early:" : "oncoming:") + (forceEarlyOncoming ? run.earlyOncomingForceAt : spawn.nextOncomingAt).toFixed(4);
           enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, forceEarlyOncoming ? SPAWN_SOURCE.EARLY_ONCOMING : SPAWN_SOURCE.NORMAL, km, key, () => ({ dir: 1, emoji: "🚶", x: getOncomingSpawnX(km) }), SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE, () => { run.oncomingCandidateCount++; if (forceEarlyOncoming) run.earlyOncomingCandidateCount = safeInt(run.earlyOncomingCandidateCount) + 1; });
         }
-        if (km >= run.nextDancerAt && !reservePattern) {
+        if (!chase && km >= run.nextDancerAt && !reservePattern) {
           const key = "dancer:" + run.nextDancerAt.toFixed(4);
           if (!hasSpawnRequestKey(key) && Math.random() < 0.006) enqueueSpawnRequestIfNew(WORLD_ZONE.GROUND, SPAWN_REQUEST_KIND.POWERUP, SPAWN_SOURCE.NORMAL, km, key, { type: "👯‍♀️", high: false, lane: "mid", x: -36 }, SPAWN_REQUEST_KIND.POWERUP);
         }
@@ -1906,7 +2177,7 @@
         if (req.kind === SPAWN_REQUEST_KIND.GROUND_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("obstacle", km, d);
         if (req.kind === SPAWN_REQUEST_KIND.ONCOMING_OBSTACLE && req.spawnSource === SPAWN_SOURCE.NORMAL) scheduleNext("oncoming", km, d);
         if (req.kind === SPAWN_REQUEST_KIND.AIR_OBSTACLE) scheduleNextAirObstacle(km);
-        if (req.spawnSource === SPAWN_SOURCE.CHASE) spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
+        if (req.spawnSource === SPAWN_SOURCE.CHASE && !req.p5ChaseSessionId) spawn.nextChaseEventAt = run.elapsed + rand(0.4, 0.8);
         if (req.kind === SPAWN_REQUEST_KIND.POWERUP) run.nextDancerAt = km + 1.5;
       }
       function markSpawnAttempt(req) {
@@ -1981,6 +2252,7 @@
           advanceScheduleAfterResolution(req, entity, km, d);
           req.status = SPAWN_REQUEST_STATUS.RESOLVED;
           recordDecisionPatternRequestOutcome(req, true, km, entity);
+          recordP5ChaseRequestOutcome(req, true);
           return true;
         }
         if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) run.betweenHoleObstacleRetryCount = safeInt(run.betweenHoleObstacleRetryCount) + 1;
@@ -1995,6 +2267,7 @@
             req.status = SPAWN_REQUEST_STATUS.SKIPPED;
             run.spawnRequestSkippedCount++;
             recordDecisionPatternRequestOutcome(req, false, km, null);
+            recordP5ChaseRequestOutcome(req, false);
             if (req.spawnSource === SPAWN_SOURCE.BETWEEN_HOLES) resolveBetweenHoleObstacle(km, req.payload && req.payload.dir);
             advanceScheduleAfterResolution(req, null, km, d);
             return true;
@@ -2113,6 +2386,7 @@
       function spawnHolePattern(km, d, opt = {}) {
         let kind = opt.kind || d.holeKinds[(Math.random() * d.holeKinds.length) | 0];
         if (kind === "LARGE" && km < 5) kind = "MEDIUM";
+        kind = normalizeHoleKindForP5(kind, km);
         const type = HOLE_TYPES[kind] || HOLE_TYPES.MEDIUM;
         const w = opt.w || rand(type.min, type.max);
         const x = opt.x ?? -w - 16;
@@ -2237,8 +2511,8 @@
           value: t.value,
           missPenalty: opt.challenge ? t.missPenalty : 0,
           duration: t.duration || 0,
-          placed: Boolean(t.placed || isDancer),
-          speedMult: isDancer ? DANCER_PLACE_SCROLL_MULT : 1,
+          placed: Boolean(opt.placed || t.placed || isDancer),
+          speedMult: Number.isFinite(opt.speedMult) ? opt.speedMult : (isDancer ? DANCER_PLACE_SCROLL_MULT : 1),
           missed: false,
           w: isDancer ? 32 : 28,
           h: isDancer ? 32 : 28,
@@ -2270,6 +2544,11 @@
                 ? (BASE_SPEED + o.speed) * 42
                 : STATIC_OBSTACLE_SCROLL_PX;
           o.x += relPx * getSpeedMultiplierByKm((run.maxRunMeters || run.runMeters || 0) / 1000) * (run.chase > 0 ? CHASE_MULT : 1) * dt;
+          if (o.p5InvincibleSessionId === run.invincibleSessionId && !o.p5InvincibleCounted && o.active !== false && o.x + Math.min(safeNumber(o.w, 1), 18) >= 0 && o.x < W) {
+            o.p5InvincibleCounted = true;
+            run.invincibleSessionPresentedObstacleCount = safeInt(run.invincibleSessionPresentedObstacleCount) + 1;
+            run.invinciblePresentedObstacleCount = safeInt(run.invinciblePresentedObstacleCount) + 1;
+          }
           if (o.zone === WORLD_ZONE.AIR && !o.groundSafeCounted && previousX <= player.x && o.x > player.x) {
             o.groundSafeCounted = true;
             if (player.onGround) run.airObstacleGroundSafePassCount = safeInt(run.airObstacleGroundSafePassCount) + 1;
@@ -2440,7 +2719,8 @@
               o.active = false;
               burst(o.x, o.y, "#b7a8ff", 10);
               run.invinciblePreventedAccidents++;
-              floatText(o.x + 14, o.y - 8, "無敵", "#f4eaff");
+              run.invincibleBreakthroughFlash = 0.85;
+              floatText(o.x + 14, o.y - 8, "無敵で突破!", "#f4eaff");
               playTone(720, 0.04, "triangle");
             } else {
               accident(o);
@@ -2456,8 +2736,7 @@
         run.accidents++;
         run.danger++;
         run.maxDanger = Math.max(run.maxDanger, run.danger);
-        run.chase = CHASE_TIME;
-        spawn.chaseGraceUntil = run.elapsed + 0.7;
+        startP5ChaseSession(run.runMeters / 1000);
         spawn.nextObstacleAt = Math.min(spawn.nextObstacleAt, run.runMeters / 1000 + 0.018);
         spawn.nextHoleAt = Math.min(spawn.nextHoleAt, run.runMeters / 1000 + 0.024);
         spawn.nextScoreItemAt = Math.min(spawn.nextScoreItemAt || spawn.nextItemAt, run.runMeters / 1000 + 0.010);
@@ -2934,8 +3213,22 @@
           chaseHoleSpawnCount: run.chaseHoleSpawnCount || 0,
           chaseScoreItemSpawnCount: run.chaseScoreItemSpawnCount || 0,
           chaseOncomingSpawnCount: run.chaseOncomingSpawnCount || 0,
+          chaseSessionCount: safeInt(run.chaseSessionCount),
+          chaseCompletedSessionCount: safeInt(run.chaseCompletedSessionCount),
+          chaseGroundPresentedCount: safeInt(run.chaseGroundPresentedCount),
+          chaseHolePresentedCount: safeInt(run.chaseHolePresentedCount),
+          chaseScoreItemPresentedCount: safeInt(run.chaseScoreItemPresentedCount),
+          chaseOncomingPresentedCount: safeInt(run.chaseOncomingPresentedCount),
+          chaseMaxDecisionBlankSec: safeNumber(run.chaseMaxDecisionBlankSec),
+          chaseGraceHazardViolationCount: safeInt(run.chaseGraceHazardViolationCount),
+          chaseCountRangeViolationCount: safeInt(run.chaseCountRangeViolationCount),
+          chaseLastSessionSummary: run.chaseLastSessionSummary,
+          invincibleSessionCount: safeInt(run.invincibleSessionCount),
           invincibleObstacleSpawnCount: run.invincibleObstacleSpawnCount || 0,
+          invinciblePresentedObstacleCount: safeInt(run.invinciblePresentedObstacleCount),
           invinciblePreventedAccidents: run.invinciblePreventedAccidents || 0,
+          invincibleBackgroundDecayViolationCount: safeInt(run.invincibleBackgroundDecayViolationCount),
+          invincibleLargeHoleViolationCount: safeInt(run.invincibleLargeHoleViolationCount),
           missTargetItemCount: run.missTargetItemCount || 0,
           missCount: run.missCount || 0,
           challengeItemSpawnCount: run.challengeItemSpawnCount || 0,

@@ -1,0 +1,365 @@
+{
+  "generatedAt": "2026-07-19T22:52:12.547Z",
+  "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+  "purpose": "P5 chase phases and played-time invincibility regression",
+  "chaseSeeds": [
+    21001,
+    21002,
+    21003,
+    21004,
+    21005
+  ],
+  "chaseRuns": [
+    {
+      "seed": 21001,
+      "startKm": 2.5,
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "frames": 900,
+      "chaseEndElapsed": 15,
+      "chaseRemaining": 0,
+      "chaseSessionActive": false,
+      "completedSessions": 1,
+      "phase": "idle",
+      "visibleCounts": {
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "powerups": 0
+      },
+      "sessionSummary": {
+        "id": 1,
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "reached2Km": true,
+        "maxDecisionBlankSec": 0.19999999999999998,
+        "dancerAdded": 0
+      },
+      "sessionGroundCount": 5,
+      "sessionHoleCount": 2,
+      "sessionScoreItemCount": 7,
+      "sessionOncomingCount": 1,
+      "maxDecisionBlankSec": 0.19999999999999998,
+      "graceP5Hazards": 0,
+      "graceViolationCounter": 0,
+      "countRangeViolationCounter": 0,
+      "unavoidableOncomingCount": 0,
+      "consecutiveHoleViolationCount": 0,
+      "dancerAdded": 0,
+      "maxVisibleHazards": 1,
+      "remainingP5Requests": 0,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 21002,
+      "startKm": 2.5,
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "frames": 900,
+      "chaseEndElapsed": 15,
+      "chaseRemaining": 0,
+      "chaseSessionActive": false,
+      "completedSessions": 1,
+      "phase": "idle",
+      "visibleCounts": {
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "powerups": 0
+      },
+      "sessionSummary": {
+        "id": 1,
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "reached2Km": true,
+        "maxDecisionBlankSec": 0.19999999999999998,
+        "dancerAdded": 0
+      },
+      "sessionGroundCount": 5,
+      "sessionHoleCount": 2,
+      "sessionScoreItemCount": 7,
+      "sessionOncomingCount": 1,
+      "maxDecisionBlankSec": 0.19999999999999998,
+      "graceP5Hazards": 0,
+      "graceViolationCounter": 0,
+      "countRangeViolationCounter": 0,
+      "unavoidableOncomingCount": 0,
+      "consecutiveHoleViolationCount": 0,
+      "dancerAdded": 0,
+      "maxVisibleHazards": 1,
+      "remainingP5Requests": 0,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 21003,
+      "startKm": 2.5,
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "frames": 900,
+      "chaseEndElapsed": 15,
+      "chaseRemaining": 0,
+      "chaseSessionActive": false,
+      "completedSessions": 1,
+      "phase": "idle",
+      "visibleCounts": {
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "powerups": 0
+      },
+      "sessionSummary": {
+        "id": 1,
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "reached2Km": true,
+        "maxDecisionBlankSec": 0.19999999999999998,
+        "dancerAdded": 0
+      },
+      "sessionGroundCount": 5,
+      "sessionHoleCount": 2,
+      "sessionScoreItemCount": 7,
+      "sessionOncomingCount": 1,
+      "maxDecisionBlankSec": 0.19999999999999998,
+      "graceP5Hazards": 0,
+      "graceViolationCounter": 0,
+      "countRangeViolationCounter": 0,
+      "unavoidableOncomingCount": 0,
+      "consecutiveHoleViolationCount": 0,
+      "dancerAdded": 0,
+      "maxVisibleHazards": 1,
+      "remainingP5Requests": 0,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 21004,
+      "startKm": 2.5,
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "frames": 900,
+      "chaseEndElapsed": 15,
+      "chaseRemaining": 0,
+      "chaseSessionActive": false,
+      "completedSessions": 1,
+      "phase": "idle",
+      "visibleCounts": {
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "powerups": 0
+      },
+      "sessionSummary": {
+        "id": 1,
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "reached2Km": true,
+        "maxDecisionBlankSec": 0.19999999999999998,
+        "dancerAdded": 0
+      },
+      "sessionGroundCount": 5,
+      "sessionHoleCount": 2,
+      "sessionScoreItemCount": 7,
+      "sessionOncomingCount": 1,
+      "maxDecisionBlankSec": 0.19999999999999998,
+      "graceP5Hazards": 0,
+      "graceViolationCounter": 0,
+      "countRangeViolationCounter": 0,
+      "unavoidableOncomingCount": 0,
+      "consecutiveHoleViolationCount": 0,
+      "dancerAdded": 0,
+      "maxVisibleHazards": 1,
+      "remainingP5Requests": 0,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    },
+    {
+      "seed": 21005,
+      "startKm": 2.5,
+      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "frames": 900,
+      "chaseEndElapsed": 15,
+      "chaseRemaining": 0,
+      "chaseSessionActive": false,
+      "completedSessions": 1,
+      "phase": "idle",
+      "visibleCounts": {
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "powerups": 0
+      },
+      "sessionSummary": {
+        "id": 1,
+        "ground": 5,
+        "holes": 2,
+        "scoreItems": 7,
+        "oncoming": 1,
+        "reached2Km": true,
+        "maxDecisionBlankSec": 0.19999999999999998,
+        "dancerAdded": 0
+      },
+      "sessionGroundCount": 5,
+      "sessionHoleCount": 2,
+      "sessionScoreItemCount": 7,
+      "sessionOncomingCount": 1,
+      "maxDecisionBlankSec": 0.19999999999999998,
+      "graceP5Hazards": 0,
+      "graceViolationCounter": 0,
+      "countRangeViolationCounter": 0,
+      "unavoidableOncomingCount": 0,
+      "consecutiveHoleViolationCount": 0,
+      "dancerAdded": 0,
+      "maxVisibleHazards": 1,
+      "remainingP5Requests": 0,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkRequests": [
+        {
+          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+        }
+      ]
+    }
+  ],
+  "pre2kmChase": {
+    "seed": 21999,
+    "startKm": 1.2,
+    "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+    "frames": 900,
+    "chaseEndElapsed": 15,
+    "chaseRemaining": 0,
+    "chaseSessionActive": false,
+    "completedSessions": 1,
+    "phase": "idle",
+    "visibleCounts": {
+      "ground": 5,
+      "holes": 2,
+      "scoreItems": 7,
+      "oncoming": 0,
+      "powerups": 0
+    },
+    "sessionSummary": {
+      "id": 1,
+      "ground": 5,
+      "holes": 2,
+      "scoreItems": 7,
+      "oncoming": 0,
+      "reached2Km": false,
+      "maxDecisionBlankSec": 0.2833333333333333,
+      "dancerAdded": 0
+    },
+    "sessionGroundCount": 5,
+    "sessionHoleCount": 2,
+    "sessionScoreItemCount": 7,
+    "sessionOncomingCount": 0,
+    "maxDecisionBlankSec": 0.2833333333333333,
+    "graceP5Hazards": 0,
+    "graceViolationCounter": 0,
+    "countRangeViolationCounter": 0,
+    "unavoidableOncomingCount": 0,
+    "consecutiveHoleViolationCount": 0,
+    "dancerAdded": 0,
+    "maxVisibleHazards": 1,
+    "remainingP5Requests": 0,
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "networkRequests": [
+      {
+        "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
+        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
+      }
+    ]
+  },
+  "invincibleTiming": {
+    "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+    "initial": 4,
+    "afterWallClockOnly": 4,
+    "afterTwoPlayedSeconds": 2.000000000000007,
+    "afterFourPlayedSeconds": 0,
+    "blockUntil": 25.14,
+    "currentKm": 25,
+    "blockedKind": "MEDIUM",
+    "releasedKind": "LARGE",
+    "sessionCount": 1,
+    "backgroundViolationCount": 0,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "invinciblePresentation": {
+    "planned": 3,
+    "visibleInvincibleObstacles": 3,
+    "sessionPresented": 3,
+    "totalPresented": 3,
+    "invincibleRemaining": 0,
+    "pendingRequest": false,
+    "frames": 240,
+    "largeHoleBlockUntilKm": 2.8068638249999984,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "invincibleCollision": {
+    "dangerUnchanged": true,
+    "preventedDelta": 1,
+    "obstacleActiveAfter": false,
+    "breakthroughTexts": 1,
+    "breakthroughFlash": 0.85,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "invincibleHole": {
+    "fell": true,
+    "mode": "RESULT",
+    "reason": "穴に落ちました",
+    "invincibleRemaining": 4,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "aggregate": {
+    "minGround": 5,
+    "maxGround": 5,
+    "minHoles": 2,
+    "maxHoles": 2,
+    "minScoreItems": 7,
+    "maxScoreItems": 7,
+    "minOncoming": 1,
+    "maxOncoming": 1,
+    "maxDecisionBlankSec": 0.19999999999999998
+  },
+  "failures": [],
+  "passed": true
+}

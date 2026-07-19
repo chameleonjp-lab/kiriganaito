@@ -8,7 +8,7 @@ const vm = require("vm");
 const ROOT = path.join(__dirname, "..");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const OUTPUT_PATH = path.join(ROOT, "artifacts", "p4-air-obstacle-regression.json");
-const EXPECTED_VERSION = "kiriganaito-2026-07-20-v20-air-obstacle";
+const EXPECTED_VERSION = "kiriganaito-2026-07-20-v21-chase-invincible";
 const NATURAL_SEEDS = [20001, 20002, 20003, 20004, 20005];
 const TARGET_METERS = 7000;
 
@@ -191,7 +191,7 @@ function directChecks(appScript) {
   const chaseBlocked = spawnAirObstaclePattern(2.5, { x: -76 }) === false;
 
   resetAt(2.5);
-  run.dancerInvincibleUntil = performance.now() + 4000;
+  activateDancerInvincible();
   const invincibleBlocked = spawnAirObstaclePattern(2.5, { x: -76 }) === false;
 
   let geometryFailures = 0;
