@@ -71,4 +71,18 @@ for old, new, label in [
     text = text.replace(old, new, 1)
 
 path.write_text(text)
-print('P1 source scenarios updated for P5 APIs')
+
+p4_path = Path('tests/p4-air-obstacle-regression.js')
+p4 = p4_path.read_text()
+old_p4 = '''  resetAt(2.5);
+  run.dancerInvincibleUntil = performance.now() + 4000;
+  const invincibleBlocked = spawnAirObstaclePattern(2.5, { x: -76 }) === false;'''
+new_p4 = '''  resetAt(2.5);
+  activateDancerInvincible();
+  const invincibleBlocked = spawnAirObstaclePattern(2.5, { x: -76 }) === false;'''
+count = p4.count(old_p4)
+if count != 1:
+    raise SystemExit(f'P4 invincible direct scenario: expected 1, got {count}')
+p4_path.write_text(p4.replace(old_p4, new_p4, 1))
+
+print('P1 source and P4 invincibility scenarios updated for P5 APIs')
