@@ -1,0 +1,130 @@
+name: Apply P5 chase and invincible on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/_apply-p5-chase-invincible-pr.yml"
+      - "tools/apply-p5-chase-invincible.py"
+      - "tests/p5-chase-invincible-regression.js"
+      - "P5_CHASE_INVINCIBLE_CONTRACT.md"
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Apply P5 implementation
+        id: apply
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          python tools/apply-p5-chase-invincible.py > artifacts/p5-apply.log 2>&1
+
+      - name: Upload apply diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-apply-diagnostics
+          path: artifacts/p5-apply.log
+          if-no-files-found: error
+
+      - name: Enforce P5 apply
+        if: steps.apply.outcome != 'success'
+        run: |
+          cat artifacts/p5-apply.log
+          exit 1
+
+      - name: Progressive autoplay
+        run: node tests/progressive-autoplay.js
+
+      - name: Endurance 150km
+        run: node tests/endurance-150km.js
+
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
+
+      - name: P1 effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: P2 density gate
+        run: node tests/p2-density-regression.js
+
+      - name: P3 pattern gate
+        run: node tests/p3-pattern-regression.js
+
+      - name: P4 air obstacle gate
+        run: node tests/p4-air-obstacle-regression.js
+
+      - name: P5 chase and invincible gate
+        run: node tests/p5-chase-invincible-regression.js
+
+      - name: Upload patched artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-patched-diagnostics
+          path: |
+            artifacts/p5-apply.log
+            artifacts/p1-effective-presentation-metrics.json
+            artifacts/p2-density-regression.json
+            artifacts/p2-effective-presentation-30-seeds.json
+            artifacts/p3-pattern-regression.json
+            artifacts/p4-air-obstacle-regression.json
+            artifacts/p5-chase-invincible-regression.json
+            artifacts/progressive-autoplay-report.json
+            artifacts/progressive-autoplay-summary.txt
+            artifacts/release-test-report.json
+            artifacts/release-test-summary.txt
+            artifacts/endurance-150km-result.json
+          if-no-files-found: warn
+
+      - name: Commit verified P5 implementation
+        id: finalize
+        continue-on-error: true
+        run: |
+          {
+            set -euxo pipefail
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git rm -f --ignore-unmatch \
+              .github/workflows/_apply-p5-chase-invincible-pr.yml \
+              tools/apply-p5-chase-invincible.py
+            git add -u
+            test -f artifacts/p5-chase-invincible-regression.json
+            git add artifacts/p5-chase-invincible-regression.json
+            git status --short
+            git diff --cached --check
+            git commit -m "feat: add P5 chase phases and played-time invincibility"
+            git push origin HEAD:${{ github.head_ref }}
+          } > artifacts/p5-finalize.log 2>&1
+
+      - name: Upload finalize diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-finalize-diagnostics
+          path: artifacts/p5-finalize.log
+          if-no-files-found: warn
+
+      - name: Enforce P5 finalize
+        if: steps.finalize.outcome != 'success'
+        run: |
+          cat artifacts/p5-finalize.log
+          exit 1
