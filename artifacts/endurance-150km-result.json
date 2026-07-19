@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-18T15:59:38.145Z",
+  "generatedAt": "2026-07-19T21:47:26.151Z",
   "targetMeters": 150000,
   "seed": 150001,
   "result": {
     "autopilot": {
       "mode": "PLAYING",
-      "runMeters": 152500,
+      "runMeters": 152050,
       "scoreMeters": 150000,
       "reason": "",
       "accidents": 0,
       "maxDanger": 0,
-      "maxObs": 2,
-      "maxItems": 3,
+      "maxObs": 3,
+      "maxItems": 4,
       "maxHoles": 1,
       "maxParticles": 12,
       "sawDancer": true,
@@ -20,13 +20,13 @@
       "bikeCleared": false
     },
     "mode": "RESULT",
-    "runMeters": 152500,
+    "runMeters": 152050,
     "scoreMeters": 150000,
     "reason": "150km自然走行検証完了",
     "accidents": 0,
     "maxDanger": 0,
-    "elapsedMs": 2918550,
-    "hudRun": "152.50km",
+    "elapsedMs": 2910033,
+    "hudRun": "152.05km",
     "hudScore": "150.00km",
     "resultScore": "150.00km",
     "resultReason": "終了理由：150km自然走行検証完了",
@@ -38,7 +38,7 @@
       ],
       [
         "実走行距離",
-        "152.50km"
+        "152.05km"
       ],
       [
         "アイテム加算",
@@ -46,7 +46,7 @@
       ],
       [
         "基礎距離",
-        "152.50km"
+        "152.05km"
       ],
       [
         "事故ペナルティ",
@@ -54,19 +54,19 @@
       ],
       [
         "取り逃がしペナルティ",
-        "-2.50km"
+        "-2.05km"
       ],
       [
         "総ペナルティ",
-        "-2.50km"
+        "-2.05km"
       ],
       [
         "ペナルティ適用上限",
-        "76.25km"
+        "76.03km"
       ],
       [
         "実適用ペナルティ",
-        "-2.50km"
+        "-2.05km"
       ],
       [
         "カットされたペナルティ",
@@ -86,7 +86,7 @@
       ],
       [
         "加点アイテム出現数",
-        "1188個"
+        "1186個"
       ],
       [
         "加点アイテム取得数",
@@ -98,7 +98,7 @@
       ],
       [
         "走行時間",
-        "2918.6秒"
+        "2910.0秒"
       ],
       [
         "終了理由",
@@ -122,15 +122,15 @@
       ],
       [
         "平均穴間隔",
-        "0.181km"
+        "0.180km"
       ],
       [
         "障害物",
-        "1139個"
+        "1134個"
       ],
       [
         "最大障害物間隔",
-        "0.187km"
+        "0.178km"
       ],
       [
         "平均障害物間隔",
@@ -138,19 +138,19 @@
       ],
       [
         "対向障害物",
-        "295個"
+        "289個"
       ],
       [
         "対向障害物候補数",
-        "1091回"
+        "1080回"
       ],
       [
         "対向障害物出現数",
-        "295個"
+        "289個"
       ],
       [
         "対向障害物失敗再試行数",
-        "3619回"
+        "3633回"
       ],
       [
         "2km以内対向障害物出現数",
@@ -210,11 +210,11 @@
       ],
       [
         "穴間必須障害物出現数",
-        "802個"
+        "798個"
       ],
       [
         "穴間通常障害物出現数",
-        "802個"
+        "798個"
       ],
       [
         "穴間対向障害物出現数",
@@ -222,7 +222,7 @@
       ],
       [
         "穴間障害物生成失敗再試行数",
-        "5624回"
+        "5592回"
       ],
       [
         "穴だけ連続した回数",
@@ -230,11 +230,11 @@
       ],
       [
         "加点アイテム",
-        "1188個"
+        "1186個"
       ],
       [
         "無敵アイテム",
-        "92個"
+        "91個"
       ],
       [
         "逃走中の障害物",
@@ -259,15 +259,15 @@
       ],
       [
         "runMeters",
-        "152500"
+        "152050"
       ],
       [
         "maxRunMeters",
-        "152500.3196628339"
+        "152050.1925378326"
       ],
       [
         "lastNonZeroRunMeters",
-        "152500.3196628339"
+        "152050.1925378326"
       ],
       [
         "scoreMeters",
@@ -283,7 +283,7 @@
       ],
       [
         "resultSnapshot.runMeters",
-        "152500"
+        "152050"
       ],
       [
         "resultScore.textContent",
@@ -299,11 +299,11 @@
       ],
       [
         "version",
-        "kiriganaito-2026-07-19-v19-decision-patterns"
+        "kiriganaito-2026-07-20-v20-air-obstacle"
       ]
     ],
-    "maxObs": 2,
-    "maxItems": 3,
+    "maxObs": 3,
+    "maxItems": 4,
     "maxHoles": 1,
     "maxParticles": 12,
     "sawDancer": true,
@@ -314,7 +314,7 @@
       "p_game_slug": "kiriganaito",
       "p_display_name": "TEST150",
       "p_score": 150000,
-      "p_client_version": "kiriganaito-2026-07-19-v19-decision-patterns"
+      "p_client_version": "kiriganaito-2026-07-20-v20-air-obstacle"
     },
     "debug": ""
   },

@@ -207,7 +207,7 @@ function runSeed(script, seed) {
   checkCollisions = () => {};
   checkHoleFall = () => false;
 
-  const categoryNames = ["hole", "groundObstacle", "oncoming", "scoreItem", "powerup"];
+  const categoryNames = ["hole", "groundObstacle", "airObstacle", "oncoming", "scoreItem", "powerup"];
   const sourceNames = Object.keys(SPAWN_SOURCE).map((key) => SPAWN_SOURCE[key]);
   const metrics = {};
   const sourceCounts = {};
@@ -309,7 +309,7 @@ function runSeed(script, seed) {
     for (let i = 0; i < obstacles.length; i++) {
       const entity = obstacles[i];
       if (!entity.presented && isRecognizable(entity)) {
-        recordPresented(entity.movementType === MOVEMENT_TYPE.ONCOMING ? "oncoming" : "groundObstacle", entity);
+        recordPresented(entity.zone === WORLD_ZONE.AIR ? "airObstacle" : entity.movementType === MOVEMENT_TYPE.ONCOMING ? "oncoming" : "groundObstacle", entity);
       }
     }
     for (let i = 0; i < items.length; i++) {
@@ -326,7 +326,7 @@ function runSeed(script, seed) {
     }
     for (let i = 0; i < obstacles.length; i++) {
       const entity = obstacles[i];
-      if (entity.active !== false && entity.x < W && entity.x + (entity.w || 0) > 0) simultaneousHazards += 1;
+      if (entity.active !== false && entity.zone !== WORLD_ZONE.AIR && entity.x < W && entity.x + (entity.w || 0) > 0) simultaneousHazards += 1;
     }
     maxSimultaneousStrongHazards = Math.max(maxSimultaneousStrongHazards, simultaneousHazards);
 
@@ -363,6 +363,7 @@ function runSeed(script, seed) {
   const generated = {
     hole: safeInt(run.holeSpawnCount),
     groundObstacle: Math.max(0, safeInt(run.obstacleSpawnCount) - safeInt(run.oncomingSpawnCount)),
+    airObstacle: safeInt(run.airObstacleSpawnCount),
     oncoming: safeInt(run.oncomingSpawnCount),
     scoreItem: safeInt(run.scoreItemSpawnCount),
     powerup: safeInt(run.invincibleItemSpawnCount),
@@ -370,6 +371,7 @@ function runSeed(script, seed) {
   const presented = {
     hole: metrics.hole.count,
     groundObstacle: metrics.groundObstacle.count,
+    airObstacle: metrics.airObstacle.count,
     oncoming: metrics.oncoming.count,
     scoreItem: metrics.scoreItem.count,
     powerup: metrics.powerup.count,
@@ -554,7 +556,7 @@ function validateRun(run) {
 }
 
 function aggregate(runs) {
-  const categoryNames = ["hole", "groundObstacle", "oncoming", "scoreItem", "powerup"];
+  const categoryNames = ["hole", "groundObstacle", "airObstacle", "oncoming", "scoreItem", "powerup"];
   const totals = {};
   for (const category of categoryNames) {
     totals[category] = {
@@ -601,7 +603,7 @@ const report = {
   definition: {
     presented: "An entity is counted once when at least min(width, 18px) has entered the visible canvas and its left edge is still before the canvas right edge.",
     blankAfter500m: "Maximum distance/time after 0.5km with no newly presented hole, obstacle, item, or powerup.",
-    strongHazard: "A visible hole or active ground/oncoming obstacle intersecting the canvas.",
+    strongHazard: "A visible hole or active ground/oncoming/air obstacle intersecting the canvas.",
   },
   seeds: SEEDS,
   runs,
