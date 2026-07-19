@@ -14,6 +14,7 @@ on:
       - "tools/tune-p4-density-3.py"
       - "tools/tune-p4-density-4.py"
       - "tools/tune-p4-density-5.py"
+      - "tools/tune-p4-density-6.py"
       - "tests/p4-air-obstacle-regression.js"
       - "P4_AIR_OBSTACLE_CONTRACT.md"
 
@@ -50,6 +51,7 @@ jobs:
           python tools/tune-p4-density-3.py >> artifacts/p4-apply.log 2>&1
           python tools/tune-p4-density-4.py >> artifacts/p4-apply.log 2>&1
           python tools/tune-p4-density-5.py >> artifacts/p4-apply.log 2>&1
+          python tools/tune-p4-density-6.py >> artifacts/p4-apply.log 2>&1
 
       - name: Upload apply diagnostics
         if: always()
@@ -116,7 +118,8 @@ jobs:
             tools/tune-p4-density-2.py \
             tools/tune-p4-density-3.py \
             tools/tune-p4-density-4.py \
-            tools/tune-p4-density-5.py
+            tools/tune-p4-density-5.py \
+            tools/tune-p4-density-6.py
           git add index.html SPEC.md TEST_REPORT.md \
             tests/effective-presentation-metrics.js \
             tests/p2-density-regression.js \
