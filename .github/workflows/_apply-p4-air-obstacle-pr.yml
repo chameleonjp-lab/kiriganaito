@@ -121,41 +121,49 @@ jobs:
           if-no-files-found: warn
 
       - name: Commit verified P4 implementation
+        id: finalize
+        continue-on-error: true
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/_apply-p4-air-obstacle-pr.yml \
-            tools/apply-p4-air-obstacle.py \
-            tools/fix-p4-apply.py \
-            tools/tune-p4-metrics.py \
-            tools/tune-p4-density.py \
-            tools/tune-p4-density-2.py \
-            tools/tune-p4-density-3.py \
-            tools/tune-p4-density-4.py \
-            tools/tune-p4-density-5.py \
-            tools/tune-p4-density-6.py \
-            tools/tune-p4-density-7.py \
-            tools/tune-p4-density-8.py \
-            tools/tune-p4-density-9.py \
-            tools/tune-p4-density-10.py \
-            tools/tune-p4-density-11.py \
-            tools/tune-p4-density-12.py \
-            tools/tune-p4-diagnostics.py
-          git add index.html SPEC.md TEST_REPORT.md \
-            tests/effective-presentation-metrics.js \
-            tests/p2-density-regression.js \
-            tests/p3-pattern-regression.js \
-            tests/p4-air-obstacle-regression.js \
-            tests/release-comprehensive.js \
-            artifacts/p1-effective-presentation-metrics.json \
-            artifacts/p2-density-regression.json \
-            artifacts/p2-effective-presentation-30-seeds.json \
-            artifacts/p3-pattern-regression.json \
-            artifacts/p4-air-obstacle-regression.json \
-            artifacts/progressive-autoplay-report.json \
-            artifacts/progressive-autoplay-summary.txt \
-            artifacts/release-test-report.json \
-            artifacts/release-test-summary.txt \
-            artifacts/endurance-150km-result.json
-          git commit -m "feat: add first airborne obstacle for P4"
-          git push origin HEAD:${{ github.head_ref }}
+          {
+            set -euxo pipefail
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git rm --ignore-unmatch .github/workflows/_apply-p4-air-obstacle-pr.yml \
+              tools/apply-p4-air-obstacle.py \
+              tools/fix-p4-apply.py \
+              tools/tune-p4-metrics.py \
+              tools/tune-p4-density.py \
+              tools/tune-p4-density-2.py \
+              tools/tune-p4-density-3.py \
+              tools/tune-p4-density-4.py \
+              tools/tune-p4-density-5.py \
+              tools/tune-p4-density-6.py \
+              tools/tune-p4-density-7.py \
+              tools/tune-p4-density-8.py \
+              tools/tune-p4-density-9.py \
+              tools/tune-p4-density-10.py \
+              tools/tune-p4-density-11.py \
+              tools/tune-p4-density-12.py \
+              tools/tune-p4-diagnostics.py
+            git add -u
+            test -f artifacts/p4-air-obstacle-regression.json
+            git add artifacts/p4-air-obstacle-regression.json
+            git status --short
+            git diff --cached --check
+            git commit -m "feat: add first airborne obstacle for P4"
+            git push origin HEAD:${{ github.head_ref }}
+          } > artifacts/p4-finalize.log 2>&1
+
+      - name: Upload finalize diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p4-finalize-diagnostics
+          path: artifacts/p4-finalize.log
+          if-no-files-found: error
+
+      - name: Enforce P4 finalize
+        if: steps.finalize.outcome != 'success'
+        run: |
+          cat artifacts/p4-finalize.log
+          exit 1
