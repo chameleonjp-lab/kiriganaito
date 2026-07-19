@@ -7,8 +7,8 @@ replacements = [
     (
         '  const categoryNames = ["hole", "groundObstacle", "oncoming", "scoreItem", "powerup"];',
         '  const categoryNames = ["hole", "groundObstacle", "airObstacle", "oncoming", "scoreItem", "powerup"];',
-        1,
-        'run category list',
+        2,
+        'category lists',
     ),
     (
         '        recordPresented(entity.movementType === MOVEMENT_TYPE.ONCOMING ? "oncoming" : "groundObstacle", entity);',
@@ -27,12 +27,6 @@ replacements = [
         '    groundObstacle: metrics.groundObstacle.count,\n    airObstacle: metrics.airObstacle.count,\n    oncoming: metrics.oncoming.count,',
         1,
         'presented air obstacle',
-    ),
-    (
-        '  const categoryNames = ["hole", "groundObstacle", "oncoming", "scoreItem", "powerup"];',
-        '  const categoryNames = ["hole", "groundObstacle", "airObstacle", "oncoming", "scoreItem", "powerup"];',
-        1,
-        'aggregate category list',
     ),
     (
         '    strongHazard: "A visible hole or active ground/oncoming obstacle intersecting the canvas.",',
