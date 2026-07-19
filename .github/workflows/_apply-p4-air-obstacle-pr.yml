@@ -128,7 +128,7 @@ jobs:
             set -euxo pipefail
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git rm --ignore-unmatch .github/workflows/_apply-p4-air-obstacle-pr.yml \
+            git rm -f --ignore-unmatch .github/workflows/_apply-p4-air-obstacle-pr.yml \
               tools/apply-p4-air-obstacle.py \
               tools/fix-p4-apply.py \
               tools/tune-p4-metrics.py \
