@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-20-v22-device-feedback-ui" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-21-v23-score-competition" />
     <style>
       * {
         box-sizing: border-box;
@@ -346,6 +346,14 @@
         text-align: center;
         text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
       }
+      .resultScoreLabel {
+        margin: 8px 0 -2px;
+        color: #ffe879;
+        font-size: 14px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-align: center;
+      }
       .resultMeta {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -409,7 +417,7 @@
           </div>
           <button id="changeNameBtn" class="secondary homeNameButton">名前を変更</button>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v22-device-feedback-ui</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-21-v23-score-competition</p>
         </div>
         <details id="homeRankingDetails" class="card rankingDetails">
           <summary>詳細ランキングを見る</summary>
@@ -467,7 +475,7 @@
             </section>
             <section class="ruleBlock">
               <h3>記録</h3>
-              <p>最終スコアは「実走行距離 + アイテム加算 − 事故・取り逃がしペナルティ」です。結果画面とランキングはkmで表示します。</p>
+              <p>最終記録は「実走行距離 + アイテム加算 − 事故・取り逃がしペナルティ」です。拾う判断と遠くまで走る判断の両方を競います。結果画面では実走行距離も分けて確認できます。</p>
             </section>
           </div>
           <button id="rulesBackBtn">ホームに戻る</button>
@@ -495,7 +503,7 @@
         <div class="gameWrap">
           <div class="card hud">
             <div>走行<b id="hudRun">0.00km</b></div>
-            <div>スコア<b id="hudScore">0.00km</b></div>
+            <div>記録<b id="hudScore">0.00km</b></div>
             <button id="retireBtn" class="danger retire">リタイア</button>
             <div>時間<b id="hudTime">0.0s</b></div>
             <div id="hudChaseBox">逃走<b id="hudChase">0.0s</b></div>
@@ -511,7 +519,8 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v22-device-feedback-ui</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-21-v23-score-competition</p>
+          <p class="resultScoreLabel">最終記録</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -553,7 +562,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-20-v22-device-feedback-ui",
+        CLIENT_VERSION = "kiriganaito-2026-07-21-v23-score-competition",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -743,6 +752,13 @@
           ["🛵", 3.6],
           ["🚗", 3.8],
         ];
+      const SCORE_ITEM_BALANCE_SEQUENCE = [
+        "🔩", "💰", "💰", "⚙️", "💰",
+        "💰", "🔩", "💰", "💰", "💰",
+        "⚙️", "💰", "💰", "🔩", "💰",
+        "💰", "⚙️", "💰", "💰", "💰",
+      ];
+      const SCORE_ITEM_BALANCE_CYCLE_VALUE = 1700;
       // 2. Supabase設定
       const supabaseReady = () =>
         Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
@@ -822,6 +838,22 @@
         mode = id.toUpperCase();
       }
       function resetState() {
+        const earlyOncomingForceAt = 1.5 + rand(0, 0.25);
+        const scoreItemBalanceStartUnit = Math.max(
+          0,
+          Math.min(0.999999999, (earlyOncomingForceAt - 1.5) / 0.25),
+        );
+        const scoreItemBalanceStart = {
+          offset: Math.floor(
+            scoreItemBalanceStartUnit * SCORE_ITEM_BALANCE_SEQUENCE.length,
+          ),
+          direction:
+            Math.floor(
+              scoreItemBalanceStartUnit * SCORE_ITEM_BALANCE_SEQUENCE.length * 2,
+            ) % 2 === 0
+              ? 1
+              : -1,
+        };
         player = {
           x: W * 0.68,
           y: groundY - 42,
@@ -928,6 +960,13 @@
           scoreItemSpawnCount: 0,
           invincibleItemSpawnCount: 0,
           itemSpawnCount: 0,
+          scoreItemBalanceIndex: 0,
+          scoreItemBalanceOffset: scoreItemBalanceStart.offset,
+          scoreItemBalanceDirection: scoreItemBalanceStart.direction,
+          scoreItemBalanceAvailableMeters: 0,
+          scoreItemBalanceCycleCount: 0,
+          scoreItemBalanceViolationCount: 0,
+          scoreItemBalanceTypeCounts: { "💰": 0, "🔩": 0, "⚙️": 0 },
           chaseObstacleSpawnCount: 0,
           chaseHoleSpawnCount: 0,
           holeRetryCount: 0,
@@ -947,7 +986,7 @@
           oncomingUnsafeAfterHoleRejectCount: 0,
           oncomingUnsafeBeforeHoleRejectCount: 0,
           earlyOncomingSpawned: false,
-          earlyOncomingForceAt: 1.5 + rand(0, 0.25),
+          earlyOncomingForceAt,
           earlyOncomingSpawnCount: 0,
           earlyOncomingCandidateCount: 0,
           earlyOncomingRetryCount: 0,
@@ -2296,8 +2335,8 @@
           if (canSpawnItem(km) && items.length < MAX_ITEMS) { const itemQueued = enqueueSpawnRequestIfNew(WORLD_ZONE.AIR, SPAWN_REQUEST_KIND.SCORE_ITEM, SPAWN_SOURCE.NORMAL, km, key, () => {
             const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length];
             const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0];
-            const r = Math.random(); const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️"; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0);
-            return { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge };
+            const r = Math.random(); const challengeEligible=(r>=0.70 && Math.random()<0.22 && run.chase<=0);
+            return { lane, timingType, high: lane==="high", x: -30 - rand(0, timingType==="far"?90:48), challengeEligible };
           }, SPAWN_REQUEST_KIND.SCORE_ITEM); if (itemQueued) scheduleNext("item", km, d); }
         }
         if (!chase && dueHole && !reservePattern && !isOncomingCriticallyOverdue(km) && !spawn.needObstacleBeforeNextHole && chaseReady) {
@@ -2468,8 +2507,8 @@
       }
       function spawnScoreItemPattern(km, d, spawnSource = SPAWN_SOURCE.NORMAL) {
         const r = Math.random();
-        const type = r < 0.70 ? "💰" : r < 0.85 ? "🔩" : "⚙️";
-        const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length]; const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0]; const challenge=(type!=="💰" && Math.random()<0.22 && run.chase<=0); return spawnItemPattern(km, d, { lane, timingType, high: lane==="high", type, x: -30 - rand(0, timingType==="far"?90:48), challenge, spawnSource });
+        const challengeEligible = r >= 0.70 && Math.random() < 0.22 && run.chase <= 0;
+        const lanes=["low","mid","high"]; let lane=lanes[(Math.random()*lanes.length)|0]; if(lane===run.lastItemLane) lane=lanes[(lanes.indexOf(lane)+1+(Math.random()*2|0))%lanes.length]; const timing=["plain","before_hole","after_obstacle","far"]; let timingType=timing[(Math.random()*timing.length)|0]; return spawnItemPattern(km, d, { lane, timingType, high: lane==="high", x: -30 - rand(0, timingType==="far"?90:48), challengeEligible, spawnSource });
       }
       function selectPatternByDifficulty(km, d) {
         const safeOncoming = km >= 0.8 && km - spawn.lastOncomingAt > SPAWN.ONCOMING_GAP;
@@ -2641,23 +2680,54 @@
         }
         return true;
       }
+      function nextBalancedScoreItemType() {
+        const length = SCORE_ITEM_BALANCE_SEQUENCE.length;
+        const rawIndex =
+          safeInt(run.scoreItemBalanceOffset) +
+          (run.scoreItemBalanceDirection === -1 ? -1 : 1) *
+            safeInt(run.scoreItemBalanceIndex);
+        const sequenceIndex = ((rawIndex % length) + length) % length;
+        const type = SCORE_ITEM_BALANCE_SEQUENCE[sequenceIndex];
+        run.scoreItemBalanceIndex = safeInt(run.scoreItemBalanceIndex) + 1;
+        const definition =
+          ITEM_TYPES.find((item) => item.emoji === type) || ITEM_TYPES[0];
+        run.scoreItemBalanceAvailableMeters =
+          safeInt(run.scoreItemBalanceAvailableMeters) +
+          safeInt(definition.value);
+        run.scoreItemBalanceTypeCounts[type] =
+          safeInt(run.scoreItemBalanceTypeCounts[type]) + 1;
+        if (run.scoreItemBalanceIndex % length === 0) {
+          run.scoreItemBalanceCycleCount =
+            safeInt(run.scoreItemBalanceCycleCount) + 1;
+          if (
+            run.scoreItemBalanceAvailableMeters !==
+            run.scoreItemBalanceCycleCount * SCORE_ITEM_BALANCE_CYCLE_VALUE
+          )
+            run.scoreItemBalanceViolationCount =
+              safeInt(run.scoreItemBalanceViolationCount) + 1;
+        }
+        return type;
+      }
       function spawnItemPattern(km, d, opt = {}) {
-        let t;
-        if (opt.type) t = ITEM_TYPES.find((v) => v.emoji === opt.type) || ITEM_TYPES[0];
-        else {
-          let availableItems = run.chase > 0
-            ? ITEM_TYPES.filter((v) => v.kind !== "invincible" && (!v.missPenalty || Math.random() < 0.18))
-            : ITEM_TYPES.filter((v) => v.kind !== "invincible" || km >= run.nextDancerAt);
-          if (!availableItems.length) availableItems = ITEM_TYPES.filter((v) => !v.missPenalty);
-          const scorePool = [ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[0], ITEM_TYPES[1], ITEM_TYPES[2]];
-          t = run.chase > 0 || Math.random() < 0.96 ? scorePool[(Math.random() * scorePool.length) | 0] : availableItems[(Math.random() * availableItems.length) | 0];
-        }
-        if (t.kind === "invincible" && !opt.type && (km < run.nextDancerAt || Math.random() < 0.96)) t = ITEM_TYPES[0];
-        if (run.chase > 0 && t.missPenalty && !opt.type && Math.random() < 0.82) {
-          t = ITEM_TYPES[Math.random() < 0.875 ? 0 : 3];
-        }
+        const requested = opt.type
+          ? ITEM_TYPES.find((item) => item.emoji === opt.type)
+          : null;
+        const dancerRequested =
+          requested && requested.kind === "invincible";
+        const balancedType = dancerRequested
+          ? null
+          : nextBalancedScoreItemType();
+        const t = dancerRequested
+          ? requested
+          : ITEM_TYPES.find((item) => item.emoji === balancedType) ||
+            ITEM_TYPES[0];
         const isDancer = t.kind === "invincible";
         if (isDancer && km < run.nextDancerAt) return false;
+        const challenge =
+          !isDancer &&
+          t.missPenalty > 0 &&
+          Boolean(opt.challenge ?? opt.challengeEligible) &&
+          run.chase <= 0;
         const risky = !isDancer && (opt.high ?? (km > 1.5 && Math.random() < (run.chase > 0 ? 0.18 : 0.35)));
         const lane = opt.lane || (risky ? "high" : (Math.random()<0.5 ? "low" : "mid"));
         const heightBand = isDancer ? HEIGHT_BAND.GROUND : getHeightBandForLane(lane);
@@ -2666,14 +2736,14 @@
         if (!isDancer && lane === run.lastItemLane && (opt.timingType || "plain") === run.lastItemTimingType) run.sameItemRhythmCount++; else run.sameItemRhythmCount = 0;
         if (!isDancer) { run.lastItemLane = lane; run.lastItemTimingType = opt.timingType || "plain"; }
         if (isDancer && !opt.directorManaged) run.nextDancerAt = km + 1.5;
-        if (!isDancer && t.missPenalty > 0 && opt.challenge) { run.challengeItemSpawnCount++; run.missTargetItemCount++; }
+        if (challenge) { run.challengeItemSpawnCount++; run.missTargetItemCount++; }
         const entity = {
           x: opt.x ?? -36,
           y: itemY,
           emoji: t.emoji,
           kind: t.kind,
           value: t.value,
-          missPenalty: opt.challenge ? t.missPenalty : 0,
+          missPenalty: challenge ? t.missPenalty : 0,
           duration: t.duration || 0,
           placed: Boolean(opt.placed || t.placed || isDancer),
           speedMult: Number.isFinite(opt.speedMult) ? opt.speedMult : (isDancer ? DANCER_PLACE_SCROLL_MULT : 1),
@@ -3373,6 +3443,14 @@
           scoreItemSpawnCount: run.scoreItemSpawnCount || 0,
           invincibleItemSpawnCount: run.invincibleItemSpawnCount || 0,
           itemSpawnCount: run.itemSpawnCount || 0,
+          scoreItemBalanceIndex: safeInt(run.scoreItemBalanceIndex),
+          scoreItemBalanceCycleCount: safeInt(run.scoreItemBalanceCycleCount),
+          scoreItemBalanceAvailableMeters: safeInt(run.scoreItemBalanceAvailableMeters),
+          scoreItemBalanceViolationCount: safeInt(run.scoreItemBalanceViolationCount),
+          scoreItemBalanceTypeCounts: Object.assign(
+            { "💰": 0, "🔩": 0, "⚙️": 0 },
+            run.scoreItemBalanceTypeCounts || {},
+          ),
           chaseObstacleSpawnCount: run.chaseObstacleSpawnCount || 0,
           chaseHoleSpawnCount: run.chaseHoleSpawnCount || 0,
           chaseScoreItemSpawnCount: run.chaseScoreItemSpawnCount || 0,
@@ -3443,10 +3521,10 @@
       }
       function resultRows(snapshot) {
         return [
-          ["記録の内訳", ""], ["実走行距離", km(snapshot.runMeters)], ["アイテム加算", "+" + km(snapshot.bonusMeters)], ["基礎距離", km(snapshot.runMeters + snapshot.bonusMeters)], ["事故ペナルティ", "-" + km(snapshot.accidentPenaltyMeters)], ["取り逃がしペナルティ", "-" + km(snapshot.missPenaltyMeters)], ["総ペナルティ", "-" + km(snapshot.rawPenaltyMeters)], ["ペナルティ適用上限", km(snapshot.penaltyCapMeters)], ["実適用ペナルティ", "-" + km(snapshot.appliedPenaltyMeters)], ["カットされたペナルティ", km(snapshot.cutPenaltyMeters)], ["最終スコア", km(snapshot.score)],
+          ["記録の内訳", ""], ["実走行距離", km(snapshot.runMeters)], ["アイテム加算", "+" + km(snapshot.bonusMeters)], ["基礎距離", km(snapshot.runMeters + snapshot.bonusMeters)], ["事故ペナルティ", "-" + km(snapshot.accidentPenaltyMeters)], ["取り逃がしペナルティ", "-" + km(snapshot.missPenaltyMeters)], ["総ペナルティ", "-" + km(snapshot.rawPenaltyMeters)], ["ペナルティ適用上限", km(snapshot.penaltyCapMeters)], ["実適用ペナルティ", "-" + km(snapshot.appliedPenaltyMeters)], ["カットされたペナルティ", km(snapshot.cutPenaltyMeters)], ["最終記録", km(snapshot.score)],
           ["プレイ内容", ""], ["事故回数", snapshot.accidents + "回"], ["加点アイテム出現数", snapshot.scoreItemSpawnCount + "個"], ["加点アイテム取得数", snapshot.items + "個"], ["取得率", (snapshot.itemPickupRate * 100).toFixed(1) + "%"], ["走行時間", (snapshot.elapsedMs / 1000).toFixed(1) + "秒"], ["終了理由", getReasonText(snapshot.reason).replace(/^終了理由：/, "")],
           ["出現数", ""], ["穴", snapshot.holeSpawnCount + "個"], ["穴出現数", snapshot.holeSpawnCount + "個"], ["最大穴間隔", snapshot.maxHoleGapKm.toFixed(3) + "km"], ["平均穴間隔", snapshot.avgHoleGapKm.toFixed(3) + "km"], ["障害物", snapshot.obstacleSpawnCount + "個"], ["最大障害物間隔", snapshot.maxObstacleGapKm.toFixed(3) + "km"], ["平均障害物間隔", snapshot.avgObstacleGapKm.toFixed(3) + "km"], ["対向障害物", snapshot.oncomingSpawnCount + "個"], ["対向障害物候補数", snapshot.oncomingCandidateCount + "回"], ["対向障害物出現数", snapshot.oncomingSpawnCount + "個"], ["対向障害物失敗再試行数", snapshot.oncomingRetryCount + "回"], ["2km以内対向障害物出現数", safeInt(snapshot.earlyOncomingSpawnCount) + "個"], ["2km以内対向障害物候補数", safeInt(snapshot.earlyOncomingCandidateCount) + "回"], ["2km以内対向障害物再試行数", safeInt(snapshot.earlyOncomingRetryCount) + "回"], ["対向障害物近すぎ却下数", safeInt(snapshot.oncomingTooCloseRejectCount) + "回"], ["対向障害物速度調整数", safeInt(snapshot.oncomingSpeedAdjustCount) + "回"], ["対向障害物平均速度倍率", safeNumber(snapshot.oncomingAvgSpeedScale).toFixed(2) + "倍"], ["対向障害物最小速度倍率", safeNumber(snapshot.oncomingMinSpeedScale).toFixed(2) + "倍"], ["対向障害物最大速度倍率", safeNumber(snapshot.oncomingMaxSpeedScale).toFixed(2) + "倍"], ["TTC不足による最終却下数", safeInt(snapshot.oncomingTtcFinalRejectCount) + "回"], ["対向障害物最小反応猶予", safeNumber(snapshot.oncomingMinReactionSec).toFixed(2) + "秒"], ["対向障害物平均反応猶予", safeNumber(snapshot.oncomingAvgTtcSec).toFixed(2) + "秒"], ["対向障害物最短TTC", safeNumber(snapshot.oncomingMinTtcSec).toFixed(2) + "秒"], ["2km以内対向障害物最短TTC", safeNumber(snapshot.earlyOncomingMinTtcSec).toFixed(2) + "秒"], ["避け不能対向障害物数", safeInt(snapshot.unavoidableOncomingCount) + "回"], ["穴間必須障害物出現数", safeInt(snapshot.betweenHoleObstacleSpawnCount) + "個"], ["穴間通常障害物出現数", safeInt(snapshot.betweenHoleNormalObstacleSpawnCount) + "個"], ["穴間対向障害物出現数", safeInt(snapshot.betweenHoleOncomingSpawnCount) + "個"], ["穴間障害物生成失敗再試行数", safeInt(snapshot.betweenHoleObstacleRetryCount) + "回"], ["穴だけ連続した回数", safeInt(snapshot.consecutiveHoleViolationCount) + "回"], ["加点アイテム", snapshot.scoreItemSpawnCount + "個"], ["無敵アイテム", snapshot.invincibleItemSpawnCount + "個"], ["逃走中の障害物", snapshot.chaseObstacleSpawnCount + "個"], ["逃走中の穴", snapshot.chaseHoleSpawnCount + "個"], ["逃走中の加点アイテム", snapshot.chaseScoreItemSpawnCount + "個"], ["逃走中の対向障害物", snapshot.chaseOncomingSpawnCount + "個"],
-          ["診断", ""], ["runMeters", String(run.runMeters)], ["maxRunMeters", String(run.maxRunMeters)], ["lastNonZeroRunMeters", String(run.lastNonZeroRunMeters)], ["scoreMeters", String(run.scoreMeters)], ["finalScore", String(run.finalScore)], ["resultSnapshot.score", String(snapshot.score)], ["resultSnapshot.runMeters", String(snapshot.runMeters)], ["resultScore.textContent", el.resultScore ? el.resultScore.textContent : ""], ["ranking payload p_score", String(snapshot.score)], ["zeroReason", snapshot.zeroReason], ["version", CLIENT_VERSION],
+          ["診断", ""], ["runMeters", String(run.runMeters)], ["maxRunMeters", String(run.maxRunMeters)], ["lastNonZeroRunMeters", String(run.lastNonZeroRunMeters)], ["scoreMeters", String(run.scoreMeters)], ["finalScore", String(run.finalScore)], ["resultSnapshot.score", String(snapshot.score)], ["resultSnapshot.runMeters", String(snapshot.runMeters)], ["resultScore.textContent", el.resultScore ? el.resultScore.textContent : ""], ["ranking payload p_score", String(snapshot.score)], ["scoreItemBalanceIndex", String(snapshot.scoreItemBalanceIndex)], ["scoreItemBalanceCycleCount", String(snapshot.scoreItemBalanceCycleCount)], ["scoreItemBalanceAvailableMeters", String(snapshot.scoreItemBalanceAvailableMeters)], ["scoreItemBalanceViolationCount", String(snapshot.scoreItemBalanceViolationCount)], ["scoreItemBalanceTypeCounts", JSON.stringify(snapshot.scoreItemBalanceTypeCounts)], ["zeroReason", snapshot.zeroReason], ["version", CLIENT_VERSION],
         ];
       }
       function renderResultBreakdown(snapshot) {
@@ -3455,7 +3533,7 @@
         if (el.resultBreakdown.replaceChildren) el.resultBreakdown.replaceChildren(); else el.resultBreakdown.innerHTML = "";
         el.resultBreakdown.className = "resultMeta";
         let diagnostics = false;
-        const diagnosticRows = new Set(["診断", "runMeters", "maxRunMeters", "lastNonZeroRunMeters", "scoreMeters", "finalScore", "resultSnapshot.score", "resultSnapshot.runMeters", "resultScore.textContent", "ranking payload p_score", "zeroReason", "version"]);
+        const diagnosticRows = new Set(["診断", "runMeters", "maxRunMeters", "lastNonZeroRunMeters", "scoreMeters", "finalScore", "resultSnapshot.score", "resultSnapshot.runMeters", "resultScore.textContent", "ranking payload p_score", "scoreItemBalanceIndex", "scoreItemBalanceCycleCount", "scoreItemBalanceAvailableMeters", "scoreItemBalanceViolationCount", "scoreItemBalanceTypeCounts", "zeroReason", "version"]);
         const toggle = document.createElement("button");
         toggle.textContent = "詳細診断を表示";
         toggle.className = "secondary";
@@ -3592,7 +3670,7 @@
       async function sendScoreAfterResult(result) {
         let score = Math.trunc(Number(result && (result.totalScore ?? result.score)));
         if (!Number.isFinite(score)) {
-          setRankingStatus("スコア値が不正のため送信できません");
+          setRankingStatus("記録値が不正のため送信できません");
           console.warn("invalid score", result);
           fetchAndRenderResultRanking();
           return;
@@ -3751,7 +3829,7 @@
         );
       }
       function resultShare() {
-        let t = `kiriganaito\n結果：${km(resultSnapshot.score)}\n事故：${resultSnapshot.accidents}回 / 終了理由：${resultSnapshot.reason}\n${PUBLIC_URL}`;
+        let t = `kiriganaito\n最終記録：${km(resultSnapshot.score)}\n実走行距離：${km(resultSnapshot.runMeters)}\n事故：${resultSnapshot.accidents}回 / 終了理由：${resultSnapshot.reason}\n${PUBLIC_URL}`;
         shareText(t, el.rankingStatus);
       }
       // 17. デバッグ

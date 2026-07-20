@@ -8,7 +8,7 @@ const vm = require("vm");
 const ROOT = path.join(__dirname, "..");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const OUTPUT_PATH = path.join(ROOT, "artifacts", "device-feedback-ui-regression.json");
-const EXPECTED_VERSION = "kiriganaito-2026-07-20-v22-device-feedback-ui";
+const EXPECTED_VERSION = "kiriganaito-2026-07-21-v23-score-competition";
 const CONCEPT = "落とした積荷と落ちてるお金を拾い集めよう";
 
 function makeElement(id) {

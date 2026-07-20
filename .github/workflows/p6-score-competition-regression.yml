@@ -1,0 +1,60 @@
+name: P6 score competition regression
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Progressive autoplay
+        run: node tests/progressive-autoplay.js
+
+      - name: 150km endurance
+        run: node tests/endurance-150km.js
+
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
+
+      - name: P1 effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: P2 density
+        run: node tests/p2-density-regression.js
+
+      - name: P3 decision patterns
+        run: node tests/p3-pattern-regression.js
+
+      - name: P4 air obstacle
+        run: node tests/p4-air-obstacle-regression.js
+
+      - name: P5 chase and invincible
+        run: node tests/p5-chase-invincible-regression.js
+
+      - name: v22 device feedback UI
+        run: node tests/device-feedback-ui-regression.js
+
+      - name: P6 score competition
+        run: node tests/p6-score-competition-regression.js
+
+      - name: Upload regression artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p6-score-competition-regression
+          path: artifacts/
+          if-no-files-found: error
+
