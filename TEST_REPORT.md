@@ -1,16 +1,72 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-21-v23-score-competition`
-- 現行段階: `P6 スコアと競技ルールの最終固定（A改良版）`
-- 基準main: `9d3041375794c8e2057d084bb73b38d8a782dcaa`
-- 基準PR: `#42`（mainへマージ済み）
-- 作業ブランチ: `codex/p6-score-competition`
-- Draft Pull Request: `#43`
-- 状態: ローカル全10ゲート合格、GitHub Actions 7/7 SUCCESS、Draft・未マージ
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-21-v24-ui-finish`
+- 現行段階: `P7 UI・デザイン・説明の仕上げ`
+- 基準main: `47a58cc5b50231b9a4595b70c54e12bb00d9c0f0`
+- 基準PR: `#43`（mainへマージ済み）
+- 作業ブランチ: `codex/p7-ui-finish`
+- Draft Pull Request: 作成予定
+- 状態: ローカル全11ゲート合格、GitHub Actions実行前、実ブラウザは環境制約で未確認
 
 ---
 
-## 0. P6 A改良版の検証結果
+## 0. P7 UI仕上げの検証結果
+
+### 実装した情報優先順位
+
+- ホーム上部で、1段ジャンプ、穴の即終了、吊り下げバーの非ジャンプ通過を短く説明した。
+- 結果画面は最終記録、実走行距離、アイテム、取得率、事故、結果シェア、もう一度を先に表示する。
+- 記録内訳とプレイ統計は閉じた`details`へ移し、内部診断17行はさらに操作されるまで隠す。
+- 結果表示時に結果詳細と詳細ランキングを閉じ、ページ上端へ戻す。
+
+### 危険表示と短い縦画面
+
+- 穴へ明るい左右端と「穴」を追加した。
+- 吊り下げバーへ吊り線、影、「跳ばない」を追加した。
+- 対向障害物へ速度線と「→ 対向」を追加した。
+- 逃走中の全面赤演出を左右6pxの警告帯へ縮小し、車両と危険物を隠さない。
+- 320x568向けにsafe area、flex縮小、高さ640px以下のHUD・Canvas・ジャンプ・状態表示を調整した。
+
+### P7専用回帰
+
+| 項目 | 結果 |
+| --- | --- |
+| version / ホーム要点 / 結果DOM順 | PASS |
+| 結果要点4項目の実行時値 | PASS |
+| 結果詳細・ランキングの初期close | PASS |
+| 診断17行の初期非表示とtoggle | PASS |
+| Canvasの「穴」「跳ばない」「→ 対向」描画 | PASS |
+| 320px overflow防止 / 短画面CSS | PASS |
+| console error / warning | 0 / 0 |
+
+### 全11ゲート
+
+| ゲート | 結果 |
+| --- | --- |
+| progressive autoplay | PASS |
+| 150km endurance | PASS |
+| release comprehensive | critical issue 0 / WARN |
+| P1 effective presentation | PASS |
+| P2 30固定seed density | PASS |
+| P3 decision pattern | PASS |
+| P4 air obstacle | PASS |
+| P5 chase / invincible | PASS |
+| v22 device feedback UI | PASS |
+| P6 score competition | PASS |
+| P7 UI finish | PASS |
+
+`release comprehensive`のWARNは、Playwright未導入のためNodeハーネスとCSS静的検査へ代替したことだけが理由。重大問題0、Canvas responsive契約true、console error / warning 0だった。
+
+実ブラウザ確認は2経路を試したが完了できなかった。ローカル`agent-browser`用Chrome取得は実行環境の証明書チェーンで失敗し、接続済みクラウドブラウザからローカル開発URLへの接続はセキュリティポリシーで拒否された。迂回せず、320x568の実ブラウザ表示は未確認として残す。P7専用Nodeハーネスでは320px DOM、Canvas描画、結果操作を確認済み。
+
+### 保存artifact
+
+- `artifacts/p7-ui-finish-regression.json`
+- 既存P1〜P6、150km、progressive、release artifact一式
+
+---
+
+## 1. P6 A改良版の検証結果
 
 ### 決定した競技ルール
 
@@ -79,7 +135,7 @@ Draft PR `#43`のhead `14fdcde0a96ea94771f318420f16903d7319ed5f`で、次の7ワ
 | Device feedback UI regression | 29780538584 | SUCCESS |
 | P6 score competition regression | 29780538629 | SUCCESS |
 
-PRはDraft・open・mergeable、mainへ未マージのまま維持する。
+その後、最終文書同期head `ede88d7760e37d4e298eec4ff23b91bb4c5744c1`まで7/7 SUCCESSを維持し、PR `#43`は2026-07-21にmainへマージされた。mainのマージSHAは`47a58cc5b50231b9a4595b70c54e12bb00d9c0f0`。
 
 P2の固定seed検査で、P6の周期開始位置用にゲーム生成乱数を追加消費すると穴間隔へ波及することを検出した。最終実装では既存の早期対向障害物用乱数から周期開始位置と方向を派生し、乱数消費回数を変更しない構造へ修正した。修正後はP2を3回連続、P6を3回連続で合格し、その後に全10ゲートを合格した。
 
