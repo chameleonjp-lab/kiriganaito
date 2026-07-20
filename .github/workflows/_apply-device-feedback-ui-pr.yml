@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/_apply-device-feedback-ui-pr.yml"
       - "tools/apply-device-feedback-ui.py"
+      - "tools/fix-device-feedback-apply.py"
       - "tests/device-feedback-ui-regression.js"
       - "DEVICE_FEEDBACK_UI_CONTRACT.md"
 
@@ -35,7 +36,8 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          python tools/apply-device-feedback-ui.py > artifacts/device-feedback-apply.log 2>&1
+          python tools/fix-device-feedback-apply.py > artifacts/device-feedback-apply.log 2>&1
+          python tools/apply-device-feedback-ui.py >> artifacts/device-feedback-apply.log 2>&1
 
       - name: Upload apply diagnostics
         if: always()
@@ -105,11 +107,12 @@ jobs:
         run: |
           {
             set -euxo pipefail
-            git config user.name "github-actions[bot]"
+            git config user.name "github-actions[bot]]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git rm -f --ignore-unmatch \
               .github/workflows/_apply-device-feedback-ui-pr.yml \
-              tools/apply-device-feedback-ui.py
+              tools/apply-device-feedback-ui.py \
+              tools/fix-device-feedback-apply.py
             git add -u
             test -f artifacts/device-feedback-ui-regression.json
             git add artifacts/device-feedback-ui-regression.json
