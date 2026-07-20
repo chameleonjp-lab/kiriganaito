@@ -1,0 +1,41 @@
+name: Apply device feedback UI patch
+
+on:
+  push:
+    branches:
+      - ai/kiriganaito-v22-device-feedback-ui
+    paths:
+      - "tools/apply-device-feedback-ui.py"
+      - ".github/workflows/apply-device-feedback-ui.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ai/kiriganaito-v22-device-feedback-ui
+          fetch-depth: 0
+
+      - name: Apply deterministic patch
+        run: python3 tools/apply-device-feedback-ui.py
+
+      - name: Verify generated diff exists
+        run: |
+          git status --short
+          test -n "$(git status --porcelain)"
+
+      - name: Commit generated implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html SPEC.md TEST_REPORT.md P5_CHASE_INVINCIBLE_CONTRACT.md tests
+          git commit -m "feat: apply device feedback UI corrections"
+          git push origin HEAD:ai/kiriganaito-v22-device-feedback-ui
