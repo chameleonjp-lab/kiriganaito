@@ -1,5 +1,5 @@
 kiriganaito 150km endurance verification
-HUD run: 152.05km
+HUD run: 152.35km
 HUD score: 150.00km
 Result score: 150.00km
 Reason: 終了理由：150km自然走行検証完了

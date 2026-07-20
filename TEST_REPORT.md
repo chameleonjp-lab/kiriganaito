@@ -1,6 +1,6 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v21-chase-invincible`
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v22-device-feedback-ui`
 - 現行段階: `P4 空中障害物の試作と跳ぶ・跳ばない判断`
 - 基準main: `0b16b4850fb511c5600bb8c3bfe1254b6e1d37b9`
 - 作業ブランチ: `ai/kiriganaito-v20-air-obstacle`
@@ -373,3 +373,17 @@ Run 29704983044
 - 無敵4秒を実プレイ時間基準へ変更。
 - 無敵障害物2〜3回、終了後LARGE hole抑制、突破表示を追加。
 - P1〜P4、progressive、release、150km耐久を回帰ゲートとして維持する。
+
+
+## v22 実機フィードバックUI修正
+
+- 実機指摘に基づき地面を水平化。
+- ホームと結果の詳細ランキングを`details`で初期非表示化。
+- ホームの情報優先順位と操作配置を再構成。
+- コンセプト文言を「落とした積荷と落ちてるお金を拾い集めよう」へ統一。
+- 👯‍♀️無敵を実プレイ時間8秒へ延長。
+- player物理サイズを維持し、🚚描画だけ36pxへ縮小。
+- ルール情報を7区分へ整理。
+- `tests/device-feedback-ui-regression.js`とP1〜P5全回帰で検証する。
+
+- 8秒無敵の実効障害物提示目標は4〜6個。補完requestは2〜3個のまま維持する。

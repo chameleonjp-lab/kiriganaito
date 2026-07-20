@@ -8,7 +8,7 @@ const vm = require("vm");
 const ROOT = path.join(__dirname, "..");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const OUTPUT_PATH = path.join(ROOT, "artifacts", "p5-chase-invincible-regression.json");
-const EXPECTED_VERSION = "kiriganaito-2026-07-20-v21-chase-invincible";
+const EXPECTED_VERSION = "kiriganaito-2026-07-20-v22-device-feedback-ui";
 const CHASE_SEEDS = [21001, 21002, 21003, 21004, 21005];
 
 function seededRandom(seed) {
@@ -262,6 +262,8 @@ function invincibleTimingScenario(appScript, seed, startKm) {
   run.maxRunMeters = run.runMeters;
   for (let i = 0; i < 120; i++) updateDancerInvincible(FIXED_STEP);
   const afterFourPlayedSeconds = getDancerInvincibleRemainingSec();
+  for (let i = 0; i < 240; i++) updateDancerInvincible(FIXED_STEP);
+  const afterEightPlayedSeconds = getDancerInvincibleRemainingSec();
   const blockUntil = run.invincibleLargeHoleBlockUntilKm;
   const currentKm = run.runMeters / 1000;
   const blockedKind = normalizeHoleKindForP5("LARGE", currentKm);
@@ -272,6 +274,7 @@ function invincibleTimingScenario(appScript, seed, startKm) {
     afterWallClockOnly,
     afterTwoPlayedSeconds,
     afterFourPlayedSeconds,
+    afterEightPlayedSeconds,
     blockUntil,
     currentKm,
     blockedKind,
@@ -476,10 +479,11 @@ function validateChase(run) {
 function validateInvincibleTiming(run) {
   const failures = [];
   if (run.clientVersion !== EXPECTED_VERSION) failures.push("timing client version mismatch");
-  if (Math.abs(run.initial - 4) > 1e-9) failures.push(`initial duration: ${run.initial}`);
-  if (Math.abs(run.afterWallClockOnly - 4) > 1e-9) failures.push(`wall-clock decay: ${run.afterWallClockOnly}`);
-  if (Math.abs(run.afterTwoPlayedSeconds - 2) > 1e-6) failures.push(`two-second duration: ${run.afterTwoPlayedSeconds}`);
-  if (run.afterFourPlayedSeconds > 1e-6) failures.push(`four-second duration: ${run.afterFourPlayedSeconds}`);
+  if (Math.abs(run.initial - 8) > 1e-9) failures.push(`initial duration: ${run.initial}`);
+  if (Math.abs(run.afterWallClockOnly - 8) > 1e-9) failures.push(`wall-clock decay: ${run.afterWallClockOnly}`);
+  if (Math.abs(run.afterTwoPlayedSeconds - 6) > 1e-6) failures.push(`two-second duration: ${run.afterTwoPlayedSeconds}`);
+  if (Math.abs(run.afterFourPlayedSeconds - 4) > 1e-6) failures.push(`four-second duration: ${run.afterFourPlayedSeconds}`);
+  if (run.afterEightPlayedSeconds > 1e-6) failures.push(`eight-second duration: ${run.afterEightPlayedSeconds}`);
   if (!(run.blockUntil > run.currentKm)) failures.push(`large-hole block not set: ${run.blockUntil}/${run.currentKm}`);
   if (run.blockedKind !== "MEDIUM") failures.push(`large hole not blocked: ${run.blockedKind}`);
   if (run.releasedKind !== "LARGE") failures.push(`large hole not released: ${run.releasedKind}`);
@@ -492,9 +496,10 @@ function validateInvincibleTiming(run) {
 
 function validateInvinciblePresentation(run) {
   const failures = [];
-  if (run.planned < 2 || run.planned > 3) failures.push(`planned obstacle count: ${run.planned}`);
-  if (run.visibleInvincibleObstacles < 2 || run.visibleInvincibleObstacles > 3) failures.push(`visible invincible obstacles: ${run.visibleInvincibleObstacles}`);
-  if (run.visibleInvincibleObstacles !== run.planned) failures.push(`visible/planned mismatch: ${run.visibleInvincibleObstacles}/${run.planned}`);
+  if (run.planned < 2 || run.planned > 3) failures.push(`supplement request plan: ${run.planned}`);
+  if (run.visibleInvincibleObstacles < 4 || run.visibleInvincibleObstacles > 6) failures.push(`visible invincible obstacles: ${run.visibleInvincibleObstacles}`);
+  if (run.visibleInvincibleObstacles < run.planned) failures.push(`visible count below supplement plan: ${run.visibleInvincibleObstacles}/${run.planned}`);
+  if (run.sessionPresented !== run.visibleInvincibleObstacles) failures.push(`session/visible mismatch: ${run.sessionPresented}/${run.visibleInvincibleObstacles}`);
   if (run.invincibleRemaining > 1e-6) failures.push(`invincible still active: ${run.invincibleRemaining}`);
   if (run.pendingRequest) failures.push("pending invincible request remains");
   if (run.consoleErrors.length) failures.push(`presentation console errors: ${run.consoleErrors.join(" | ")}`);

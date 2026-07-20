@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-19T22:52:12.547Z",
-  "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+  "generatedAt": "2026-07-20T08:20:32.599Z",
+  "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
   "purpose": "P5 chase phases and played-time invincibility regression",
   "chaseSeeds": [
     21001,
@@ -13,7 +13,7 @@
     {
       "seed": 21001,
       "startKm": 2.5,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "frames": 900,
       "chaseEndElapsed": 15,
       "chaseRemaining": 0,
@@ -52,17 +52,12 @@
       "remainingP5Requests": 0,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 21002,
       "startKm": 2.5,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "frames": 900,
       "chaseEndElapsed": 15,
       "chaseRemaining": 0,
@@ -101,17 +96,12 @@
       "remainingP5Requests": 0,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 21003,
       "startKm": 2.5,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "frames": 900,
       "chaseEndElapsed": 15,
       "chaseRemaining": 0,
@@ -150,17 +140,12 @@
       "remainingP5Requests": 0,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 21004,
       "startKm": 2.5,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "frames": 900,
       "chaseEndElapsed": 15,
       "chaseRemaining": 0,
@@ -199,17 +184,12 @@
       "remainingP5Requests": 0,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 21005,
       "startKm": 2.5,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "frames": 900,
       "chaseEndElapsed": 15,
       "chaseRemaining": 0,
@@ -248,18 +228,13 @@
       "remainingP5Requests": 0,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     }
   ],
   "pre2kmChase": {
     "seed": 21999,
     "startKm": 1.2,
-    "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+    "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
     "frames": 900,
     "chaseEndElapsed": 15,
     "chaseRemaining": 0,
@@ -298,19 +273,15 @@
     "remainingP5Requests": 0,
     "consoleErrors": [],
     "consoleWarnings": [],
-    "networkRequests": [
-      {
-        "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-        "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-      }
-    ]
+    "networkRequests": []
   },
   "invincibleTiming": {
-    "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
-    "initial": 4,
-    "afterWallClockOnly": 4,
-    "afterTwoPlayedSeconds": 2.000000000000007,
-    "afterFourPlayedSeconds": 0,
+    "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
+    "initial": 8,
+    "afterWallClockOnly": 8,
+    "afterTwoPlayedSeconds": 6.000000000000007,
+    "afterFourPlayedSeconds": 4.000000000000014,
+    "afterEightPlayedSeconds": 0,
     "blockUntil": 25.14,
     "currentKm": 25,
     "blockedKind": "MEDIUM",
@@ -322,13 +293,13 @@
   },
   "invinciblePresentation": {
     "planned": 3,
-    "visibleInvincibleObstacles": 3,
-    "sessionPresented": 3,
-    "totalPresented": 3,
+    "visibleInvincibleObstacles": 4,
+    "sessionPresented": 4,
+    "totalPresented": 4,
     "invincibleRemaining": 0,
     "pendingRequest": false,
-    "frames": 240,
-    "largeHoleBlockUntilKm": 2.8068638249999984,
+    "frames": 480,
+    "largeHoleBlockUntilKm": 2.9744258249999964,
     "consoleErrors": [],
     "consoleWarnings": []
   },
@@ -345,7 +316,7 @@
     "fell": true,
     "mode": "RESULT",
     "reason": "穴に落ちました",
-    "invincibleRemaining": 4,
+    "invincibleRemaining": 8,
     "consoleErrors": [],
     "consoleWarnings": []
   },

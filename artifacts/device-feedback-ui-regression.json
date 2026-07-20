@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2026-07-20T08:20:32.640Z",
+  "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
+  "purpose": "Device feedback UI, flat ground, closed ranking, 8-second invincibility and truck render regression",
+  "static": {
+    "conceptCount": 3,
+    "homeDetailsFound": true,
+    "homeDetailsOpen": false,
+    "resultDetailsFound": true,
+    "resultDetailsOpen": false,
+    "startLabel": true,
+    "rulesLabel": true,
+    "shareLabel": true,
+    "ruleFacts": {
+      "money": true,
+      "bolt": true,
+      "gear": true,
+      "earlyPenalty": true,
+      "laterPenalty": true,
+      "airNoJump": true,
+      "chase": true,
+      "invincibleEight": true,
+      "holeStillFatal": true
+    },
+    "truckFontPx": 36,
+    "versionInMeta": true
+  },
+  "runtime": {
+    "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
+    "groundY": 259.2,
+    "groundBefore": [
+      259.2,
+      259.2,
+      259.2
+    ],
+    "groundAfter": [
+      259.2,
+      259.2,
+      259.2
+    ],
+    "playerPhysics": {
+      "w": 42,
+      "h": 34
+    },
+    "invincibleInitial": 8,
+    "afterWallClockOnly": 8,
+    "afterFourPlayedSeconds": 4.000000000000014,
+    "afterEightPlayedSeconds": 0,
+    "homeRankingOpenDefault": false,
+    "resultRankingOpenDefault": false,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "failures": [],
+  "passed": true
+}

@@ -150,7 +150,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v18 P2 実効出現密度契約（現行）
 
-- 現行 CLIENT_VERSION は `kiriganaito-2026-07-20-v21-chase-invincible`。
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-20-v22-device-feedback-ui`。
 - 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
 - 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
 - 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
@@ -162,7 +162,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v19 判断パターン契約
 
-- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-20-v21-chase-invincible`。
+- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-20-v22-device-feedback-ui`。
 - 既存の `G / O / A / H / P` を2〜3ステップの短いパターンとして予約する。
 - 0〜1kmは `G_S_H / H_S_G / G_A / H_A` の学習用4種類だけを使用する。
 - 1km以降に `O_S_H / H_S_O / G_A_H`、2km以降かつ👯‍♀️出現可能時に `P_G_G` を解禁する。
@@ -192,3 +192,15 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - 無敵中に障害物を2〜3回提示し、不足分だけ`spawnSource=invincible`で補う。
 - 無敵終了後0.14km以内はLARGE holeをMEDIUMへ格下げする。
 - 穴、TTC、スコア、ランキング、Supabase契約は変更しない。
+
+
+## v22 実機フィードバックUI修正
+
+- コンセプトを「落とした積荷と落ちてるお金を拾い集めよう」へ統一する。
+- `getGroundY()`を水平化し、地面の波打ちを廃止する。
+- ホームと結果の詳細ランキングを初期状態で閉じる。
+- ホームの主要操作を上部へ集約する。
+- 👯‍♀️無敵を実プレイ時間8秒へ延長する。
+- player物理サイズ42x34を維持し、🚚描画だけ36pxへ縮小する。
+- ルールを目的、操作、取得物、危険、事故・逃走、無敵、記録へ分割する。
+- スコア式、ランキング送信値、Supabase、P2〜P5の安全契約は変更しない。

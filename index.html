@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-20-v21-chase-invincible" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-20-v22-device-feedback-ui" />
     <style>
       * {
         box-sizing: border-box;
@@ -131,6 +131,132 @@
       .toast {
         min-height: 20px;
         color: #ffe58b;
+      }
+      #home.screen.active {
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .homeHero {
+        padding: 16px;
+      }
+      .homeKicker {
+        margin: 0 0 4px;
+        color: #9fc6ff;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+      .homeHero .title {
+        margin-bottom: 8px;
+        font-size: clamp(34px, 10vw, 46px);
+      }
+      .homeConcept {
+        margin: 0 0 8px;
+        color: #ffe879;
+        font-size: clamp(20px, 6vw, 27px);
+        font-weight: 900;
+        line-height: 1.32;
+      }
+      .homeSupport {
+        margin: 0 0 14px;
+        color: #d9e2ff;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+      .homePrimary {
+        width: 100%;
+        min-height: 60px;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+      .homeActions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .homeNameButton {
+        width: 100%;
+        margin-top: 10px;
+      }
+      .homeHero .toast {
+        margin: 8px 0 0;
+      }
+      .homeHero .versionNote {
+        margin: 2px 0 0;
+      }
+      .otherGamesLink {
+        display: block;
+        padding: 7px 4px 2px;
+        text-align: center;
+        font-weight: 700;
+      }
+      details.rankingDetails {
+        padding: 0;
+        overflow: hidden;
+      }
+      .rankingDetails > summary {
+        min-height: 52px;
+        padding: 15px 16px;
+        cursor: pointer;
+        color: #dce7ff;
+        font-weight: 850;
+        list-style: none;
+      }
+      .rankingDetails > summary::-webkit-details-marker {
+        display: none;
+      }
+      .rankingDetails > summary::after {
+        content: "＋";
+        float: right;
+        color: #ffe879;
+      }
+      .rankingDetails[open] > summary::after {
+        content: "−";
+      }
+      .rankingDetails[open] > summary {
+        border-bottom: 1px solid #3a4161;
+      }
+      .rankingBody {
+        padding: 10px 16px 14px;
+      }
+      .rulesCard {
+        padding: 16px;
+      }
+      .ruleConcept {
+        margin: 0 0 12px;
+        color: #ffe879;
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 1.4;
+      }
+      .rulesGrid {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .ruleBlock {
+        padding: 12px;
+        border: 1px solid #465071;
+        border-radius: 14px;
+        background: rgba(12, 15, 28, 0.38);
+      }
+      .ruleBlock h3 {
+        margin: 0 0 6px;
+        color: #fff1a6;
+        font-size: 16px;
+      }
+      .ruleBlock p,
+      .ruleBlock ul {
+        margin: 0;
+        color: #d9e2ff;
+        font-size: 14px;
+        line-height: 1.58;
+      }
+      .ruleBlock ul {
+        padding-left: 1.3em;
+      }
+      .ruleBlock li + li {
+        margin-top: 4px;
       }
       .hud {
         display: grid;
@@ -271,42 +397,80 @@
   <body>
     <div class="app">
       <section id="home" class="screen active">
-        <div class="card">
+        <div class="card homeHero">
+          <p class="homeKicker">ワンタップ回収ラン</p>
           <h1 class="title">kiriganaito</h1>
-          <p class="lead">
-            左へ走る🚚をタップでジャンプ。夜の道で穴・通行人・車両を避けて、どこまで逃げ切れる？
-          </p>
-          <div class="row">
-            <button id="startBtn">スタート</button
-            ><button id="rulesBtn" class="secondary">ルール</button>
+          <p class="homeConcept">落とした積荷と落ちてるお金を拾い集めよう</p>
+          <p class="homeSupport">穴や障害物を見分けてジャンプ。拾った分を記録へ加えながら、できるだけ遠くまで走ろう。</p>
+          <button id="startBtn" class="homePrimary">ゲーム開始</button>
+          <div class="homeActions">
+            <button id="rulesBtn" class="secondary">ルール説明</button>
+            <button id="homeShareBtn" class="secondary">ゲームをシェア</button>
           </div>
-          <div class="row">
-            <button id="changeNameBtn" class="secondary">名前変更</button
-            ><button id="homeShareBtn" class="secondary">シェア</button>
-          </div>
+          <button id="changeNameBtn" class="secondary homeNameButton">名前を変更</button>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v21-chase-invincible</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-20-v22-device-feedback-ui</p>
         </div>
-        <div class="card">
-          <h2>ランキング</h2>
-          <div id="homeRanking" class="rank">ランキング未設定</div>
-          <p id="homeStats" class="small"></p>
-        </div>
-        <a id="otherGamesHome" href="https://chameleonjp.codeberg.page/"
-          >他のゲームで遊ぶ</a
-        >
+        <details id="homeRankingDetails" class="card rankingDetails">
+          <summary>詳細ランキングを見る</summary>
+          <div class="rankingBody">
+            <div id="homeRanking" class="rank">ランキング未設定</div>
+            <p id="homeStats" class="small"></p>
+          </div>
+        </details>
+        <a id="otherGamesHome" class="otherGamesLink" href="https://chameleonjp.codeberg.page/">その他のゲームで遊ぶ</a>
       </section>
       <section id="rules" class="screen">
-        <div class="card">
+        <div class="card rulesCard">
           <h2>ルール</h2>
-          <p class="lead">
-            👆 タップでジャンプ / 2段ジャンプなし<br />🕳️
-            穴は無敵中でも即終了<br />💥 障害物にぶつかると -0.20km、警戒度
-            +1<br />🚓 事故3回で捕まって終了<br />💰 +0.10km / 🔩 +0.03km（取り逃がし -0.05km） / ⚙️
-            +0.07km（取り逃がし -0.05km）<br />👯‍♀️ 取得で4秒間、障害物事故だけ無敵<br />🚨
-            事故後15秒は逃走モード。見た目速度2倍、距離加算は通常です。
-          </p>
-          <button id="rulesBackBtn">戻る</button>
+          <p class="ruleConcept">落とした積荷と落ちてるお金を拾い集めよう</p>
+          <div class="rulesGrid">
+            <section class="ruleBlock">
+              <h3>目的</h3>
+              <p>🚚は自動で走ります。道に落ちたお金と、荷台から落とした積荷を回収しながら、できるだけ遠くまで進みます。</p>
+            </section>
+            <section class="ruleBlock">
+              <h3>操作</h3>
+              <ul>
+                <li>ゲーム画面か「ジャンプ」ボタンをタップすると1段ジャンプします。</li>
+                <li>2段ジャンプはできません。着地してから次のジャンプができます。</li>
+              </ul>
+            </section>
+            <section class="ruleBlock">
+              <h3>拾うもの</h3>
+              <ul>
+                <li>💰 お金：+0.10km</li>
+                <li>🔩 落とした積荷：+0.03km。取り逃がすと-0.05km</li>
+                <li>⚙️ 落とした積荷：+0.07km。取り逃がすと-0.05km</li>
+              </ul>
+            </section>
+            <section class="ruleBlock">
+              <h3>避けるもの</h3>
+              <ul>
+                <li>🕳️ 穴：落ちると即終了。👯‍♀️無敵中でも防げません。</li>
+                <li>🚶・車両などの地上障害物：ジャンプで避けます。</li>
+                <li>吊り下げバー：ジャンプせず、地上にいれば安全です。</li>
+                <li>対向障害物：速度を見てジャンプするタイミングを決めます。</li>
+              </ul>
+            </section>
+            <section class="ruleBlock">
+              <h3>事故と逃走</h3>
+              <ul>
+                <li>障害物事故で警戒度+1。3回目の事故で🚓に捕まり終了します。</li>
+                <li>事故ペナルティは1km未満で-0.10km、1km以降で-0.20kmです。</li>
+                <li>事故後15秒は逃走モード。見た目速度は2倍ですが、走行距離の加算速度は通常と同じです。</li>
+              </ul>
+            </section>
+            <section class="ruleBlock">
+              <h3>👯‍♀️ 無敵</h3>
+              <p>取得すると実際にプレイしている時間で8秒間、障害物事故だけを防ぎます。穴は防げません。無敵中に障害物へ当たると「無敵で突破!」になります。</p>
+            </section>
+            <section class="ruleBlock">
+              <h3>記録</h3>
+              <p>最終スコアは「実走行距離 + アイテム加算 − 事故・取り逃がしペナルティ」です。結果画面とランキングはkmで表示します。</p>
+            </section>
+          </div>
+          <button id="rulesBackBtn">ホームに戻る</button>
         </div>
       </section>
       <section id="name" class="screen">
@@ -347,7 +511,7 @@
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v21-chase-invincible</p>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-20-v22-device-feedback-ui</p>
           <div id="resultScore" class="resultScore">0.00km</div>
           <div id="resultBreakdown"></div>
           <p id="rankingStatus" class="toast"></p>
@@ -358,11 +522,13 @@
             ><button id="retryBtn" class="secondary">もう一度</button>
           </div>
         </div>
-        <div class="card">
-          <h2>ランキング</h2>
-          <div id="resultRanking" class="rank">ランキング未設定</div>
-          <p id="resultStats" class="small"></p>
-        </div>
+        <details id="resultRankingDetails" class="card rankingDetails">
+          <summary>詳細ランキングを見る</summary>
+          <div class="rankingBody">
+            <div id="resultRanking" class="rank">ランキング未設定</div>
+            <p id="resultStats" class="small"></p>
+          </div>
+        </details>
         <button id="homeBtn" class="secondary">ホームに戻る</button
         ><a id="otherGamesResult" href="https://chameleonjp.codeberg.page/"
           >他のゲームで遊ぶ</a
@@ -387,7 +553,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-20-v21-chase-invincible",
+        CLIENT_VERSION = "kiriganaito-2026-07-20-v22-device-feedback-ui",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -568,7 +734,7 @@
           { emoji: "💰", kind: "score", value: 100, missPenalty: 0 },
           { emoji: "🔩", kind: "score", value: 30, missPenalty: 50 },
           { emoji: "⚙️", kind: "score", value: 70, missPenalty: 50 },
-          { emoji: "👯‍♀️", kind: "invincible", value: 0, missPenalty: 0, duration: 4, placed: true },
+          { emoji: "👯‍♀️", kind: "invincible", value: 0, missPenalty: 0, duration: 8, placed: true },
         ],
         OBS_TYPES = [
           ["🚶", 1],
@@ -654,7 +820,6 @@
           screens[i].classList.remove("active");
         $(id).classList.add("active");
         mode = id.toUpperCase();
-        if (mode === MODE.HOME) loadHomeRankingOnce();
       }
       function resetState() {
         player = {
@@ -1026,8 +1191,7 @@
       }
       // 7. 難易度と出現管理
       function getGroundY(x) {
-        const scroll = run ? run.visualScroll : 0;
-        return groundY + Math.sin((x + scroll * 0.35) / 42) * 3;
+        return groundY;
       }
       function getRunSpeedMultiplier(km) {
         return Math.min(1.35, 1 + Math.floor(Math.max(0, km)) * 0.035);
@@ -1604,7 +1768,7 @@
         MIXED_END_SEC: 12,
         END_SEC: 15,
         LARGE_HOLE_BLOCK_KM: 0.14,
-        INVINCIBLE_DURATION_SEC: 4,
+        INVINCIBLE_DURATION_SEC: 8,
         INVINCIBLE_REQUEST_GAP_SEC: 0.72,
         EVENTS: Object.freeze([
           { at: 1.05, type: "score" },
@@ -2699,7 +2863,7 @@
               activateDancerInvincible();
               run.dancerItems++;
               burst(it.x, it.y, "#d7c7ff", 12);
-              floatText(it.x + 14, it.y - 4, "👯‍♀️無敵 4.0s", "#f4eaff");
+              floatText(it.x + 14, it.y - 4, "👯‍♀️無敵 8.0s", "#f4eaff");
               playTone(1040, 0.08, "sine");
             } else {
               run.bonusMeters += it.value;
@@ -2923,7 +3087,7 @@
         ctx.globalAlpha = 0.38 - t * 0.22;
         ctx.fillStyle = "#101010";
         ctx.beginPath();
-        ctx.ellipse(player.x + 22, getGroundY(player.x) + 7 + t * 7, 22 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+        ctx.ellipse(player.x + 21, getGroundY(player.x) + 7 + t * 7, 18 * shadowScale, 5 * shadowScale, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
         if (chase) {
@@ -2937,7 +3101,7 @@
           ctx.strokeStyle = "#eadbff";
           ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.ellipse(player.x + 21, player.y + 18, 31, 24, 0, 0, Math.PI * 2);
+          ctx.ellipse(player.x + 21, player.y + 18, 28, 22, 0, 0, Math.PI * 2);
           ctx.stroke();
           ctx.restore();
         }
@@ -2946,7 +3110,7 @@
         ctx.shadowColor = "transparent";
         ctx.filter = "none";
         ctx.globalCompositeOperation = "source-over";
-        ctx.font = "42px serif";
+        ctx.font = "36px serif";
         ctx.globalAlpha =
           player.inv > 0 ? 0.55 + Math.sin(run.elapsed * 40) * 0.25 : 1;
         ctx.fillText("🚚", player.x + 21, player.y + 18 + (player.landedFlash > 0 ? 2 : 0));
@@ -3547,6 +3711,16 @@
           ? `プレイ数 ${st.play_count || 0} / 参加 ${st.player_count || 0}`
           : "";
       }
+      function setupRankingDetails() {
+        const homeDetails = $("homeRankingDetails");
+        if (homeDetails) homeDetails.addEventListener("toggle", () => {
+          if (homeDetails.open) loadHomeRankingOnce();
+        });
+        const resultDetails = $("resultRankingDetails");
+        if (resultDetails) resultDetails.addEventListener("toggle", () => {
+          if (resultDetails.open) fetchAndRenderResultRanking();
+        });
+      }
       async function loadHomeRankingOnce() {
         if (rankingHomeLoaded) return;
         rankingHomeLoaded = true;
@@ -3572,7 +3746,7 @@
       }
       function homeShare() {
         shareText(
-          `kiriganaito\n逆走する🚚で穴と障害物をジャンプ回避。事故ると🚓から15秒逃走！\n${PUBLIC_URL}`,
+          `kiriganaito\n落とした積荷と落ちてるお金を拾い集めよう\n穴と障害物を見分けて、できるだけ遠くまで走ろう。\n${PUBLIC_URL}`,
           el.homeToast,
         );
       }
@@ -3656,8 +3830,8 @@ dancerInv:${run.dancerInvincible.toFixed(1)}\ndanger:${run.danger}\nchase:${run.
       draw();
       migrateLegacyPendingScores();
       updateRetryButton();
+      setupRankingDetails();
       flushPendingScores();
-      loadHomeRankingOnce();
     </script>
   </body>
 </html>
