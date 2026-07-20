@@ -1,0 +1,37 @@
+name: Synchronize device feedback report
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/_sync-device-feedback-report-pr.yml"
+      - "tools/sync-device-feedback-report.py"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-report:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Synchronize report
+        run: python tools/sync-device-feedback-report.py
+
+      - name: Commit synchronized report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/_sync-device-feedback-report-pr.yml tools/sync-device-feedback-report.py
+          git add TEST_REPORT.md
+          git diff --cached --check
+          git commit -m "docs: synchronize v22 device feedback test report"
+          git push origin HEAD:${{ github.head_ref }}
