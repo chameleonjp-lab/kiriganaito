@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-07-20T23:45:29.253Z",
+  "clientVersion": "kiriganaito-2026-07-21-v24-ui-finish",
+  "purpose": "P7 result hierarchy, compact phone layout and color-independent danger cues",
+  "static": {
+    "versionInMeta": true,
+    "quickGuide": true,
+    "summaryIds": true,
+    "resultDetailsClosed": true,
+    "primaryActionsBeforeDetails": true,
+    "horizontalOverflowGuard": true,
+    "shortViewportRule": true,
+    "gameFlexShrinkGuard": true,
+    "dangerLabels": {
+      "hole": true,
+      "air": true,
+      "oncoming": true,
+      "chase": true
+    },
+    "chaseUsesEdgeStrips": true,
+    "noDatasetAssignment": true,
+    "resetDetailsOnFinish": true,
+    "scrollReset": true
+  },
+  "runtime": {
+    "clientVersion": "kiriganaito-2026-07-21-v24-ui-finish",
+    "dangerTexts": [
+      "🚚",
+      "⚠️",
+      "穴",
+      "跳ばない",
+      "→ 対向",
+      "🚶"
+    ],
+    "score": 1284,
+    "resultScore": "1.28km",
+    "resultRun": "1.23km",
+    "resultItems": "2 / 4個",
+    "resultPickupRate": "50.0%",
+    "resultAccidents": "1回",
+    "resultReason": "終了理由：リタイアしました。次はもう少し先へ。",
+    "resultDetailsClosed": true,
+    "rankingDetailsClosed": true,
+    "diagnosticsCount": 17,
+    "diagnosticsInitiallyHidden": true,
+    "diagnosticsVisibleAfterToggle": true,
+    "toggleLabelAfterOpen": "詳細診断を隠す",
+    "resultScrollReset": true,
+    "consoleErrors": [],
+    "consoleWarnings": []
+  },
+  "failures": [],
+  "passed": true
+}
