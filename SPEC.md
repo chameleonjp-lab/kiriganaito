@@ -1,14 +1,16 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-07-11-v14-world-zones`
+Version: `kiriganaito-2026-07-21-v23-score-competition`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-07-11-v14-world-zones` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-07-21-v23-score-competition` に統一します。
+- 通常の地上障害物は`STATIC_OBSTACLE_SCROLL_PX`で世界と一緒に流れる静止物として扱います。
+- 障害物事故後は15 秒間の逃走モードです。
 
-## v7 スコア計算
+## 現行スコア計算（v23 P6 A改良版）
 結果画面の大きな記録、`resultSnapshot.score`、ランキング RPC の `p_score` は同じ `scoreMeters` を使います。Supabase/RPC/ランキング payload 形状は変更しません。
 
 新しい計算式:
@@ -18,25 +20,32 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 総ペナルティ = 事故ペナルティ + 取り逃がしペナルティ
 ペナルティ適用上限 = Math.round(基礎距離 * 0.5)
 実適用ペナルティ = Math.min(総ペナルティ, ペナルティ適用上限)
-最終スコア = 基礎距離 - 実適用ペナルティ
+最終記録 = 基礎距離 - 実適用ペナルティ
 ```
 
-実走行距離がある限り、事故ペナルティや取り逃がしペナルティだけで記録を完全に 0 にしません。結果画面には、実走行距離、アイテム加算、基礎距離、事故ペナルティ、取り逃がしペナルティ、総ペナルティ、ペナルティ適用上限、実適用ペナルティ、カットされたペナルティ、最終スコアを表示します。
+実走行距離がある限り、事故ペナルティや取り逃がしペナルティだけで記録を完全に 0 にしません。結果画面には、実走行距離、アイテム加算、基礎距離、事故ペナルティ、取り逃がしペナルティ、総ペナルティ、ペナルティ適用上限、実適用ペナルティ、カットされたペナルティ、最終記録を表示します。
 
-`zeroReason` は `normal_non_zero`、`penalty_capped`、`bug_zero_run`、`bug_render_stale` のいずれかです。実走行距離があるのに最終スコアが 0 の場合は表示または計算のバグとして扱います。
+`zeroReason` は `normal_non_zero`、`penalty_capped`、`bug_zero_run`、`bug_render_stale` のいずれかです。実走行距離があるのに最終記録が 0 の場合は表示または計算のバグとして扱います。
 
 ## アイテムと取り逃がしペナルティ
-- 加点アイテムは高密度化し、💰 70%、🔩 15%、⚙️ 15% を基本にします。
+- 加点アイテムは20個単位で 💰14個、🔩3個、⚙️3個とし、💰70%、🔩15%、⚙️15%を厳密に維持します。1周期の加算可能総量は1.70kmです。
+- 各プレイでは周期の開始位置と順方向・逆方向をランダム化し、並びを固定化せずに価値構成の運幅を抑えます。
 - 💰 は取り逃がしペナルティなしです。
 - 🔩/⚙️ の通常配置は `missPenalty = 0` にし、取り逃がし対象のチャレンジアイテムだけ少数に制限します。
+- チャレンジ対象の🔩/⚙️を取り逃がすと `-0.05km` です。
 - 加点アイテムを増やしても取り逃がしペナルティが比例して暴走しないよう、チャレンジ比率とペナルティ適用上限で二重に制限します。
 - 結果画面には、加点アイテム出現数、加点アイテム取得数、取得率、取り逃がし対象アイテム数、取り逃がし発生数、取り逃がしペナルティを表示します。
 
+## 事故ペナルティ
+
+- `1.00km 未満`の事故は1回につき`-0.10km`です。
+- `1.00km 以降`の事故は1回につき`-0.20km`です。
+
 ## 👯‍♀️ 無敵
-- 👯‍♀️取得時の無敵は `performance.now()` ベースの実時間4秒です。
-- 判定は `nowMs() < run.dancerInvincibleUntil` 相当で行い、ゲーム速度倍率、逃走モード、ロジック dt によって短縮されません。
+- 👯‍♀️取得時の無敵は、実際にプレイしている時間で8秒です。
+- 固定stepの`dt`だけで残り時間を減らし、バックグラウンド滞在やゲーム速度倍率では短縮しません。
 - 無敵は障害物事故のみ無効化します。穴には無敵中でも落ち、即終了します。
-- 無敵取得後は 0.4〜1.2 秒相当以内から障害物を出し、4秒以内に 2〜3 個の障害物を計画的に出します。穴を無敵直後に詰め込みすぎません。
+- 無敵取得後は 0.4〜1.2 秒相当以内から障害物を出し、8秒の実プレイ時間内に障害物を計画的に提示します。穴を無敵直後に詰め込みすぎません。
 - 結果画面には無敵中に出た障害物数、無敵で防いだ事故数を表示します。
 
 ## 対向/接近障害物
@@ -71,8 +80,9 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 ## テスト方針
 - `node tests/progressive-autoplay.js`
 - `node tests/release-comprehensive.js`
-- 可能なら `node tests/endurance-150km.js`
-- client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵実時間4秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、Supabase本番送信なし、console error/warning なしを確認します。
+- `node tests/endurance-150km.js`
+- `node tests/p6-score-competition-regression.js`
+- client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵の実プレイ時間8秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、20個周期、1000プレイ相当分布、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
 - CLIENT_VERSION は `kiriganaito-2026-07-11-v14-world-zones`。
@@ -120,7 +130,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - 今回は空中障害物を追加しません。
 - 今回は穴、障害物、対向障害物、アイテムの出現頻度・配置・速度・スコア・当たり判定・画面デザインを変更しません。
 
-## v15 SpawnDirector 出現管理契約（現行）
+## v15 SpawnDirector 出現管理契約（継続）
 
 - 現行 CLIENT_VERSION は `kiriganaito-2026-07-11-v15-spawn-director`。
 - 出現予定は `WORLD_ZONE.GROUND` / `WORLD_ZONE.AIR` / `WORLD_ZONE.HOLE` ごとの固定長キューで管理する。
@@ -132,7 +142,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - 成功カウンターは `spawnSource` と生成物 metadata を正本として中央集計する方針とし、生成失敗や再試行は出現数へ加算しない。
 - 今回は密度、出現確率、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase 仕様は変更対象外。
 
-## v16 SpawnDirector 正確性契約（現行）
+## v16 SpawnDirector 正確性契約（継続）
 
 - 現行 CLIENT_VERSION は `kiriganaito-2026-07-12-v16-spawn-director-correctness`。
 - 1 request は最大 1 entity だけを生成する。
@@ -148,9 +158,9 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - v16 では密度定数、速度、穴幅、スコア、当たり判定、UI、ランキング、Supabase は変更しない。
 
 
-## v18 P2 実効出現密度契約（現行）
+## v18 P2 実効出現密度契約（継続）
 
-- 現行 CLIENT_VERSION は `kiriganaito-2026-07-20-v22-device-feedback-ui`。
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-21-v23-score-competition`。
 - 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
 - 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
 - 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
@@ -162,7 +172,7 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 
 ## v19 判断パターン契約
 
-- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-20-v22-device-feedback-ui`。
+- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-21-v23-score-competition`。
 - 既存の `G / O / A / H / P` を2〜3ステップの短いパターンとして予約する。
 - 0〜1kmは `G_S_H / H_S_G / G_A / H_A` の学習用4種類だけを使用する。
 - 1km以降に `O_S_H / H_S_O / G_A_H`、2km以降かつ👯‍♀️出現可能時に `P_G_G` を解禁する。
@@ -204,3 +214,15 @@ Version: `kiriganaito-2026-07-11-v14-world-zones`
 - player物理サイズ42x34を維持し、🚚描画だけ36pxへ縮小する。
 - ルールを目的、操作、取得物、危険、事故・逃走、無敵、記録へ分割する。
 - スコア式、ランキング送信値、Supabase、P2〜P5の安全契約は変更しない。
+
+
+## v23 P6 スコア競技契約（A改良版）
+
+- 2026-07-21のユーザー承認によりA改良版を採用する。
+- ランキング主値は現行式の最終記録を維持し、整数メートルの`resultSnapshot.score`を`p_score`へ送る。
+- HUDは「走行」と「記録」を区別し、結果とシェア文は「最終記録」と「実走行距離」を別々に表示する。
+- 加点アイテムは20個周期で💰14・🔩3・⚙️3、合計1.70kmとする。開始位置と進行方向だけをプレイごとに変え、再試行で周期を余分に消費しない。
+- 💰の取り逃がしペナルティは常に0。🔩/⚙️もチャレンジ配置以外は0。逃走専用アイテムへ取り逃がしペナルティを付けない。
+- 200生成世界へ5取得プロファイルを適用した1000プレイ相当ストレス試験を必須にする。これは人間の実プレイ予測ではなく、スコア契約の比較試験である。
+- 同距離・全取得時のseed間最大スコア幅は310m以下、変更前基準620mから50%以上削減する。
+- 詳細契約は`P6_SCORE_COMPETITION_CONTRACT.md`を正本とする。
