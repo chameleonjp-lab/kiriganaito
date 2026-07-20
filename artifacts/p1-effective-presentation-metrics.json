@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T22:52:01.591Z",
+  "generatedAt": "2026-07-20T08:20:26.036Z",
   "purpose": "P1 effective presentation measurement without gameplay changes",
   "definition": {
     "presented": "An entity is counted once when at least min(width, 18px) has entered the visible canvas and its left edge is still before the canvas right edge.",
@@ -14,7 +14,7 @@
   "runs": [
     {
       "seed": 17001,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -334,16 +334,11 @@
       "reachedTarget": true,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 17002,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -664,16 +659,11 @@
       "reachedTarget": true,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     },
     {
       "seed": 17003,
-      "clientVersion": "kiriganaito-2026-07-20-v21-chase-invincible",
+      "clientVersion": "kiriganaito-2026-07-20-v22-device-feedback-ui",
       "targetMeters": 5000,
       "reachedMeters": 5000.022675000083,
       "elapsedSec": 119.61666666666116,
@@ -992,12 +982,7 @@
       "reachedTarget": true,
       "consoleErrors": [],
       "consoleWarnings": [],
-      "networkRequests": [
-        {
-          "url": "https://mlpnjgezrnhdxsxolyzj.supabase.co/rest/v1/rpc/get_best_score_ranking",
-          "body": "{\"p_game_slug\":\"kiriganaito\",\"p_limit\":10}"
-        }
-      ]
+      "networkRequests": []
     }
   ],
   "sourceScenarioCoverage": {

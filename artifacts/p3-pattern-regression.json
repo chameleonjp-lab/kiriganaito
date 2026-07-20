@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-19T22:52:10.359Z",
+  "generatedAt": "2026-07-20T08:20:31.341Z",
   "purpose": "P3 decision pattern regression",
   "result": {
-    "version": "kiriganaito-2026-07-20-v21-chase-invincible",
+    "version": "kiriganaito-2026-07-20-v22-device-feedback-ui",
     "definitionErrors": [],
     "learning": [
       "G_S_H",
@@ -21,14 +21,14 @@
       "P_G_G"
     ],
     "selectionCounts": {
+      "H_A": 1250,
+      "H_S_G": 1250,
+      "P_G_G": 1250,
       "G_S_H": 1250,
       "O_S_H": 1250,
-      "H_S_O": 1250,
-      "P_G_G": 1250,
       "G_A_H": 1250,
-      "H_S_G": 1250,
-      "H_A": 1250,
-      "G_A": 1250
+      "G_A": 1250,
+      "H_S_O": 1250
     },
     "tripleRepeatCount": 0,
     "maxSelectionShare": 0.125,
