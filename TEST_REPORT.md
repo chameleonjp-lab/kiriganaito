@@ -1,14 +1,80 @@
 # kiriganaito TEST_REPORT
 
-- 現行 CLIENT_VERSION: `kiriganaito-2026-07-20-v22-device-feedback-ui`
-- 現行段階: `P5実機フィードバックUI修正`
-- 基準main: `343f576d375bdf526221f36556d61308e695af4d`
-- 作業ブランチ: `ai/kiriganaito-v22-device-feedback-ui`
-- Draft Pull Request: `#42`
-- 検証済み実装コミット: `ffa0f11cd4f8d26121889a7ff81ae064257a0635`
-- 状態: 自動ゲート合格、実機再確認待ち、Draft・未マージ
+- 現行 CLIENT_VERSION: `kiriganaito-2026-07-21-v23-score-competition`
+- 現行段階: `P6 スコアと競技ルールの最終固定（A改良版）`
+- 基準main: `9d3041375794c8e2057d084bb73b38d8a782dcaa`
+- 基準PR: `#42`（mainへマージ済み）
+- 作業ブランチ: `codex/p6-score-competition`
+- Pull Request方針: Draftで作成し、mainへは未マージのまま引き渡す
+- 状態: ローカル全10ゲート合格、GitHub CI確認前
 
 ---
+
+## 0. P6 A改良版の検証結果
+
+### 決定した競技ルール
+
+```text
+最終記録 = 実走行距離 + アイテム加算 - 実適用ペナルティ
+ランキング p_score = 最終記録の整数メートル
+```
+
+現行式と個別点数を維持し、アイテム価値のseed偏りだけを抑えた。加点アイテムは20個周期で💰14・🔩3・⚙️3、加算可能総量1.70kmとする。周期の開始位置と進行方向はプレイごとに変えるが、既存の出現生成乱数列は進めない。
+
+表示は次のように分離した。
+
+- HUD: `走行` / `記録`
+- 結果の大表示: `最終記録`
+- 結果内訳: `実走行距離`と`最終記録`
+- シェア文: `最終記録`と`実走行距離`を別行
+- ランキング: `resultSnapshot.score`と`p_score`が一致
+
+### 1000プレイ相当ストレス試験
+
+実ゲームの生成処理で200世界を作り、各世界へ取得率0%、25%、50%、75%、100%の5プロファイルを適用した。人間の実プレイ予測ではなく、競技式とseed差のストレス試験である。
+
+| 指標 | 結果 | 条件 |
+| --- | ---: | ---: |
+| 生成世界 | 200 | 200 |
+| プレイ相当数 | 1,000 | 1,000 |
+| 20個完全周期の観測 | 40 | 1以上 |
+| 周期違反 | 0 | 0 |
+| 生成価値の集計不一致 | 0 | 0 |
+| console error / warning | 0 / 0 | 0 / 0 |
+| 同距離・全取得の幅（中央値） | 170m | 参考値 |
+| 同距離・全取得の幅（最大） | 240m | 310m以下 |
+| 変更前の最大幅 | 620m | 基準値 |
+| 最大幅の削減率 | 61.29% | 50%以上 |
+
+判定: **PASS**
+
+### 全回帰
+
+| ゲート | 結果 |
+| --- | --- |
+| progressive autoplay | PASS |
+| 150km endurance | PASS |
+| release comprehensive | critical issue 0 / WARN |
+| P1 effective presentation | PASS |
+| P2 30固定seed density | PASS |
+| P3 decision pattern | PASS |
+| P4 air obstacle | PASS |
+| P5 chase / invincible | PASS |
+| v22 device feedback UI | PASS |
+| P6 score competition | PASS |
+
+`release comprehensive`のWARNは、ローカル環境へPlaywrightが未導入であることだけが理由。Nodeハーネスではconsole error / warning 0、Supabase本番送信0、critical issue 0だった。
+
+P2の固定seed検査で、P6の周期開始位置用にゲーム生成乱数を追加消費すると穴間隔へ波及することを検出した。最終実装では既存の早期対向障害物用乱数から周期開始位置と方向を派生し、乱数消費回数を変更しない構造へ修正した。修正後はP2を3回連続、P6を3回連続で合格し、その後に全10ゲートを合格した。
+
+### 保存artifact
+
+- `artifacts/p6-score-competition-regression.json`
+- 既存P1〜P5、150km、progressive、release artifact一式
+
+---
+
+## 以下はP4〜v22の履歴
 
 ## 1. 既存基盤
 
