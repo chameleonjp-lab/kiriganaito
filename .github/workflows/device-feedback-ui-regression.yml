@@ -1,0 +1,75 @@
+name: Device feedback UI regression
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "SPEC.md"
+      - "TEST_REPORT.md"
+      - "P5_CHASE_INVINCIBLE_CONTRACT.md"
+      - "DEVICE_FEEDBACK_UI_CONTRACT.md"
+      - "tests/device-feedback-ui-regression.js"
+      - "tests/p5-chase-invincible-regression.js"
+      - ".github/workflows/device-feedback-ui-regression.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  device-feedback-ui-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Progressive autoplay
+        run: node tests/progressive-autoplay.js
+
+      - name: Endurance 150km
+        run: node tests/endurance-150km.js
+
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
+
+      - name: P1 effective presentation
+        run: node tests/effective-presentation-metrics.js
+
+      - name: P2 density gate
+        run: node tests/p2-density-regression.js
+
+      - name: P3 pattern gate
+        run: node tests/p3-pattern-regression.js
+
+      - name: P4 air obstacle gate
+        run: node tests/p4-air-obstacle-regression.js
+
+      - name: P5 chase and invincible gate
+        run: node tests/p5-chase-invincible-regression.js
+
+      - name: Device feedback UI gate
+        run: node tests/device-feedback-ui-regression.js
+
+      - name: Upload regression artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-feedback-ui-regression
+          path: |
+            artifacts/device-feedback-ui-regression.json
+            artifacts/p1-effective-presentation-metrics.json
+            artifacts/p2-density-regression.json
+            artifacts/p2-effective-presentation-30-seeds.json
+            artifacts/p3-pattern-regression.json
+            artifacts/p4-air-obstacle-regression.json
+            artifacts/p5-chase-invincible-regression.json
+            artifacts/progressive-autoplay-report.json
+            artifacts/release-test-report.json
+            artifacts/endurance-150km-result.json
+          if-no-files-found: warn
