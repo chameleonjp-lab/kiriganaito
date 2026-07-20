@@ -5,8 +5,8 @@
 - 基準main: `47a58cc5b50231b9a4595b70c54e12bb00d9c0f0`
 - 基準PR: `#43`（mainへマージ済み）
 - 作業ブランチ: `codex/p7-ui-finish`
-- Draft Pull Request: 作成予定
-- 状態: ローカル全11ゲート合格、GitHub Actions実行前、実ブラウザは環境制約で未確認
+- Draft Pull Request: `#44`
+- 状態: ローカル全11ゲート合格、GitHub Actions 8/8 SUCCESS、Draft・未マージ、実ブラウザは環境制約で未確認
 
 ---
 
@@ -56,6 +56,23 @@
 | P7 UI finish | PASS |
 
 `release comprehensive`のWARNは、Playwright未導入のためNodeハーネスとCSS静的検査へ代替したことだけが理由。重大問題0、Canvas responsive契約true、console error / warning 0だった。
+
+### GitHub Actions
+
+検証head `c0e65e3c18de8cee3f752b92a1fa70b3fec91cab`で8/8 SUCCESS。
+
+| ワークフロー | Run | 結果 |
+| --- | ---: | --- |
+| P1 effective presentation metrics | 29788632964 | SUCCESS |
+| P2 effective density regression | 29788632942 | SUCCESS |
+| P3 decision pattern regression | 29788632959 | SUCCESS |
+| P4 airborne obstacle regression | 29788632997 | SUCCESS |
+| P5 chase and invincible regression | 29788632990 | SUCCESS |
+| Device feedback UI regression | 29788632955 | SUCCESS |
+| P6 score competition regression | 29788632948 | SUCCESS |
+| P7 UI finish regression | 29788632982 | SUCCESS |
+
+PR `#44`はDraft・open・mergeable・未マージのまま維持する。
 
 実ブラウザ確認は2経路を試したが完了できなかった。ローカル`agent-browser`用Chrome取得は実行環境の証明書チェーンで失敗し、接続済みクラウドブラウザからローカル開発URLへの接続はセキュリティポリシーで拒否された。迂回せず、320x568の実ブラウザ表示は未確認として残す。P7専用Nodeハーネスでは320px DOM、Canvas描画、結果操作を確認済み。
 
