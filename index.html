@@ -7,7 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>kiriganaito</title>
-    <meta name="x-client-version" content="kiriganaito-2026-07-21-v23-score-competition" />
+    <meta name="x-client-version" content="kiriganaito-2026-07-21-v24-ui-finish" />
     <style>
       * {
         box-sizing: border-box;
@@ -67,7 +67,9 @@
       }
       .app {
         width: min(100%, 430px);
-        min-height: 100dvh;
+        min-height: calc(
+          100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+        );
         margin: 0 auto;
         padding: 12px;
         display: flex;
@@ -162,6 +164,30 @@
         color: #d9e2ff;
         font-size: 14px;
         line-height: 1.55;
+      }
+      .homeQuickGuide {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin: 0 0 12px;
+      }
+      .homeQuickGuide span {
+        min-width: 0;
+        padding: 8px 5px;
+        border: 1px solid #526080;
+        border-radius: 12px;
+        background: rgba(10, 14, 28, 0.42);
+        color: #dce7ff;
+        font-size: 11px;
+        font-weight: 750;
+        line-height: 1.35;
+        text-align: center;
+      }
+      .homeQuickGuide b {
+        display: block;
+        margin-bottom: 2px;
+        color: #ffe879;
+        font-size: 13px;
       }
       .homePrimary {
         width: 100%;
@@ -277,7 +303,8 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        min-height: 100dvh;
+        min-height: 0;
+        flex: 1;
       }
       .canvasBox {
         border: 2px solid #384266;
@@ -289,7 +316,7 @@
       canvas {
         display: block;
         width: 100%;
-        height: min(55dvh, 430px);
+        height: min(52dvh, 430px);
         touch-action: none;
       }
       .jump {
@@ -354,6 +381,76 @@
         letter-spacing: 0.08em;
         text-align: center;
       }
+      .resultSummary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 10px 0 12px;
+      }
+      .resultSummary > div {
+        min-width: 0;
+        padding: 9px 10px;
+        border: 1px solid #465071;
+        border-radius: 13px;
+        background: rgba(12, 15, 28, 0.42);
+      }
+      .resultSummary span {
+        display: block;
+        color: #bfc9e8;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .resultSummary b {
+        display: block;
+        margin-top: 2px;
+        overflow: hidden;
+        color: #fff1a6;
+        font-size: 17px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .resultActions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .resultActions button {
+        min-width: 0;
+        min-height: 56px;
+      }
+      details.resultDetails {
+        margin-top: 8px;
+        border: 1px solid #465071;
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(12, 15, 28, 0.28);
+      }
+      .resultDetails > summary {
+        min-height: 50px;
+        padding: 14px;
+        cursor: pointer;
+        color: #dce7ff;
+        font-weight: 850;
+        list-style: none;
+      }
+      .resultDetails > summary::-webkit-details-marker {
+        display: none;
+      }
+      .resultDetails > summary::after {
+        content: "＋";
+        float: right;
+        color: #ffe879;
+      }
+      .resultDetails[open] > summary::after {
+        content: "−";
+      }
+      .resultDetails[open] > summary {
+        border-bottom: 1px solid #465071;
+      }
+      .resultDetailsBody {
+        padding: 8px 12px 12px;
+      }
       .resultMeta {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -363,6 +460,18 @@
       .resultMeta .statLine {
         min-width: 0;
         padding: 5px 0;
+      }
+      .resultMeta .sectionHeader {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+        border-bottom-style: solid;
+        color: #fff1a6;
+        font-weight: 850;
+      }
+      .diagnosticsToggle {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-top: 6px;
       }
       .statLine strong {
         color: #ffb0a0;
@@ -400,6 +509,37 @@
           min-height: 72px;
         }
       }
+      @media (max-height: 640px) {
+        .app {
+          padding: 6px 8px;
+        }
+        .gameWrap {
+          gap: 5px;
+        }
+        .hud {
+          padding: 8px 10px;
+          border-radius: 14px;
+        }
+        .hud b {
+          font-size: 14px;
+        }
+        .hud .retire {
+          min-height: 44px;
+          padding: 8px;
+        }
+        canvas {
+          height: min(48dvh, 290px);
+        }
+        .jump {
+          min-height: 60px;
+          border-radius: 18px;
+          font-size: 20px;
+        }
+        .status {
+          min-height: 18px;
+          font-size: 13px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -410,6 +550,11 @@
           <h1 class="title">kiriganaito</h1>
           <p class="homeConcept">落とした積荷と落ちてるお金を拾い集めよう</p>
           <p class="homeSupport">穴や障害物を見分けてジャンプ。拾った分を記録へ加えながら、できるだけ遠くまで走ろう。</p>
+          <div class="homeQuickGuide" aria-label="最初に覚えること">
+            <span><b>タップ</b>1段ジャンプ</span>
+            <span><b>穴</b>落ちると終了</span>
+            <span><b>吊りバー</b>跳ばずに通過</span>
+          </div>
           <button id="startBtn" class="homePrimary">ゲーム開始</button>
           <div class="homeActions">
             <button id="rulesBtn" class="secondary">ルール説明</button>
@@ -417,7 +562,7 @@
           </div>
           <button id="changeNameBtn" class="secondary homeNameButton">名前を変更</button>
           <p id="homeToast" class="toast"></p>
-          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-21-v23-score-competition</p>
+          <p id="homeVersionNote" class="small versionNote">version: kiriganaito-2026-07-21-v24-ui-finish</p>
         </div>
         <details id="homeRankingDetails" class="card rankingDetails">
           <summary>詳細ランキングを見る</summary>
@@ -515,21 +660,30 @@
         </div>
       </section>
       <section id="result" class="screen">
-        <div class="card">
+        <div class="card resultCard">
           <h2>結果</h2>
           <p id="resultReason" class="lead"></p>
           <p id="resultComment" class="lead"></p>
-          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-21-v23-score-competition</p>
           <p class="resultScoreLabel">最終記録</p>
           <div id="resultScore" class="resultScore">0.00km</div>
-          <div id="resultBreakdown"></div>
+          <div class="resultSummary" aria-label="プレイ結果の要点">
+            <div><span>実走行距離</span><b id="resultRun">0.00km</b></div>
+            <div><span>アイテム</span><b id="resultItems">0 / 0個</b></div>
+            <div><span>取得率</span><b id="resultPickupRate">0.0%</b></div>
+            <div><span>事故</span><b id="resultAccidents">0回</b></div>
+          </div>
+          <div class="resultActions">
+            <button id="resultShareBtn">結果シェア</button>
+            <button id="retryBtn" class="secondary">もう一度</button>
+          </div>
           <p id="rankingStatus" class="toast"></p>
           <button id="rankingRetryBtn" class="secondary small" hidden>ランキング再送</button>
-          <p id="clientVersionNote" class="small"></p>
-          <div class="row">
-            <button id="resultShareBtn">結果シェア</button
-            ><button id="retryBtn" class="secondary">もう一度</button>
-          </div>
+          <details id="resultDetails" class="resultDetails">
+            <summary>記録の詳しい内訳・プレイ統計</summary>
+            <div class="resultDetailsBody"><div id="resultBreakdown"></div></div>
+          </details>
+          <p id="resultVersionTop" class="small versionNote">version: kiriganaito-2026-07-21-v24-ui-finish</p>
+          <p id="clientVersionNote" class="small" hidden></p>
         </div>
         <details id="resultRankingDetails" class="card rankingDetails">
           <summary>詳細ランキングを見る</summary>
@@ -562,7 +716,7 @@
         "sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM";
       const GAME_SLUG = "kiriganaito",
         GAME_NAME = "kiriganaito",
-        CLIENT_VERSION = "kiriganaito-2026-07-21-v23-score-competition",
+        CLIENT_VERSION = "kiriganaito-2026-07-21-v24-ui-finish",
         PUBLIC_URL = "https://chameleonjp.codeberg.page/kiriganaito/";
       const OTHER_GAMES_URL = "https://chameleonjp.codeberg.page/";
       const MODE = {
@@ -793,6 +947,11 @@
         resultReason: $("resultReason"),
         resultComment: $("resultComment"),
         resultScore: $("resultScore"),
+        resultRun: $("resultRun"),
+        resultItems: $("resultItems"),
+        resultPickupRate: $("resultPickupRate"),
+        resultAccidents: $("resultAccidents"),
+        resultDetails: $("resultDetails"),
         resultBreakdown: $("resultBreakdown"),
         rankingStatus: $("rankingStatus"),
         rankingRetryBtn: $("rankingRetryBtn"),
@@ -836,6 +995,11 @@
           screens[i].classList.remove("active");
         $(id).classList.add("active");
         mode = id.toUpperCase();
+        if (
+          (id === "home" || id === "rules" || id === "name" || id === "result") &&
+          typeof window.scrollTo === "function"
+        )
+          window.scrollTo(0, 0);
       }
       function resetState() {
         const earlyOncomingForceAt = 1.5 + rand(0, 0.25);
@@ -3014,6 +3178,25 @@
         particles.push({ x, y, vx: 0, vy: -34, life: 0.85, maxLife: 0.85, text, color, kind: "float" });
       }
       // 10. 描画
+      function drawCanvasLabel(text, x, y, options = {}) {
+        ctx.save();
+        const fontSize = options.fontSize || 11;
+        ctx.font = "800 " + fontSize + "px system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const width = Math.ceil(ctx.measureText(text).width) + 12;
+        const height = fontSize + 8;
+        const centerX = Math.max(width / 2 + 2, Math.min(W - width / 2 - 2, x));
+        const top = Math.max(2, y - height / 2);
+        ctx.fillStyle = options.background || "rgba(8,11,22,0.88)";
+        ctx.fillRect(centerX - width / 2, top, width, height);
+        ctx.strokeStyle = options.border || "rgba(255,232,121,0.92)";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(centerX - width / 2, top, width, height);
+        ctx.fillStyle = options.color || "#fff4b8";
+        ctx.fillText(text, centerX, top + height / 2 + 0.5);
+        ctx.restore();
+      }
       function draw() {
         ctx.clearRect(0, 0, W, H);
         ctx.save();
@@ -3030,9 +3213,15 @@
         ctx.fillRect(0, 0, W, H);
         drawNightBackdrop(chase);
         if (chase) {
-          ctx.fillStyle = "rgba(255,66,48,.08)";
-          for (let i = 0; i < 8; i++)
-            ctx.fillRect((i * 70 + run.elapsed * 180) % W, 0, 18, H);
+          const edgePulse = 0.24 + Math.sin(run.elapsed * 8) * 0.08;
+          ctx.fillStyle = "rgba(255,66,48," + edgePulse + ")";
+          ctx.fillRect(0, 0, 6, groundY);
+          ctx.fillRect(W - 6, 0, 6, groundY);
+          drawCanvasLabel("🚨 逃走中", W / 2, 16, {
+            background: "rgba(65,10,18,0.88)",
+            border: "rgba(255,150,130,0.95)",
+            color: "#fff0e8",
+          });
         }
         ctx.font = "700 28px system-ui";
         for (let i = 0; i < particles.length; i++) {
@@ -3076,13 +3265,26 @@
           ctx.moveTo(h.x + 4, h.y + 3);
           ctx.lineTo(h.x + h.w - 4, h.y + 3);
           ctx.stroke();
+          ctx.strokeStyle = "#ffe879";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(h.x + 2, h.y - 2);
+          ctx.lineTo(h.x + 2, h.y + 16);
+          ctx.moveTo(h.x + h.w - 2, h.y - 2);
+          ctx.lineTo(h.x + h.w - 2, h.y + 16);
+          ctx.stroke();
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.font = h.w < 50 ? "17px serif" : "20px serif";
           ctx.globalAlpha = 0.92;
           ctx.fillStyle = "#ffe77a";
-          ctx.fillText("⚠️", h.x + h.w / 2, h.y + 18);
+          ctx.fillText("⚠️", h.x + h.w / 2, h.y + 19);
           ctx.restore();
+          drawCanvasLabel("穴", h.x + h.w / 2, h.y - 10, {
+            background: "rgba(35,20,10,0.9)",
+            border: "#ffe879",
+            color: "#fff4b8",
+          });
         }
         ctx.globalAlpha = 1;
         ctx.shadowBlur = 0;
@@ -3143,7 +3345,28 @@
             ctx.ellipse(o.x + o.w / 2, getGroundY(o.x + o.w / 2) + 6, o.w * 0.42, 5, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.globalAlpha = 1;
+            ctx.restore();
+            drawCanvasLabel("跳ばない", o.x + o.w / 2, o.y - 14, {
+              background: "rgba(24,28,40,0.92)",
+              border: "#f2c84b",
+              color: "#fff4b8",
+            });
+            continue;
           } else if (o.direction === 1) {
+            ctx.strokeStyle = "rgba(255,232,121,0.88)";
+            ctx.lineWidth = 2;
+            for (let line = 0; line < 3; line++) {
+              const lineY = o.y + 8 + line * 8;
+              ctx.beginPath();
+              ctx.moveTo(o.x - 26 - line * 4, lineY);
+              ctx.lineTo(o.x - 6, lineY);
+              ctx.stroke();
+            }
+            drawCanvasLabel("→ 対向", o.x + 16, o.y - 14, {
+              background: "rgba(45,18,18,0.92)",
+              border: "#ffcc75",
+              color: "#fff0d2",
+            });
             ctx.translate(o.x + 16, o.y + 16);
             ctx.scale(-1, 1);
             ctx.fillText(o.emoji, 0, 0);
@@ -3518,6 +3741,15 @@
         if (el.resultReason) el.resultReason.textContent = getReasonText(snapshot.reason);
         if (el.resultComment) el.resultComment.textContent = getResultComment(snapshot.score);
         if (el.resultScore) el.resultScore.textContent = km(snapshot.score);
+        if (el.resultRun) el.resultRun.textContent = km(snapshot.runMeters);
+        if (el.resultItems)
+          el.resultItems.textContent =
+            snapshot.items + " / " + snapshot.scoreItemSpawnCount + "個";
+        if (el.resultPickupRate)
+          el.resultPickupRate.textContent =
+            (snapshot.itemPickupRate * 100).toFixed(1) + "%";
+        if (el.resultAccidents)
+          el.resultAccidents.textContent = snapshot.accidents + "回";
       }
       function resultRows(snapshot) {
         return [
@@ -3536,19 +3768,24 @@
         const diagnosticRows = new Set(["診断", "runMeters", "maxRunMeters", "lastNonZeroRunMeters", "scoreMeters", "finalScore", "resultSnapshot.score", "resultSnapshot.runMeters", "resultScore.textContent", "ranking payload p_score", "scoreItemBalanceIndex", "scoreItemBalanceCycleCount", "scoreItemBalanceAvailableMeters", "scoreItemBalanceViolationCount", "scoreItemBalanceTypeCounts", "zeroReason", "version"]);
         const toggle = document.createElement("button");
         toggle.textContent = "詳細診断を表示";
-        toggle.className = "secondary";
+        toggle.className = "secondary diagnosticsToggle";
         toggle.onclick = () => {
           diagnostics = !diagnostics;
           toggle.textContent = diagnostics ? "詳細診断を隠す" : "詳細診断を表示";
           (el.resultBreakdown.childNodes || []).forEach((node) => {
-            if (node && node.dataset && node.dataset.diagnostic === "1") node.hidden = !diagnostics;
+            if (node && (node.isDiagnosticRow || (node.dataset && node.dataset.diagnostic === "1"))) node.hidden = !diagnostics;
           });
         };
         resultRows(snapshot).forEach((r) => {
           if (r[0] === "診断") el.resultBreakdown.appendChild(toggle);
           const d = document.createElement("div");
-          d.className = "statLine" + (r[0] === "事故回数" && snapshot.accidents >= 2 ? " accidentHeavy" : "");
-          if (diagnosticRows.has(r[0])) { d.dataset = d.dataset || {}; d.dataset.diagnostic = "1"; d.hidden = true; }
+          const sectionHeader = r[1] === "" && ["記録の内訳", "プレイ内容", "出現数", "診断"].includes(r[0]);
+          d.className = "statLine" + (sectionHeader ? " sectionHeader" : "") + (r[0] === "事故回数" && snapshot.accidents >= 2 ? " accidentHeavy" : "");
+          if (diagnosticRows.has(r[0])) {
+            d.isDiagnosticRow = true;
+            if (d.dataset) d.dataset.diagnostic = "1";
+            d.hidden = true;
+          }
           const a = document.createElement("span"), b = document.createElement("b"); a.textContent = r[0]; b.textContent = r[1]; if (r[0] === "事故回数" && snapshot.accidents >= 2) b.innerHTML = "<strong>" + r[1] + "</strong>"; d.append(a, b); el.resultBreakdown.appendChild(d);
         });
       }
@@ -3560,6 +3797,9 @@
         if (mode !== MODE.PLAYING) return;
         mode = MODE.RESULT;
         resultSnapshot = buildResultSnapshot(reason);
+        if (el.resultDetails) el.resultDetails.open = false;
+        const resultRankingDetails = $("resultRankingDetails");
+        if (resultRankingDetails) resultRankingDetails.open = false;
         show("result");
         renderResultHeader(resultSnapshot);
         renderResultBreakdown(resultSnapshot);
