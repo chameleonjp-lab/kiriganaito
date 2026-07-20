@@ -5,8 +5,8 @@
 - 基準main: `9d3041375794c8e2057d084bb73b38d8a782dcaa`
 - 基準PR: `#42`（mainへマージ済み）
 - 作業ブランチ: `codex/p6-score-competition`
-- Pull Request方針: Draftで作成し、mainへは未マージのまま引き渡す
-- 状態: ローカル全10ゲート合格、GitHub CI確認前
+- Draft Pull Request: `#43`
+- 状態: ローカル全10ゲート合格、GitHub Actions 7/7 SUCCESS、Draft・未マージ
 
 ---
 
@@ -64,6 +64,22 @@
 | P6 score competition | PASS |
 
 `release comprehensive`のWARNは、ローカル環境へPlaywrightが未導入であることだけが理由。Nodeハーネスではconsole error / warning 0、Supabase本番送信0、critical issue 0だった。
+
+### GitHub Actions
+
+Draft PR `#43`のhead `14fdcde0a96ea94771f318420f16903d7319ed5f`で、次の7ワークフローがSUCCESSになった。
+
+| ワークフロー | Run | 結果 |
+| --- | ---: | --- |
+| P1 effective presentation metrics | 29780538549 | SUCCESS |
+| P2 effective density regression | 29780538587 | SUCCESS |
+| P3 decision pattern regression | 29780538547 | SUCCESS |
+| P4 airborne obstacle regression | 29780538553 | SUCCESS |
+| P5 chase and invincible regression | 29780538567 | SUCCESS |
+| Device feedback UI regression | 29780538584 | SUCCESS |
+| P6 score competition regression | 29780538629 | SUCCESS |
+
+PRはDraft・open・mergeable、mainへ未マージのまま維持する。
 
 P2の固定seed検査で、P6の周期開始位置用にゲーム生成乱数を追加消費すると穴間隔へ波及することを検出した。最終実装では既存の早期対向障害物用乱数から周期開始位置と方向を派生し、乱数消費回数を変更しない構造へ修正した。修正後はP2を3回連続、P6を3回連続で合格し、その後に全10ゲートを合格した。
 
