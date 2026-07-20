@@ -1,0 +1,227 @@
+{
+  "generatedAt": "2026-07-20T21:25:21.878Z",
+  "version": "kiriganaito-2026-07-21-v23-score-competition",
+  "method": {
+    "generatedWorlds": 200,
+    "playEquivalents": 1000,
+    "targetMeters": [
+      500,
+      1000,
+      1500,
+      2000,
+      3000
+    ],
+    "pickupRates": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "notes": "Actual main game generation was run with hazards disabled. Five deterministic collection profiles were applied to each generated world. This is a scoring stress test, not a prediction of human behavior."
+  },
+  "worldGeneration": {
+    "errors": 0,
+    "warnings": 0,
+    "itemCountMin": 4,
+    "itemCountMax": 24,
+    "itemCountAverage": 12.56,
+    "balanceViolations": 0,
+    "mismatchedGeneratedValueCount": 0,
+    "completeCycleCount": 40,
+    "completeCycleContract": {
+      "itemCount": 20,
+      "typeCounts": {
+        "💰": 14,
+        "🔩": 3,
+        "⚙️": 3
+      },
+      "valueMeters": 1700,
+      "allObservedCyclesPassed": true
+    }
+  },
+  "comparison": {
+    "top100Overlap": 52,
+    "top100Changed": 48,
+    "currentTop100AverageRunMeters": 3000,
+    "distanceTop100AverageRunMeters": 3000,
+    "currentTop100AveragePickupRate": 0.7975,
+    "comparablePairs": 400000,
+    "shorterOutranksLonger": 23435,
+    "shorterOutranksLongerRate": 0.0585875,
+    "bonusToDistanceRatio": {
+      "median": 0.34,
+      "p90": 0.685,
+      "max": 0.94
+    },
+    "sameDistanceAndProfileScoreSpread": {
+      "median": 400,
+      "p90": 910,
+      "max": 1070
+    },
+    "fullCollectionSameDistanceScoreSpread": {
+      "median": 170,
+      "max": 240,
+      "groups": [
+        {
+          "key": "500:4",
+          "min": 800,
+          "max": 970,
+          "spread": 170
+        },
+        {
+          "key": "1000:4",
+          "min": 1630,
+          "max": 1800,
+          "spread": 170
+        },
+        {
+          "key": "1500:4",
+          "min": 2400,
+          "max": 2570,
+          "spread": 170
+        },
+        {
+          "key": "2000:4",
+          "min": 3230,
+          "max": 3400,
+          "spread": 170
+        },
+        {
+          "key": "3000:4",
+          "min": 4830,
+          "max": 5070,
+          "spread": 240
+        }
+      ]
+    },
+    "randomnessSpreadGate": {
+      "referenceBeforeMaxMeters": 620,
+      "currentMaxMeters": 240,
+      "maximumAllowedMeters": 310,
+      "reductionRate": 0.6129032258064516
+    },
+    "largestDistanceReversal": {
+      "distanceGap": 1000,
+      "shorter": {
+        "seed": 260001,
+        "targetMeters": 1000,
+        "runMeters": 1000,
+        "profile": 4,
+        "pickupRate": 1,
+        "generatedItems": 8,
+        "collected": 8,
+        "bonusMeters": 700,
+        "accidentCount": 0,
+        "accidentMeters": 0,
+        "missMeters": 0,
+        "currentScore": 1700,
+        "distanceScore": 1000
+      },
+      "longer": {
+        "seed": 260023,
+        "targetMeters": 2000,
+        "runMeters": 2000,
+        "profile": 0,
+        "pickupRate": 0,
+        "generatedItems": 16,
+        "collected": 0,
+        "bonusMeters": 0,
+        "accidentCount": 2,
+        "accidentMeters": 300,
+        "missMeters": 50,
+        "currentScore": 1650,
+        "distanceScore": 2000
+      }
+    }
+  },
+  "staticContract": {
+    "version": true,
+    "hudUsesRecordLabel": true,
+    "resultUsesFinalRecordLabel": true,
+    "rulesExplainFormula": true,
+    "shareSeparatesFinalAndRun": true,
+    "formulaKeepsFiftyPercentPenaltyCap": true,
+    "rankingPayloadUsesSnapshotScore": true,
+    "balancedCycleDeclared": true
+  },
+  "examples": [
+    {
+      "seed": 260008,
+      "targetMeters": 2000,
+      "runMeters": 2000,
+      "profile": 4,
+      "pickupRate": 1,
+      "generatedItems": 16,
+      "collected": 16,
+      "bonusMeters": 1400,
+      "accidentCount": 0,
+      "accidentMeters": 0,
+      "missMeters": 0,
+      "currentScore": 3400,
+      "distanceScore": 2000
+    },
+    {
+      "seed": 260053,
+      "targetMeters": 2000,
+      "runMeters": 2000,
+      "profile": 4,
+      "pickupRate": 1,
+      "generatedItems": 16,
+      "collected": 16,
+      "bonusMeters": 1400,
+      "accidentCount": 0,
+      "accidentMeters": 0,
+      "missMeters": 0,
+      "currentScore": 3400,
+      "distanceScore": 2000
+    },
+    {
+      "seed": 260168,
+      "targetMeters": 2000,
+      "runMeters": 2000,
+      "profile": 4,
+      "pickupRate": 1,
+      "generatedItems": 16,
+      "collected": 16,
+      "bonusMeters": 1400,
+      "accidentCount": 0,
+      "accidentMeters": 0,
+      "missMeters": 0,
+      "currentScore": 3400,
+      "distanceScore": 2000
+    },
+    {
+      "seed": 260188,
+      "targetMeters": 2000,
+      "runMeters": 2000,
+      "profile": 4,
+      "pickupRate": 1,
+      "generatedItems": 16,
+      "collected": 16,
+      "bonusMeters": 1400,
+      "accidentCount": 0,
+      "accidentMeters": 0,
+      "missMeters": 0,
+      "currentScore": 3400,
+      "distanceScore": 2000
+    },
+    {
+      "seed": 260038,
+      "targetMeters": 2000,
+      "runMeters": 2000,
+      "profile": 4,
+      "pickupRate": 1,
+      "generatedItems": 16,
+      "collected": 16,
+      "bonusMeters": 1370,
+      "accidentCount": 0,
+      "accidentMeters": 0,
+      "missMeters": 0,
+      "currentScore": 3370,
+      "distanceScore": 2000
+    }
+  ],
+  "failures": [],
+  "passed": true
+}
