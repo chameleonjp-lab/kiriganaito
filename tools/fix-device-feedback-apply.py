@@ -13,14 +13,11 @@ new = '''def replace_once(text: str, old: str, new: str, label: str) -> str:
     if label == 'UI CSS insertion' and count >= 1:
         return text.replace(old, new, 1)
     if label == 'home share concept' and count == 0:
-        result, flexible_count = re.subn(
-            r'          `kiriganaito\\n[^`]*?\\n\\$\\{PUBLIC_URL\\}`,' ,
-            lambda _: new,
-            text,
-            count=1,
-        )
-        if flexible_count == 1:
-            return result
+        old_literal = old.replace('\\n', '\\\\n')
+        new_literal = new.replace('\\n', '\\\\n')
+        literal_count = text.count(old_literal)
+        if literal_count == 1:
+            return text.replace(old_literal, new_literal, 1)
     if count != 1:
         raise SystemExit(f'{label}: expected exactly one match, got {count}')
     return text.replace(old, new, 1)
