@@ -8,7 +8,7 @@ const vm = require("vm");
 const ROOT = path.join(__dirname, "..");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const OUTPUT_PATH = path.join(ROOT, "artifacts", "p5-chase-invincible-regression.json");
-const EXPECTED_VERSION = "kiriganaito-2026-07-21-v23-score-competition";
+const EXPECTED_VERSION = "kiriganaito-2026-07-21-v24-ui-finish";
 const CHASE_SEEDS = [21001, 21002, 21003, 21004, 21005];
 
 function seededRandom(seed) {
