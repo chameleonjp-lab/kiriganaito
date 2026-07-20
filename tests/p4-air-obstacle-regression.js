@@ -8,7 +8,7 @@ const vm = require("vm");
 const ROOT = path.join(__dirname, "..");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const OUTPUT_PATH = path.join(ROOT, "artifacts", "p4-air-obstacle-regression.json");
-const EXPECTED_VERSION = "kiriganaito-2026-07-20-v22-device-feedback-ui";
+const EXPECTED_VERSION = "kiriganaito-2026-07-21-v23-score-competition";
 const NATURAL_SEEDS = [20001, 20002, 20003, 20004, 20005];
 const TARGET_METERS = 7000;
 
