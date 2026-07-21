@@ -1,12 +1,12 @@
 # kiriganaito SPEC
 
-Version: `kiriganaito-2026-07-21-v23-score-competition`
+Version: `kiriganaito-2026-07-21-v24-ui-finish`
 
 ## 固定設定
 - `GAME_SLUG`、`PUBLIC_URL`、Supabase URL、Publishable key、RPC パス、RPC 引数、pending queue キー、旧キー移行処理は変更しません。
 - ランキング送信は `/rest/v1/rpc/submit_score` を使い、`p_game_slug`、`p_display_name`、`p_score`、`p_client_version` のみを送ります。`p_score` は整数メートルです。
 - `index.html` 1 ファイル構成、外部ライブラリなし、穴即終了、警戒度3終了、2段ジャンプなしを維持します。
-- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-07-21-v23-score-competition` に統一します。
+- ホーム画面、結果画面、HTML meta の client version は `kiriganaito-2026-07-21-v24-ui-finish` に統一します。
 - 通常の地上障害物は`STATIC_OBSTACLE_SCROLL_PX`で世界と一緒に流れる静止物として扱います。
 - 障害物事故後は15 秒間の逃走モードです。
 
@@ -82,6 +82,7 @@ Version: `kiriganaito-2026-07-21-v23-score-competition`
 - `node tests/release-comprehensive.js`
 - `node tests/endurance-150km.js`
 - `node tests/p6-score-competition-regression.js`
+- `node tests/p7-ui-finish-regression.js`
 - client version、旧文字列なし、`.children = []` なし、結果内訳、診断値、ペナルティ上限、p_score 一致、無敵の実プレイ時間8秒、無敵中障害物、対向障害物、配置リズム、逃走中密度、空白率、速度倍率、20個周期、1000プレイ相当分布、Supabase本番送信なし、console error/warning なしを確認します。
 
 ## v7 result DOM / density hotfix
@@ -160,7 +161,7 @@ Version: `kiriganaito-2026-07-21-v23-score-competition`
 
 ## v18 P2 実効出現密度契約（継続）
 
-- 現行 CLIENT_VERSION は `kiriganaito-2026-07-21-v23-score-competition`。
+- 現行 CLIENT_VERSION は `kiriganaito-2026-07-21-v24-ui-finish`。
 - 穴予定が期限へ達した時は、通常地上障害物と通常対向障害物を一時保留し、既存の穴安全距離を満たすための予約区間を作る。
 - 穴生成後は `between_holes` の必須障害物を優先し、それが解決するまで通常地上予定を保留する。
 - 加点アイテムが予定から0.10km以上遅れた場合は、穴予約を優先した上でアイテム安全区間を作る。
@@ -172,7 +173,7 @@ Version: `kiriganaito-2026-07-21-v23-score-competition`
 
 ## v19 判断パターン契約
 
-- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-21-v23-score-competition`。
+- 現行 `CLIENT_VERSION` は `kiriganaito-2026-07-21-v24-ui-finish`。
 - 既存の `G / O / A / H / P` を2〜3ステップの短いパターンとして予約する。
 - 0〜1kmは `G_S_H / H_S_G / G_A / H_A` の学習用4種類だけを使用する。
 - 1km以降に `O_S_H / H_S_O / G_A_H`、2km以降かつ👯‍♀️出現可能時に `P_G_G` を解禁する。
@@ -226,3 +227,16 @@ Version: `kiriganaito-2026-07-21-v23-score-competition`
 - 200生成世界へ5取得プロファイルを適用した1000プレイ相当ストレス試験を必須にする。これは人間の実プレイ予測ではなく、スコア契約の比較試験である。
 - 同距離・全取得時のseed間最大スコア幅は310m以下、変更前基準620mから50%以上削減する。
 - 詳細契約は`P6_SCORE_COMPETITION_CONTRACT.md`を正本とする。
+
+
+## v24 P7 UI・デザイン・説明の仕上げ
+
+- ホーム上部へ、タップ1段ジャンプ、穴は即終了、吊り下げバーは跳ばずに通過する3要点を追加する。
+- 結果画面は、最終記録、実走行距離、アイテム、取得率、事故、シェア、再戦を詳細統計より先に表示する。
+- 記録内訳とプレイ統計は初期状態で閉じ、内部診断はその中でも操作されるまで隠す。
+- 結果表示時は結果詳細と詳細ランキングを閉じ、画面上端へ戻す。
+- 高さ640px以下ではHUD、Canvas、ジャンプボタン、状態表示を圧縮し、320x568で主要操作を収めやすくする。
+- 穴は左右端と「穴」、吊り下げバーは吊り線・影と「跳ばない」、対向障害物は速度線と「→ 対向」で示す。
+- 逃走演出は左右端の警告帯へ限定し、危険物や車両を赤い全面演出で隠さない。
+- スコア、出現密度、速度、TTC、当たり判定、SpawnDirector、ランキングRPC、Supabase設定は変更しない。
+- 詳細契約は`P7_UI_FINISH_CONTRACT.md`を正本とする。

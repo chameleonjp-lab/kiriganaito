@@ -1,0 +1,47 @@
+name: P7 UI finish regression
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p7-ui-finish-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Progressive autoplay
+        run: node tests/progressive-autoplay.js
+      - name: 150km endurance
+        run: node tests/endurance-150km.js
+      - name: Release comprehensive
+        run: node tests/release-comprehensive.js
+      - name: P1 effective presentation metrics
+        run: node tests/effective-presentation-metrics.js
+      - name: P2 density regression
+        run: node tests/p2-density-regression.js
+      - name: P3 decision pattern regression
+        run: node tests/p3-pattern-regression.js
+      - name: P4 airborne obstacle regression
+        run: node tests/p4-air-obstacle-regression.js
+      - name: P5 chase and invincible regression
+        run: node tests/p5-chase-invincible-regression.js
+      - name: Device feedback UI regression
+        run: node tests/device-feedback-ui-regression.js
+      - name: P6 score competition regression
+        run: node tests/p6-score-competition-regression.js
+      - name: P7 UI finish regression
+        run: node tests/p7-ui-finish-regression.js
+      - name: Upload regression artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p7-ui-finish-regression-artifacts
+          path: artifacts/
+          if-no-files-found: error
